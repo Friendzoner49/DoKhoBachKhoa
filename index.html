@@ -154,6 +154,19 @@
   li.item:hover, li.item:active {
     border-color: var(--accent);
   }
+  li.item.out-of-stock {
+    opacity: 0.6;
+  }
+  .stock-badge {
+    display: inline-block;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 1px 8px;
+    margin-top: 3px;
+  }
   .item-info {
     /* Without this, a flex item's default min-width is its content's
        min-content size, which can keep long names from shrinking and
@@ -299,6 +312,9 @@
     font-size: 0.85rem;
     margin-top: 2px;
   }
+  #modal-stock-badge {
+    margin-bottom: 8px;
+  }
   #modal-contact {
     display: block;
     text-align: center;
@@ -339,6 +355,7 @@
     <div id="modal-category"></div>
     <div id="modal-name"></div>
     <div id="modal-unit"></div>
+    <div id="modal-stock-badge" class="stock-badge" hidden>Tạm hết hàng</div>
     <div id="modal-price"></div>
     <div id="modal-bulk"></div>
     <a id="modal-contact" href="#" target="_blank" rel="noopener">💬 Liên hệ đặt hàng qua Telegram</a>
@@ -413,7 +430,7 @@
     list.innerHTML = "";
     for (const item of items) {
       const li = document.createElement("li");
-      li.className = "item";
+      li.className = item.in_stock === false ? "item out-of-stock" : "item";
       li.addEventListener("click", () => openModal(item));
 
       const left = document.createElement("div");
@@ -428,6 +445,12 @@
       meta.textContent = metaParts.filter(Boolean).join(" · ");
       left.appendChild(name);
       left.appendChild(meta);
+      if (item.in_stock === false) {
+        const badge = document.createElement("div");
+        badge.className = "stock-badge";
+        badge.textContent = "Tạm hết hàng";
+        left.appendChild(badge);
+      }
 
       li.appendChild(left);
       li.appendChild(priceLine(item));
@@ -513,6 +536,7 @@
     document.getElementById("modal-category").textContent = item.category || FALLBACK_CATEGORY;
     document.getElementById("modal-name").textContent = item.name;
     document.getElementById("modal-unit").textContent = [item.unit, item.code].filter(Boolean).join(" · ");
+    document.getElementById("modal-stock-badge").hidden = item.in_stock !== false;
     document.getElementById("modal-price").textContent = `${numberFormat.format(item.price)} ₽`;
     const bulkEl = document.getElementById("modal-bulk");
     if (item.bulk_qty && item.bulk_price) {
