@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bảng giá</title>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --card: #ffffff;
+    --text: #2a2420;
+    --muted: #8a7f73;
+    --accent: #b5542a;
+    --border: #e8e0d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1915;
+      --card: #272320;
+      --text: #f1ece5;
+      --muted: #a69a8c;
+      --accent: #e08a5c;
+      --border: #3a342e;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 16px;
+    padding-bottom: 48px;
+  }
+  header {
+    max-width: 720px;
+    margin: 0 auto 16px;
+  }
+  h1 {
+    font-size: 1.6rem;
+    margin: 0 0 4px;
+  }
+  .updated {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0 0 16px;
+  }
+  .search-wrap {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 8px 0 12px;
+    z-index: 10;
+  }
+  #search {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 1rem;
+  }
+  #search:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .count {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 4px 0 12px;
+  }
+  ul.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  li.item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .item-info {
+    /* Without this, a flex item's default min-width is its content's
+       min-content size, which can keep long names from shrinking and
+       push the price off the right edge on narrow screens. */
+    min-width: 0;
+  }
+  .item-name {
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+  }
+  .item-meta {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 2px;
+    overflow-wrap: break-word;
+  }
+  .item-price {
+    text-align: right;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .price {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1.05rem;
+  }
+  .bulk {
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin-top: 2px;
+  }
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 40px 0;
+  }
+  footer {
+    max-width: 720px;
+    margin: 24px auto 0;
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bảng giá</h1>
+  <p class="updated" id="updated"></p>
+</header>
+<main>
+  <div class="search-wrap">
+    <input id="search" type="text" placeholder="Tìm theo tên hàng hoặc mã..." autocomplete="off">
+  </div>
+  <p class="count" id="count"></p>
+  <ul class="list" id="list"></ul>
+  <p class="empty" id="empty" hidden>Không tìm thấy mặt hàng phù hợp.</p>
+</main>
+<footer>Giá tính bằng RUB, có thể thay đổi theo từng đợt hàng.</footer>
+
+<script>
+  const numberFormat = new Intl.NumberFormat("vi-VN");
+
+  function stripAccents(str) {
+    return str.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase();
+  }
+
+  function render(items) {
+    const list = document.getElementById("list");
+    const empty = document.getElementById("empty");
+    const count = document.getElementById("count");
+    list.innerHTML = "";
+
+    if (items.length === 0) {
+      empty.hidden = false;
+      count.textContent = "";
+      return;
+    }
+    empty.hidden = true;
+    count.textContent = `${items.length} mặt hàng`;
+
+    for (const item of items) {
+      const li = document.createElement("li");
+      li.className = "item";
+
+      const left = document.createElement("div");
+      left.className = "item-info";
+      const name = document.createElement("div");
+      name.className = "item-name";
+      name.textContent = item.name;
+      const meta = document.createElement("div");
+      meta.className = "item-meta";
+      meta.textContent = [item.unit, item.code].filter(Boolean).join(" · ");
+      left.appendChild(name);
+      left.appendChild(meta);
+
+      const right = document.createElement("div");
+      right.className = "item-price";
+      const price = document.createElement("div");
+      price.className = "price";
+      price.textContent = `${numberFormat.format(item.price)} ₽`;
+      right.appendChild(price);
+      if (item.bulk_qty && item.bulk_price) {
+        const bulk = document.createElement("div");
+        bulk.className = "bulk";
+        bulk.textContent = `Sỉ ${item.bulk_qty}: ${numberFormat.format(item.bulk_price)} ₽`;
+        right.appendChild(bulk);
+      }
+
+      li.appendChild(left);
+      li.appendChild(right);
+      list.appendChild(li);
+    }
+  }
+
+  async function main() {
+    let data;
+    try {
+      const res = await fetch("products.json", { cache: "no-store" });
+      data = await res.json();
+    } catch (err) {
+      document.getElementById("count").textContent = "Không tải được bảng giá. Thử lại sau.";
+      return;
+    }
+
+    const items = (data.items || []).slice().sort((a, b) => a.name.localeCompare(b.name, "vi"));
+    const updatedEl = document.getElementById("updated");
+    if (data.updated_at) {
+      const d = new Date(data.updated_at);
+      updatedEl.textContent = `Cập nhật lúc: ${d.toLocaleString("vi-VN")}`;
+    }
+
+    render(items);
+
+    const searchEl = document.getElementById("search");
+    searchEl.addEventListener("input", () => {
+      const query = stripAccents(searchEl.value.trim());
+      if (!query) {
+        render(items);
+        return;
+      }
+      const filtered = items.filter(
+        (item) => stripAccents(item.name).includes(query) || stripAccents(item.code).includes(query)
+      );
+      render(filtered);
+    });
+  }
+
+  main();
+</script>
+</body>
+</html>

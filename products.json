@@ -1,0 +1,902 @@
+{
+  "updated_at": "2026-10-18T09:54:32+00:00",
+  "currency": "RUB",
+  "items": [
+    {
+      "code": "BADAM1",
+      "name": "Bánh Đa Mè 350gr",
+      "unit": "gói",
+      "price": 375
+    },
+    {
+      "code": "BADAT1",
+      "name": "Bánh Đa Nem Tròn Hà Nội 200gr",
+      "unit": "gói",
+      "price": 134
+    },
+    {
+      "code": "BADAV1",
+      "name": "Bánh Đa Nem Vuông Thanh Thủy",
+      "unit": "gói",
+      "price": 134
+    },
+    {
+      "code": "BDX001",
+      "name": "Bánh Đậu Xanh (Khoai Môn, Dừa, Gấc, Matcha)",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "BDXCLS",
+      "name": "Bánh Đậu Xanh Klasic",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "BGAO01",
+      "name": "Bánh Gạo Ichi",
+      "unit": "gói",
+      "price": 203
+    },
+    {
+      "code": "BGAO02",
+      "name": "Bánh Gạo Mặt One One",
+      "unit": "gói",
+      "price": 182
+    },
+    {
+      "code": "BGAO03",
+      "name": "Bánh Gạo Ngô Pho Mai One One",
+      "unit": "gói",
+      "price": 193
+    },
+    {
+      "code": "BGAO04",
+      "name": "Bánh Gạo Ngọt One One",
+      "unit": "gói",
+      "price": 182
+    },
+    {
+      "code": "BLAI01",
+      "name": "Bánh Lai Phú Vị (Khoai Môn, Chanh Leo, Xoài, Dâu Tây, Sầu Riêng, Cam) Tặng Thầy Cô",
+      "unit": "gói",
+      "price": 321
+    },
+    {
+      "code": "BTRA01",
+      "name": "Bánh Tráng Safoco 22cm 300gr",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "BOBC01",
+      "name": "Bột Bánh Cuốn 400gr",
+      "unit": "gói",
+      "price": 198
+    },
+    {
+      "code": "BOBX01",
+      "name": "Bột Bánh Xèo 400gr",
+      "unit": "gói",
+      "price": 198
+    },
+    {
+      "code": "BOCC01",
+      "name": "Bột Cacao Nguyên Chất 375gr",
+      "unit": "hộp",
+      "price": 428
+    },
+    {
+      "code": "BOCA01",
+      "name": "Bột Canh Hải Châu 190gr",
+      "unit": "gói",
+      "price": 43,
+      "bulk_qty": 5.0,
+      "bulk_price": 211
+    },
+    {
+      "code": "BOCG01",
+      "name": "Bột Chiên Giòn 1 Kg",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "BOCX01",
+      "name": "Bột Chiên Xù 1 Kg",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "BONA01",
+      "name": "Bột Năng 400gr",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "BONE01",
+      "name": "Bột Nếp 400gr",
+      "unit": "gói",
+      "price": 198
+    },
+    {
+      "code": "BONC01",
+      "name": "Bột Ngũ Cốc 500gr",
+      "unit": "gói",
+      "price": 375
+    },
+    {
+      "code": "BONV01",
+      "name": "Bột Ngũ Vị Hương",
+      "unit": "gói",
+      "price": 21
+    },
+    {
+      "code": "BOQU01",
+      "name": "Bột Quẩy 400gr",
+      "unit": "gói",
+      "price": 198
+    },
+    {
+      "code": "BORC01",
+      "name": "Bột Rau Câu Con Cá Dẻo",
+      "unit": "gói",
+      "price": 91
+    },
+    {
+      "code": "BOSS01",
+      "name": "Bột Sương Sáo",
+      "unit": "gói",
+      "price": 107
+    },
+    {
+      "code": "BUN03",
+      "name": "Bún khô Hà Nội",
+      "unit": "gói",
+      "price": 144
+    },
+    {
+      "code": "BUN02",
+      "name": "Bún Tươi Safoco 300gr",
+      "unit": "gói",
+      "price": 139
+    },
+    {
+      "code": "BUN01",
+      "name": "Bún Tươi Thanh Loc 500gr",
+      "unit": "gói",
+      "price": 161
+    },
+    {
+      "code": "CABS01",
+      "name": "Cá Basa",
+      "unit": "kg",
+      "price": 321
+    },
+    {
+      "code": "CP0001",
+      "name": "Cà Pháo Ngọc Liên",
+      "unit": "hộp",
+      "price": 187
+    },
+    {
+      "code": "CPT001",
+      "name": "Cà Pháo Tôm Ngọc Liên",
+      "unit": "hộp",
+      "price": 198
+    },
+    {
+      "code": "CAFE01",
+      "name": "Café Arabica Me Trang Hạt 500gr",
+      "unit": "hộp",
+      "price": 1070
+    },
+    {
+      "code": "CAFE02",
+      "name": "Café Chon Me Trang Hạt 500gr",
+      "unit": "hộp",
+      "price": 1391
+    },
+    {
+      "code": "CAFE03",
+      "name": "Café Culi Me Trang Hạt 500gr",
+      "unit": "hộp",
+      "price": 1070
+    },
+    {
+      "code": "CAFE04",
+      "name": "Café G7 2 In 1",
+      "unit": "hộp",
+      "price": 300
+    },
+    {
+      "code": "CAFE05",
+      "name": "Café G7 3 In 1 (18 Gói)",
+      "unit": "hộp",
+      "price": 375
+    },
+    {
+      "code": "CAFE06",
+      "name": "Café G7 3 In 1 (21 Gói)",
+      "unit": "hộp",
+      "price": 321
+    },
+    {
+      "code": "CAFE07",
+      "name": "Café G7 Cappuchino",
+      "unit": "hộp",
+      "price": 321
+    },
+    {
+      "code": "CAFE08",
+      "name": "Café Ocean Blue Me Trang Hạt 500gr",
+      "unit": "hộp",
+      "price": 1070
+    },
+    {
+      "code": "CAFE09",
+      "name": "Café Phin Chon Me Trang 250gr",
+      "unit": "hộp",
+      "price": 642
+    },
+    {
+      "code": "CAFE10",
+      "name": "Café Trung Nguyên Số 3",
+      "unit": "hộp",
+      "price": 514
+    },
+    {
+      "code": "CAFE11",
+      "name": "Café Trung Nguyên Số 5",
+      "unit": "hộp",
+      "price": 589
+    },
+    {
+      "code": "CHAO1",
+      "name": "Cháo Các Vị (Gà, Sườn, Thịt Băm, Bò)",
+      "unit": "gói",
+      "price": 59
+    },
+    {
+      "code": "CHNV01",
+      "name": "Chao Nấu Vit 1,6 Kg",
+      "unit": "hộp",
+      "price": 556
+    },
+    {
+      "code": "CHETN1",
+      "name": "Chè Thái Nguyen 200gr",
+      "unit": "hộp",
+      "price": 235
+    },
+    {
+      "code": "CHETN2",
+      "name": "Chè Thái Nguyen 500gr",
+      "unit": "hộp",
+      "price": 1070
+    },
+    {
+      "code": "DAUDE1",
+      "name": "Đậu Đen 0.5 Kg",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "DAUHA1",
+      "name": "Dầu Hào Prb 2.4l",
+      "unit": "chai",
+      "price": 749
+    },
+    {
+      "code": "DAUHA2",
+      "name": "Dầu Hào Prb 500gr",
+      "unit": "chai",
+      "price": 214
+    },
+    {
+      "code": "DAUME1",
+      "name": "Dầu Mè 420ml",
+      "unit": "chai",
+      "price": 375
+    },
+    {
+      "code": "DAUN01",
+      "name": "Đậu Nành, Kg",
+      "unit": "kg",
+      "price": 86
+    },
+    {
+      "code": "DAUXA1",
+      "name": "Đậu Xanh Không Vỏ 0.5 Kg",
+      "unit": "gói",
+      "price": 235
+    },
+    {
+      "code": "DAUXA2",
+      "name": "Đậu Xanh Vỏ 1 Kg",
+      "unit": "gói",
+      "price": 235
+    },
+    {
+      "code": "DIHU01",
+      "name": "Đinh Hương 100gr",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "GAC001",
+      "name": "Gấc Đông Đá 1 Kg",
+      "unit": "gói",
+      "price": 1070
+    },
+    {
+      "code": "GAO001",
+      "name": "Gạo Jasmin Aroy-D Thái Lan 4,5 Kg",
+      "unit": "KG",
+      "price": 297,
+      "bulk_qty": 4.5,
+      "bulk_price": 1310
+    },
+    {
+      "code": "GAO002",
+      "name": "Gạo Jasmin St25 Vietnam 5Kg",
+      "unit": "KG",
+      "price": 289,
+      "bulk_qty": 5.0,
+      "bulk_price": 1416
+    },
+    {
+      "code": "GAO003",
+      "name": "Gạo Nếp Cẩm Thái Lan Organic",
+      "unit": "KG",
+      "price": 268
+    },
+    {
+      "code": "GAO004",
+      "name": "Gạo Nếp Thanh Lộc 1 Kg",
+      "unit": "KG",
+      "price": 268
+    },
+    {
+      "code": "GAO005",
+      "name": "Gạo Tròn Kuban Loại 1 25 Kg",
+      "unit": "KG",
+      "price": 118,
+      "bulk_qty": 25.0,
+      "bulk_price": 2891
+    },
+    {
+      "code": "GIAVI1",
+      "name": "Gia Vị Knorr",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "GIAVI2",
+      "name": "Gia Vị Lẩu Thái",
+      "unit": "gói",
+      "price": 128
+    },
+    {
+      "code": "GLAUB1",
+      "name": "Gói Lẩu Bò 150gr",
+      "unit": "gói",
+      "price": 193
+    },
+    {
+      "code": "GLAUH1",
+      "name": "Gói Lẩu Hải Sản 150gr",
+      "unit": "gói",
+      "price": 193
+    },
+    {
+      "code": "HANKO1",
+      "name": "Hành Khô 0.5 Kg",
+      "unit": "gói",
+      "price": 428
+    },
+    {
+      "code": "HANKR1",
+      "name": "Hạt nêm Knorr 900g",
+      "unit": "gói",
+      "price": 482
+    },
+    {
+      "code": "HQUA01",
+      "name": "Hoa Quả Sấy",
+      "unit": "gói",
+      "price": 428
+    },
+    {
+      "code": "HOI001",
+      "name": "Hồi 100gr",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "KEGA01",
+      "name": "Kê Gà",
+      "unit": "kg",
+      "price": 246
+    },
+    {
+      "code": "KEO001",
+      "name": "Kẹo Dồi",
+      "unit": "gói",
+      "price": 375
+    },
+    {
+      "code": "KEO002",
+      "name": "Kẹo Thạnh Zai Zai 350gr",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "KEO003",
+      "name": "Kẹo Trái Cây Nhiệt Đới",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "KEO004",
+      "name": "Kẹo Trân Châu",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "KEO005",
+      "name": "Lạc Nhân Ấn Độ 500gr",
+      "unit": "gói",
+      "price": 182
+    },
+    {
+      "code": "KEO006",
+      "name": "Lạc Nhân Thanh Loc 500gr",
+      "unit": "gói",
+      "price": 246
+    },
+    {
+      "code": "LGM001",
+      "name": "Lao Gan Ma",
+      "unit": "chai",
+      "price": 268
+    },
+    {
+      "code": "MAM001",
+      "name": "Mắm 584 20% Độ Đạm 500ml",
+      "unit": "chai",
+      "price": 428
+    },
+    {
+      "code": "MAM002",
+      "name": "Mắm Aroy D 700ml",
+      "unit": "chai",
+      "price": 321
+    },
+    {
+      "code": "MAM003",
+      "name": "Mắm Cá Hồng Thủy Sản Việt 1l",
+      "unit": "chai",
+      "price": 268
+    },
+    {
+      "code": "MAM004",
+      "name": "Mắm Chinsu Thủy Tinh 500ml",
+      "unit": "chai",
+      "price": 375
+    },
+    {
+      "code": "MAM005",
+      "name": "Mắm Mực Thái Lan 700ml",
+      "unit": "chai",
+      "price": 268
+    },
+    {
+      "code": "MAM006",
+      "name": "Mắm Nêm",
+      "unit": "chai",
+      "price": 161
+    },
+    {
+      "code": "MAM007",
+      "name": "Mắm Tôm 200ml",
+      "unit": "chai",
+      "price": 118
+    },
+    {
+      "code": "MANG01",
+      "name": "Măng Tươi",
+      "unit": "túi",
+      "price": 300
+    },
+    {
+      "code": "MECHU1",
+      "name": "Me Chua Thái 454gr",
+      "unit": "chai",
+      "price": 268
+    },
+    {
+      "code": "MIEN01",
+      "name": "Miến Đùi Gà Thanh Thủy",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "MIEN02",
+      "name": "Miến Khoai Lang (Ngon)",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "MIEN03",
+      "name": "Miến Mộc Thanh Lộc 500gr",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "MIEN04",
+      "name": "Miến Mọc Truong Quan 500g",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "MITSAY",
+      "name": "Mít Sấy",
+      "unit": "gói",
+      "price": 428
+    },
+    {
+      "code": "MONHI1",
+      "name": "Mọc Nhĩ 1 Kg",
+      "unit": "kg",
+      "price": 1605
+    },
+    {
+      "code": "MYCHI1",
+      "name": "Mỳ Chính Ajinomoto 1 Kg",
+      "unit": "gói",
+      "price": 321
+    },
+    {
+      "code": "MYCHI2",
+      "name": "Mỳ Chính Ajinomoto 454gr Malaysia",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "MYF001",
+      "name": "Mỳ Chũ Classic",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "MYF002",
+      "name": "Mỳ Chũ Rau Củ Quả",
+      "unit": "gói",
+      "price": 177
+    },
+    {
+      "code": "MT0001",
+      "name": "Mỳ Tôm Cung Đình Vị Tôm Chua Cay",
+      "unit": "gói",
+      "price": 59,
+      "bulk_qty": 30.0,
+      "bulk_price": 1735
+    },
+    {
+      "code": "MT0002",
+      "name": "Mỳ Tôm Hảo Hảo",
+      "unit": "gói",
+      "price": 46,
+      "bulk_qty": 30.0,
+      "bulk_price": 1352
+    },
+    {
+      "code": "MT0003",
+      "name": "Mỳ Tôm Lẩu Thái Gói",
+      "unit": "gói",
+      "price": 57,
+      "bulk_qty": 30.0,
+      "bulk_price": 1676
+    },
+    {
+      "code": "MT0004",
+      "name": "Mỳ Tôm Omachi Bò",
+      "unit": "gói",
+      "price": 59,
+      "bulk_qty": 30.0,
+      "bulk_price": 1735
+    },
+    {
+      "code": "MT0005",
+      "name": "Mỳ Tôm Omachi Heo",
+      "unit": "gói",
+      "price": 59,
+      "bulk_qty": 30.0,
+      "bulk_price": 1735
+    },
+    {
+      "code": "MT0006",
+      "name": "Mỳ Tôm Omachi Tôm",
+      "unit": "gói",
+      "price": 59,
+      "bulk_qty": 30.0,
+      "bulk_price": 1735
+    },
+    {
+      "code": "MT0007",
+      "name": "Mỳ Vifon Đa Cua",
+      "unit": "gói",
+      "price": 59,
+      "bulk_qty": 30.0,
+      "bulk_price": 1735
+    },
+    {
+      "code": "MT0008",
+      "name": "Mỳ Vifon phở Túi 65gr phở Bò",
+      "unit": "gói",
+      "price": 59,
+      "bulk_qty": 30.0,
+      "bulk_price": 1735
+    },
+    {
+      "code": "MT0009",
+      "name": "Mỳ Vifon Phở Túi 65gr Phở Gà",
+      "unit": "gói",
+      "price": 59,
+      "bulk_qty": 30.0,
+      "bulk_price": 1735
+    },
+    {
+      "code": "NAMH01",
+      "name": "Nấm Hương 100gr",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "NAMT01",
+      "name": "Nấm Trắng",
+      "unit": "gói",
+      "price": 54
+    },
+    {
+      "code": "NOICOM",
+      "name": "Nồi Cơm Điện Nhỏ Vietnam",
+      "unit": "cái",
+      "price": 4815
+    },
+    {
+      "code": "CODUA1",
+      "name": "Nước Cốt Dừa Aroy-D 400ml",
+      "unit": "hộp",
+      "price": 182
+    },
+    {
+      "code": "CODUA2",
+      "name": "Nước Cốt Dừa Wonderfarm 400ml",
+      "unit": "hộp",
+      "price": 182
+    },
+    {
+      "code": "NMAU01",
+      "name": "Nước Mầu Dừa 300ml",
+      "unit": "chai",
+      "price": 161
+    },
+    {
+      "code": "NTUG01",
+      "name": "Nước Tương Chinsu",
+      "unit": "chai",
+      "price": 161
+    },
+    {
+      "code": "NTUG02",
+      "name": "Nước Tương Chinsu Tỏi Ớt",
+      "unit": "chai",
+      "price": 139
+    },
+    {
+      "code": "VINUT1",
+      "name": "Nước Vinut 330ml Các Vị",
+      "unit": "chai",
+      "price": 86
+    },
+    {
+      "code": "OT0001",
+      "name": "Ớt Bột Cay 0.5",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "OT0002",
+      "name": "Ớt Ngâm 180ml",
+      "unit": "chai",
+      "price": 107
+    },
+    {
+      "code": "OT0003",
+      "name": "Ớt Ngâm 500ml",
+      "unit": "chai",
+      "price": 214
+    },
+    {
+      "code": "TOMYA1",
+      "name": "Pasta Tom Zam 0.4 Kg",
+      "unit": "hộp",
+      "price": 375
+    },
+    {
+      "code": "PHIN01",
+      "name": "Phin Café Q7",
+      "unit": "cái",
+      "price": 268
+    },
+    {
+      "code": "PHO001",
+      "name": "Phở Tươi Thanh Lộc 500gr",
+      "unit": "gói",
+      "price": 134
+    },
+    {
+      "code": "PHTOM1",
+      "name": "Phồng Tôm Mầu 270gr",
+      "unit": "gói",
+      "price": 128
+    },
+    {
+      "code": "PHTOM2",
+      "name": "Phồng Tôm Sa Giang 200gr",
+      "unit": "gói",
+      "price": 134
+    },
+    {
+      "code": "QUET01",
+      "name": "Quế Thanh 100gr",
+      "unit": "gói",
+      "price": 161
+    },
+    {
+      "code": "RIENG1",
+      "name": "Riềng Tươi 200gr",
+      "unit": "gói",
+      "price": 321
+    },
+    {
+      "code": "SAT001",
+      "name": "Sả Tươi 200gr",
+      "unit": "gói",
+      "price": 321
+    },
+    {
+      "code": "SATE01",
+      "name": "Sate",
+      "unit": "chai",
+      "price": 139
+    },
+    {
+      "code": "SDUA01",
+      "name": "Sữa Dừa Aroy-D 11",
+      "unit": "hộp",
+      "price": 375
+    },
+    {
+      "code": "TACHU1",
+      "name": "Tai Chua 200gr",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "THLH01",
+      "name": "Thạch Long Hải",
+      "unit": "gói",
+      "price": 161
+    },
+    {
+      "code": "THNC01",
+      "name": "Thạch New Choice",
+      "unit": "gói",
+      "price": 161
+    },
+    {
+      "code": "THSC01",
+      "name": "Thạch Sữa Chua Natty",
+      "unit": "gói",
+      "price": 161
+    },
+    {
+      "code": "THQUA1",
+      "name": "Thảo Quả 100gr",
+      "unit": "gói",
+      "price": 214
+    },
+    {
+      "code": "THULA1",
+      "name": "Thuốc Lá Thăng Long",
+      "unit": "gói",
+      "price": 134
+    },
+    {
+      "code": "TIBOT1",
+      "name": "Tiêu Bột 200gr Vietnam",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "TIHAT1",
+      "name": "Tiêu Hạt 200gr Vietnam",
+      "unit": "gói",
+      "price": 268
+    },
+    {
+      "code": "TUBAN1",
+      "name": "Tương Bần 500ml",
+      "unit": "chai",
+      "price": 214
+    },
+    {
+      "code": "TUOT01",
+      "name": "Tương Ớt Chinsu",
+      "unit": "chai",
+      "price": 161
+    },
+    {
+      "code": "TUOT02",
+      "name": "Tương Ớt phở Mai Phương 500ml",
+      "unit": "chai",
+      "price": 268
+    },
+    {
+      "code": "TUOT03",
+      "name": "Tương Ớt Tâm Đức 250ml Giống Chinsu",
+      "unit": "chai",
+      "price": 96
+    },
+    {
+      "code": "TUOT04",
+      "name": "Tương Ớt Uni-Eagle Sriracha Thái Lan 815ml",
+      "unit": "chai",
+      "price": 428
+    },
+    {
+      "code": "VIVP01",
+      "name": "Viên Vị Phở 112gr",
+      "unit": "gói",
+      "price": 96
+    },
+    {
+      "code": "VIVP02",
+      "name": "Viên Vị phở 75gr",
+      "unit": "gói",
+      "price": 80
+    },
+    {
+      "code": "VUDEN1",
+      "name": "Vừng Đen 200gr",
+      "unit": "gói",
+      "price": 128
+    },
+    {
+      "code": "VUTRA1",
+      "name": "Vừng Trằng 200gr",
+      "unit": "gói",
+      "price": 107
+    },
+    {
+      "code": "XIDAU1",
+      "name": "Xì Dầu Cua",
+      "unit": "chai",
+      "price": 375
+    },
+    {
+      "code": "XIDAU2",
+      "name": "Xì Dầu Hải Sản 0,5l",
+      "unit": "chai",
+      "price": 268
+    },
+    {
+      "code": "XIDAU3",
+      "name": "Xì Dầu Tôm 0,5l",
+      "unit": "chai",
+      "price": 268
+    }
+  ]
+}
