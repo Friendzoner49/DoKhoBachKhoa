@@ -211,8 +211,8 @@
     font-size: 0.75rem;
     text-align: center;
   }
-  /* Floating contact button */
-  #contact-fab {
+  /* Floating cart button */
+  #cart-fab {
     position: fixed;
     right: 16px;
     bottom: 16px;
@@ -223,12 +223,12 @@
     padding: 12px 18px;
     font-size: 0.9rem;
     font-weight: 600;
-    text-decoration: none;
+    cursor: pointer;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     z-index: 20;
   }
-  /* Product detail modal */
-  #modal-overlay {
+  /* Shared chrome for the product-detail sheet and the cart sheet */
+  .sheet-overlay {
     position: fixed;
     inset: 0;
     background: var(--overlay);
@@ -237,10 +237,10 @@
     justify-content: center;
     z-index: 30;
   }
-  #modal-overlay.open {
+  .sheet-overlay.open {
     display: flex;
   }
-  #modal-card {
+  .sheet-card {
     background: var(--card);
     border-radius: 16px 16px 0 0;
     width: 100%;
@@ -251,10 +251,10 @@
     position: relative;
   }
   @media (min-width: 560px) {
-    #modal-overlay { align-items: center; }
-    #modal-card { border-radius: 16px; }
+    .sheet-overlay { align-items: center; }
+    .sheet-card { border-radius: 16px; }
   }
-  #modal-close {
+  .sheet-close {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -266,6 +266,122 @@
     color: var(--text);
     font-size: 1.1rem;
     cursor: pointer;
+  }
+  /* Add-to-cart row inside the product modal */
+  #modal-cart-row[hidden] {
+    display: none;
+  }
+  #modal-cart-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .qty-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  #modal-qty {
+    width: 40px;
+    text-align: center;
+    font-weight: 600;
+  }
+  #modal-add-to-cart {
+    flex: 1;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  #modal-out-of-stock-note {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 10px;
+  }
+  /* Cart sheet */
+  #cart-list {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #cart-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+  }
+  #cart-list .cart-item-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.9rem;
+  }
+  #cart-list .cart-remove {
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  #cart-total {
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: right;
+    margin-bottom: 14px;
+  }
+  #cart-text {
+    width: 100%;
+    min-height: 110px;
+    font-family: inherit;
+    font-size: 0.82rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    background: var(--bg);
+    color: var(--text);
+    resize: vertical;
+    margin-bottom: 10px;
+  }
+  #cart-send[hidden] {
+    display: none;
+  }
+  #cart-send {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 13px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+  }
+  #cart-copy, #cart-clear {
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 8px;
   }
   #modal-image-wrap {
     width: 100%;
@@ -315,6 +431,12 @@
   #modal-stock-badge {
     margin-bottom: 8px;
   }
+  /* Same trap as #cat-grid/#list: .stock-badge's own "display" rule
+     (equal specificity, but an author rule beats the UA [hidden]
+     default) would otherwise keep this visible even while hidden. */
+  #modal-stock-badge[hidden] {
+    display: none;
+  }
   #modal-contact {
     display: block;
     text-align: center;
@@ -346,11 +468,11 @@
 </main>
 <footer>Giá tính bằng RUB, có thể thay đổi theo từng đợt hàng.</footer>
 
-<a id="contact-fab" href="#" target="_blank" rel="noopener">💬 Liên hệ đặt hàng</a>
+<button id="cart-fab" type="button">🛒 Giỏ hàng</button>
 
-<div id="modal-overlay">
-  <div id="modal-card">
-    <button id="modal-close" type="button" aria-label="Đóng">✕</button>
+<div id="modal-overlay" class="sheet-overlay">
+  <div id="modal-card" class="sheet-card">
+    <button id="modal-close" class="sheet-close" type="button" aria-label="Đóng">✕</button>
     <div id="modal-image-wrap"></div>
     <div id="modal-category"></div>
     <div id="modal-name"></div>
@@ -358,7 +480,29 @@
     <div id="modal-stock-badge" class="stock-badge" hidden>Tạm hết hàng</div>
     <div id="modal-price"></div>
     <div id="modal-bulk"></div>
+    <div id="modal-cart-row">
+      <button class="qty-btn" id="modal-qty-minus" type="button" aria-label="Giảm số lượng">−</button>
+      <span id="modal-qty">1</span>
+      <button class="qty-btn" id="modal-qty-plus" type="button" aria-label="Tăng số lượng">+</button>
+      <button id="modal-add-to-cart" type="button">Thêm vào giỏ hàng</button>
+    </div>
+    <p id="modal-out-of-stock-note" hidden>Mặt hàng tạm hết hàng, không thể thêm vào giỏ lúc này — liên hệ để hỏi khi có hàng trở lại.</p>
     <a id="modal-contact" href="#" target="_blank" rel="noopener">💬 Liên hệ đặt hàng qua Telegram</a>
+  </div>
+</div>
+
+<div id="cart-overlay" class="sheet-overlay">
+  <div id="cart-card" class="sheet-card">
+    <button id="cart-close" class="sheet-close" type="button" aria-label="Đóng">✕</button>
+    <h2 style="margin-top:0;">Giỏ hàng</h2>
+    <p id="cart-empty-note" class="empty" hidden>Giỏ hàng đang trống. Chọn mặt hàng và bấm "Thêm vào giỏ hàng".</p>
+    <ul id="cart-list"></ul>
+    <div id="cart-total" hidden></div>
+    <textarea id="cart-text" readonly hidden></textarea>
+    <a id="cart-send" href="#" target="_blank" rel="noopener" hidden>📨 Gửi đơn qua Telegram</a>
+    <button id="cart-copy" type="button" hidden>📋 Sao chép nội dung đơn hàng</button>
+    <button id="cart-clear" type="button" hidden>Xóa giỏ hàng</button>
+    <a id="cart-contact-fallback" href="#" target="_blank" rel="noopener">💬 Có câu hỏi khác? Liên hệ qua Telegram</a>
   </div>
 </div>
 
@@ -385,6 +529,36 @@
   // view: {mode: "home"} | {mode: "category", name} | {mode: "search", query}
   let view = { mode: "home" };
   let preSearchView = { mode: "home" }; // where to return to once the search box is cleared
+  let currentModalItem = null;
+  let modalQty = 1;
+
+  // Cart: {code: qty}, kept per-browser only (localStorage) -- there is
+  // no backend, so "checkout" means composing a Telegram message with
+  // one "CODE xQTY" line per item (shop.core.invoices can later parse
+  // that straight into a draft invoice, per CLAUDE.md's bot<->app plan).
+  const CART_STORAGE_KEY = "cart_v1";
+  let cart = {};
+
+  function loadCart() {
+    try {
+      const raw = localStorage.getItem(CART_STORAGE_KEY);
+      cart = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      cart = {};
+    }
+  }
+
+  function saveCart() {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    } catch (e) {
+      // private browsing / storage disabled: cart still works for this page view
+    }
+  }
+
+  function cartCount() {
+    return Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+  }
 
   function stripAccents(str) {
     return str.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase();
@@ -517,6 +691,8 @@
   }
 
   function openModal(item) {
+    currentModalItem = item;
+    modalQty = 1;
     const overlay = document.getElementById("modal-overlay");
     const imageWrap = document.getElementById("modal-image-wrap");
 
@@ -548,11 +724,150 @@
     }
     document.getElementById("modal-contact").href = CONTACT_URL;
 
+    const cartRow = document.getElementById("modal-cart-row");
+    const outOfStockNote = document.getElementById("modal-out-of-stock-note");
+    if (item.in_stock === false) {
+      cartRow.hidden = true;
+      outOfStockNote.hidden = false;
+    } else {
+      cartRow.hidden = false;
+      outOfStockNote.hidden = true;
+      updateModalQtyDisplay();
+    }
+
     overlay.classList.add("open");
   }
 
   function closeModal() {
     document.getElementById("modal-overlay").classList.remove("open");
+  }
+
+  function updateModalQtyDisplay() {
+    document.getElementById("modal-qty").textContent = String(modalQty);
+  }
+
+  function addCurrentItemToCart() {
+    if (!currentModalItem) return;
+    const code = currentModalItem.code;
+    cart[code] = (cart[code] || 0) + modalQty;
+    saveCart();
+    renderCartFab();
+    closeModal();
+  }
+
+  function renderCartFab() {
+    const count = cartCount();
+    document.getElementById("cart-fab").textContent = count > 0 ? `🛒 Giỏ hàng (${count})` : "🛒 Giỏ hàng";
+  }
+
+  function cartLines() {
+    return Object.entries(cart)
+      .map(([code, qty]) => ({ item: allItems.find((i) => i.code === code), code, qty }))
+      .filter((line) => line.item); // drop codes no longer in the published catalog
+  }
+
+  function buildOrderText(lines) {
+    const out = ["Đơn đặt hàng từ website:"];
+    let total = 0;
+    for (const { item, qty } of lines) {
+      out.push(`${item.code} x${qty} — ${item.name}`);
+      total += item.price * qty;
+    }
+    out.push("—");
+    out.push(`Tổng ước tính: ${numberFormat.format(total)} ₽`);
+    return { text: out.join("\n"), total };
+  }
+
+  function renderCart() {
+    const lines = cartLines();
+    const listEl = document.getElementById("cart-list");
+    const emptyNote = document.getElementById("cart-empty-note");
+    const totalEl = document.getElementById("cart-total");
+    const textEl = document.getElementById("cart-text");
+    const sendEl = document.getElementById("cart-send");
+    const copyBtn = document.getElementById("cart-copy");
+    const clearBtn = document.getElementById("cart-clear");
+
+    listEl.innerHTML = "";
+    if (lines.length === 0) {
+      emptyNote.hidden = false;
+      totalEl.hidden = true;
+      textEl.hidden = true;
+      sendEl.hidden = true;
+      copyBtn.hidden = true;
+      clearBtn.hidden = true;
+      return;
+    }
+    emptyNote.hidden = true;
+
+    for (const { item, code, qty } of lines) {
+      const li = document.createElement("li");
+      const name = document.createElement("div");
+      name.className = "cart-item-name";
+      name.textContent = `${item.name} (${item.code})`;
+      const minus = document.createElement("button");
+      minus.className = "qty-btn";
+      minus.type = "button";
+      minus.textContent = "−";
+      minus.addEventListener("click", () => {
+        cart[code] = Math.max(0, cart[code] - 1);
+        if (cart[code] === 0) delete cart[code];
+        saveCart();
+        renderCartFab();
+        renderCart();
+      });
+      const qtyLabel = document.createElement("span");
+      qtyLabel.textContent = String(qty);
+      qtyLabel.style.minWidth = "24px";
+      qtyLabel.style.textAlign = "center";
+      qtyLabel.style.fontWeight = "600";
+      const plus = document.createElement("button");
+      plus.className = "qty-btn";
+      plus.type = "button";
+      plus.textContent = "+";
+      plus.addEventListener("click", () => {
+        cart[code] = cart[code] + 1;
+        saveCart();
+        renderCartFab();
+        renderCart();
+      });
+      const remove = document.createElement("button");
+      remove.className = "cart-remove";
+      remove.type = "button";
+      remove.textContent = "✕";
+      remove.setAttribute("aria-label", `Xóa ${item.name} khỏi giỏ`);
+      remove.addEventListener("click", () => {
+        delete cart[code];
+        saveCart();
+        renderCartFab();
+        renderCart();
+      });
+      li.appendChild(name);
+      li.appendChild(minus);
+      li.appendChild(qtyLabel);
+      li.appendChild(plus);
+      li.appendChild(remove);
+      listEl.appendChild(li);
+    }
+
+    const { text, total } = buildOrderText(lines);
+    totalEl.hidden = false;
+    totalEl.textContent = `Tổng ước tính: ${numberFormat.format(total)} ₽`;
+    textEl.hidden = false;
+    textEl.value = text;
+    sendEl.hidden = false;
+    sendEl.href = `${CONTACT_URL}?text=${encodeURIComponent(text)}`;
+    copyBtn.hidden = false;
+    clearBtn.hidden = false;
+  }
+
+  function openCart() {
+    renderCart();
+    document.getElementById("cart-overlay").classList.add("open");
+  }
+
+  function closeCart() {
+    document.getElementById("cart-overlay").classList.remove("open");
   }
 
   function buildCategories(items) {
@@ -576,7 +891,9 @@
   }
 
   async function main() {
-    document.getElementById("contact-fab").href = CONTACT_URL;
+    loadCart();
+    renderCartFab();
+    document.getElementById("cart-contact-fallback").href = CONTACT_URL;
 
     let data;
     try {
@@ -616,6 +933,46 @@
     document.getElementById("modal-close").addEventListener("click", closeModal);
     document.getElementById("modal-overlay").addEventListener("click", (e) => {
       if (e.target.id === "modal-overlay") closeModal();
+    });
+
+    document.getElementById("modal-qty-minus").addEventListener("click", () => {
+      modalQty = Math.max(1, modalQty - 1);
+      updateModalQtyDisplay();
+    });
+    document.getElementById("modal-qty-plus").addEventListener("click", () => {
+      modalQty += 1;
+      updateModalQtyDisplay();
+    });
+    document.getElementById("modal-add-to-cart").addEventListener("click", addCurrentItemToCart);
+
+    document.getElementById("cart-fab").addEventListener("click", openCart);
+    document.getElementById("cart-close").addEventListener("click", closeCart);
+    document.getElementById("cart-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "cart-overlay") closeCart();
+    });
+    document.getElementById("cart-copy").addEventListener("click", async () => {
+      const textEl = document.getElementById("cart-text");
+      const copyBtn = document.getElementById("cart-copy");
+      try {
+        await navigator.clipboard.writeText(textEl.value);
+        copyBtn.textContent = "Đã sao chép!";
+      } catch (e) {
+        // Clipboard API unavailable (older browser, non-HTTPS, permissions) --
+        // the textarea above is always visible, so the user can still
+        // select-all and copy by hand.
+        textEl.focus();
+        textEl.select();
+        copyBtn.textContent = "Hãy tự bôi đen & copy ở trên";
+      }
+      setTimeout(() => {
+        copyBtn.textContent = "📋 Sao chép nội dung đơn hàng";
+      }, 2000);
+    });
+    document.getElementById("cart-clear").addEventListener("click", () => {
+      cart = {};
+      saveCart();
+      renderCartFab();
+      renderCart();
     });
   }
 
