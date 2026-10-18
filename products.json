@@ -1,96 +1,126 @@
 {
-  "updated_at": "2026-10-18T09:54:32+00:00",
+  "updated_at": "2026-10-18T21:42:34+00:00",
   "currency": "RUB",
   "items": [
     {
       "code": "BADAM1",
       "name": "Bánh Đa Mè 350gr",
       "unit": "gói",
-      "price": 375
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 375,
+      "image": "images/BADAM1.jpg?v=982dbf8e"
     },
     {
       "code": "BADAT1",
       "name": "Bánh Đa Nem Tròn Hà Nội 200gr",
       "unit": "gói",
-      "price": 134
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 134,
+      "image": "images/BADAT1.jpg?v=dd970c0f"
     },
     {
       "code": "BADAV1",
       "name": "Bánh Đa Nem Vuông Thanh Thủy",
       "unit": "gói",
-      "price": 134
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 134,
+      "image": "images/BADAV1.jpg?v=e38f7e10"
     },
     {
       "code": "BDX001",
       "name": "Bánh Đậu Xanh (Khoai Môn, Dừa, Gấc, Matcha)",
       "unit": "gói",
-      "price": 268
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 268,
+      "image": "images/BDX001.jpg?v=e66c2a35"
     },
     {
       "code": "BDXCLS",
       "name": "Bánh Đậu Xanh Klasic",
       "unit": "gói",
-      "price": 268
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 268,
+      "image": "images/BDXCLS.jpg?v=aa36affd"
     },
     {
       "code": "BGAO01",
       "name": "Bánh Gạo Ichi",
       "unit": "gói",
-      "price": 203
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 203,
+      "image": "images/BGAO01.jpg?v=483665e7"
     },
     {
       "code": "BGAO02",
       "name": "Bánh Gạo Mặt One One",
       "unit": "gói",
-      "price": 182
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 182,
+      "image": "images/BGAO02.jpg?v=63684c40"
     },
     {
       "code": "BGAO03",
       "name": "Bánh Gạo Ngô Pho Mai One One",
       "unit": "gói",
-      "price": 193
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 193,
+      "image": "images/BGAO03.jpg?v=63684c40"
     },
     {
       "code": "BGAO04",
       "name": "Bánh Gạo Ngọt One One",
       "unit": "gói",
-      "price": 182
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 182,
+      "image": "images/BGAO04.jpg?v=216f86d1"
     },
     {
       "code": "BLAI01",
       "name": "Bánh Lai Phú Vị (Khoai Môn, Chanh Leo, Xoài, Dâu Tây, Sầu Riêng, Cam) Tặng Thầy Cô",
       "unit": "gói",
-      "price": 321
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 321,
+      "image": "images/BLAI01.jpg?v=12e62413"
     },
     {
       "code": "BTRA01",
       "name": "Bánh Tráng Safoco 22cm 300gr",
       "unit": "gói",
-      "price": 214
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 214,
+      "image": "images/BTRA01.jpg?v=a9688c79"
     },
     {
       "code": "BOBC01",
       "name": "Bột Bánh Cuốn 400gr",
       "unit": "gói",
-      "price": 198
+      "category": "Bột & nguyên liệu làm bánh",
+      "price": 198,
+      "image": "images/BOBC01.jpg?v=d2da39aa"
     },
     {
       "code": "BOBX01",
       "name": "Bột Bánh Xèo 400gr",
       "unit": "gói",
-      "price": 198
+      "category": "Bột & nguyên liệu làm bánh",
+      "price": 198,
+      "image": "images/BOBX01.jpg?v=957f02e6"
     },
     {
       "code": "BOCC01",
       "name": "Bột Cacao Nguyên Chất 375gr",
       "unit": "hộp",
-      "price": 428
+      "category": "Cà phê, trà, đồ uống",
+      "price": 428,
+      "image": "images/BOCC01.jpg?v=16e29634"
     },
     {
       "code": "BOCA01",
       "name": "Bột Canh Hải Châu 190gr",
       "unit": "gói",
+      "category": "Gia vị, nước mắm, nước chấm",
       "price": 43,
+      "image": "images/BOCA01.jpg?v=e7efc4b1",
       "bulk_qty": 5.0,
       "bulk_price": 211
     },
@@ -98,241 +128,321 @@
       "code": "BOCG01",
       "name": "Bột Chiên Giòn 1 Kg",
       "unit": "gói",
-      "price": 268
+      "category": "Bột & nguyên liệu làm bánh",
+      "price": 268,
+      "image": "images/BOCG01.jpg?v=e6db126f"
     },
     {
       "code": "BOCX01",
       "name": "Bột Chiên Xù 1 Kg",
       "unit": "gói",
-      "price": 268
+      "category": "Bột & nguyên liệu làm bánh",
+      "price": 268,
+      "image": "images/BOCX01.jpg?v=2a574016"
     },
     {
       "code": "BONA01",
       "name": "Bột Năng 400gr",
       "unit": "gói",
-      "price": 214
+      "category": "Bột & nguyên liệu làm bánh",
+      "price": 214,
+      "image": "images/BONA01.jpg?v=dd6b79e8"
     },
     {
       "code": "BONE01",
       "name": "Bột Nếp 400gr",
       "unit": "gói",
-      "price": 198
+      "category": "Bột & nguyên liệu làm bánh",
+      "price": 198,
+      "image": "images/BONE01.jpg?v=848cf6fb"
     },
     {
       "code": "BONC01",
       "name": "Bột Ngũ Cốc 500gr",
       "unit": "gói",
-      "price": 375
+      "category": "Bột & nguyên liệu làm bánh",
+      "price": 375,
+      "image": "images/BONC01.jpg?v=4306f0c3"
     },
     {
       "code": "BONV01",
       "name": "Bột Ngũ Vị Hương",
       "unit": "gói",
-      "price": 21
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 21,
+      "image": "images/BONV01.jpg?v=93d30b09"
     },
     {
       "code": "BOQU01",
       "name": "Bột Quẩy 400gr",
       "unit": "gói",
-      "price": 198
+      "category": "Bột & nguyên liệu làm bánh",
+      "price": 198,
+      "image": "images/BOQU01.jpg?v=4c231053"
     },
     {
       "code": "BORC01",
       "name": "Bột Rau Câu Con Cá Dẻo",
       "unit": "gói",
-      "price": 91
+      "category": "Bột & nguyên liệu làm bánh",
+      "price": 91,
+      "image": "images/BORC01.jpg?v=fb7c3668"
     },
     {
       "code": "BOSS01",
       "name": "Bột Sương Sáo",
       "unit": "gói",
-      "price": 107
+      "category": "Bột & nguyên liệu làm bánh",
+      "price": 107,
+      "image": "images/BOSS01.jpg?v=9ac93438"
     },
     {
       "code": "BUN03",
       "name": "Bún khô Hà Nội",
       "unit": "gói",
-      "price": 144
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 144,
+      "image": "images/BUN03.jpg?v=ae4bf0a4"
     },
     {
       "code": "BUN02",
       "name": "Bún Tươi Safoco 300gr",
       "unit": "gói",
-      "price": 139
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 139,
+      "image": "images/BUN02.jpg?v=565278af"
     },
     {
       "code": "BUN01",
       "name": "Bún Tươi Thanh Loc 500gr",
       "unit": "gói",
-      "price": 161
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 161,
+      "image": "images/BUN01.jpg?v=077cabf0"
     },
     {
       "code": "CABS01",
       "name": "Cá Basa",
       "unit": "kg",
-      "price": 321
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 321,
+      "image": "images/CABS01.jpg?v=3bb4b454"
     },
     {
       "code": "CP0001",
       "name": "Cà Pháo Ngọc Liên",
       "unit": "hộp",
-      "price": 187
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 187,
+      "image": "images/CP0001.jpg?v=c6a7fe0b"
     },
     {
       "code": "CPT001",
       "name": "Cà Pháo Tôm Ngọc Liên",
       "unit": "hộp",
-      "price": 198
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 198,
+      "image": "images/CPT001.jpg?v=075f28ba"
     },
     {
       "code": "CAFE01",
       "name": "Café Arabica Me Trang Hạt 500gr",
       "unit": "hộp",
-      "price": 1070
+      "category": "Cà phê, trà, đồ uống",
+      "price": 1070,
+      "image": "images/CAFE01.jpg?v=c4969c24"
     },
     {
       "code": "CAFE02",
       "name": "Café Chon Me Trang Hạt 500gr",
       "unit": "hộp",
-      "price": 1391
+      "category": "Cà phê, trà, đồ uống",
+      "price": 1391,
+      "image": "images/CAFE02.jpg?v=7c6b0fa3"
     },
     {
       "code": "CAFE03",
       "name": "Café Culi Me Trang Hạt 500gr",
       "unit": "hộp",
-      "price": 1070
+      "category": "Cà phê, trà, đồ uống",
+      "price": 1070,
+      "image": "images/CAFE03.jpg?v=6f03546b"
     },
     {
       "code": "CAFE04",
       "name": "Café G7 2 In 1",
       "unit": "hộp",
-      "price": 300
+      "category": "Cà phê, trà, đồ uống",
+      "price": 300,
+      "image": "images/CAFE04.jpg?v=7732b94f"
     },
     {
       "code": "CAFE05",
       "name": "Café G7 3 In 1 (18 Gói)",
       "unit": "hộp",
-      "price": 375
+      "category": "Cà phê, trà, đồ uống",
+      "price": 375,
+      "image": "images/CAFE05.jpg?v=725c4516"
     },
     {
       "code": "CAFE06",
       "name": "Café G7 3 In 1 (21 Gói)",
       "unit": "hộp",
-      "price": 321
+      "category": "Cà phê, trà, đồ uống",
+      "price": 321,
+      "image": "images/CAFE06.jpg?v=725c4516"
     },
     {
       "code": "CAFE07",
       "name": "Café G7 Cappuchino",
       "unit": "hộp",
-      "price": 321
+      "category": "Cà phê, trà, đồ uống",
+      "price": 321,
+      "image": "images/CAFE07.jpg?v=35f12c36"
     },
     {
       "code": "CAFE08",
       "name": "Café Ocean Blue Me Trang Hạt 500gr",
       "unit": "hộp",
-      "price": 1070
+      "category": "Cà phê, trà, đồ uống",
+      "price": 1070,
+      "image": "images/CAFE08.jpg?v=1b729719"
     },
     {
       "code": "CAFE09",
       "name": "Café Phin Chon Me Trang 250gr",
       "unit": "hộp",
-      "price": 642
+      "category": "Cà phê, trà, đồ uống",
+      "price": 642,
+      "image": "images/CAFE09.jpg?v=98d6e004"
     },
     {
       "code": "CAFE10",
       "name": "Café Trung Nguyên Số 3",
       "unit": "hộp",
-      "price": 514
+      "category": "Cà phê, trà, đồ uống",
+      "price": 514,
+      "image": "images/CAFE10.jpg?v=6f14c0bc"
     },
     {
       "code": "CAFE11",
       "name": "Café Trung Nguyên Số 5",
       "unit": "hộp",
-      "price": 589
+      "category": "Cà phê, trà, đồ uống",
+      "price": 589,
+      "image": "images/CAFE11.jpg?v=bafea1e4"
     },
     {
       "code": "CHAO1",
       "name": "Cháo Các Vị (Gà, Sườn, Thịt Băm, Bò)",
       "unit": "gói",
-      "price": 59
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 59,
+      "image": "images/CHAO1.jpg?v=c2858eb9"
     },
     {
       "code": "CHNV01",
       "name": "Chao Nấu Vit 1,6 Kg",
       "unit": "hộp",
-      "price": 556
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 556,
+      "image": "images/CHNV01.jpg?v=7730ae19"
     },
     {
       "code": "CHETN1",
       "name": "Chè Thái Nguyen 200gr",
       "unit": "hộp",
-      "price": 235
+      "category": "Cà phê, trà, đồ uống",
+      "price": 235,
+      "image": "images/CHETN1.jpg?v=36c6f830"
     },
     {
       "code": "CHETN2",
       "name": "Chè Thái Nguyen 500gr",
       "unit": "hộp",
-      "price": 1070
+      "category": "Cà phê, trà, đồ uống",
+      "price": 1070,
+      "image": "images/CHETN2.jpg?v=9da9b547"
     },
     {
       "code": "DAUDE1",
       "name": "Đậu Đen 0.5 Kg",
       "unit": "gói",
-      "price": 214
+      "category": "Đậu, hạt, vừng, lạc",
+      "price": 214,
+      "image": "images/DAUDE1.jpg?v=37fa53eb"
     },
     {
       "code": "DAUHA1",
       "name": "Dầu Hào Prb 2.4l",
       "unit": "chai",
-      "price": 749
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 749,
+      "image": "images/DAUHA1.jpg?v=23484880"
     },
     {
       "code": "DAUHA2",
       "name": "Dầu Hào Prb 500gr",
       "unit": "chai",
-      "price": 214
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 214,
+      "image": "images/DAUHA2.jpg?v=23484880"
     },
     {
       "code": "DAUME1",
       "name": "Dầu Mè 420ml",
       "unit": "chai",
-      "price": 375
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 375,
+      "image": "images/DAUME1.jpg?v=1fcf4df6"
     },
     {
       "code": "DAUN01",
       "name": "Đậu Nành, Kg",
       "unit": "kg",
-      "price": 86
+      "category": "Đậu, hạt, vừng, lạc",
+      "price": 86,
+      "image": "images/DAUN01.jpg?v=6769c202"
     },
     {
       "code": "DAUXA1",
       "name": "Đậu Xanh Không Vỏ 0.5 Kg",
       "unit": "gói",
-      "price": 235
+      "category": "Đậu, hạt, vừng, lạc",
+      "price": 235,
+      "image": "images/DAUXA1.jpg?v=5746f011"
     },
     {
       "code": "DAUXA2",
       "name": "Đậu Xanh Vỏ 1 Kg",
       "unit": "gói",
-      "price": 235
+      "category": "Đậu, hạt, vừng, lạc",
+      "price": 235,
+      "image": "images/DAUXA2.jpg?v=6f481eb8"
     },
     {
       "code": "DIHU01",
       "name": "Đinh Hương 100gr",
       "unit": "gói",
-      "price": 214
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 214,
+      "image": "images/DIHU01.jpg?v=57897b74"
     },
     {
       "code": "GAC001",
       "name": "Gấc Đông Đá 1 Kg",
       "unit": "gói",
-      "price": 1070
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 1070,
+      "image": "images/GAC001.jpg?v=c75d6f88"
     },
     {
       "code": "GAO001",
       "name": "Gạo Jasmin Aroy-D Thái Lan 4,5 Kg",
       "unit": "KG",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 297,
+      "image": "images/GAO001.jpg?v=bbf467f4",
       "bulk_qty": 4.5,
       "bulk_price": 1310
     },
@@ -340,7 +450,9 @@
       "code": "GAO002",
       "name": "Gạo Jasmin St25 Vietnam 5Kg",
       "unit": "KG",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 289,
+      "image": "images/GAO002.jpg?v=da20de78",
       "bulk_qty": 5.0,
       "bulk_price": 1416
     },
@@ -348,19 +460,25 @@
       "code": "GAO003",
       "name": "Gạo Nếp Cẩm Thái Lan Organic",
       "unit": "KG",
-      "price": 268
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 268,
+      "image": "images/GAO003.jpg?v=e6fec440"
     },
     {
       "code": "GAO004",
       "name": "Gạo Nếp Thanh Lộc 1 Kg",
       "unit": "KG",
-      "price": 268
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 268,
+      "image": "images/GAO004.jpg?v=e45928f6"
     },
     {
       "code": "GAO005",
       "name": "Gạo Tròn Kuban Loại 1 25 Kg",
       "unit": "KG",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 118,
+      "image": "images/GAO005.jpg?v=b5a0d468",
       "bulk_qty": 25.0,
       "bulk_price": 2891
     },
@@ -368,217 +486,288 @@
       "code": "GIAVI1",
       "name": "Gia Vị Knorr",
       "unit": "gói",
-      "price": 214
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 214,
+      "image": "images/GIAVI1.jpg?v=05cd5ede"
     },
     {
       "code": "GIAVI2",
       "name": "Gia Vị Lẩu Thái",
       "unit": "gói",
-      "price": 128
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 128,
+      "image": "images/GIAVI2.jpg?v=778456c5"
     },
     {
       "code": "GLAUB1",
       "name": "Gói Lẩu Bò 150gr",
       "unit": "gói",
-      "price": 193
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 193,
+      "image": "images/GLAUB1.jpg?v=32fd69d1"
     },
     {
       "code": "GLAUH1",
       "name": "Gói Lẩu Hải Sản 150gr",
       "unit": "gói",
-      "price": 193
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 193,
+      "image": "images/GLAUH1.jpg?v=30b6d005"
     },
     {
       "code": "HANKO1",
       "name": "Hành Khô 0.5 Kg",
       "unit": "gói",
-      "price": 428
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 428,
+      "image": "images/HANKO1.jpg?v=d2d5ff66"
     },
     {
       "code": "HANKR1",
       "name": "Hạt nêm Knorr 900g",
       "unit": "gói",
-      "price": 482
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 482,
+      "image": "images/HANKR1.jpg?v=be27afb4"
     },
     {
       "code": "HQUA01",
       "name": "Hoa Quả Sấy",
       "unit": "gói",
-      "price": 428
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 428,
+      "image": "images/HQUA01.jpg?v=2c7d61c1"
     },
     {
       "code": "HOI001",
       "name": "Hồi 100gr",
       "unit": "gói",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/HOI001.jpg?v=59f75902"
     },
     {
       "code": "KEGA01",
       "name": "Kê Gà",
       "unit": "kg",
+      "category": "Rau, củ, nấm & thực phẩm tươi",
       "price": 246
     },
     {
       "code": "KEO001",
       "name": "Kẹo Dồi",
       "unit": "gói",
-      "price": 375
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 375,
+      "image": "images/KEO001.jpg?v=16d36673"
     },
     {
       "code": "KEO002",
       "name": "Kẹo Thạnh Zai Zai 350gr",
       "unit": "gói",
-      "price": 268
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 268,
+      "image": "images/KEO002.jpg?v=341a2d2e"
     },
     {
       "code": "KEO003",
       "name": "Kẹo Trái Cây Nhiệt Đới",
       "unit": "gói",
-      "price": 268
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 268,
+      "image": "images/KEO003.jpg?v=b1fe53bb"
     },
     {
       "code": "KEO004",
       "name": "Kẹo Trân Châu",
       "unit": "gói",
-      "price": 268
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 268,
+      "image": "images/KEO004.jpg?v=17bac51f"
     },
     {
       "code": "KEO005",
       "name": "Lạc Nhân Ấn Độ 500gr",
       "unit": "gói",
-      "price": 182
+      "category": "Đậu, hạt, vừng, lạc",
+      "price": 182,
+      "image": "images/KEO005.jpg?v=fc252f76"
     },
     {
       "code": "KEO006",
       "name": "Lạc Nhân Thanh Loc 500gr",
       "unit": "gói",
-      "price": 246
+      "category": "Đậu, hạt, vừng, lạc",
+      "price": 246,
+      "image": "images/KEO006.jpg?v=3e3a1dde"
     },
     {
       "code": "LGM001",
       "name": "Lao Gan Ma",
       "unit": "chai",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/LGM001.jpg?v=7ca6b052"
     },
     {
       "code": "MAM001",
       "name": "Mắm 584 20% Độ Đạm 500ml",
       "unit": "chai",
-      "price": 428
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 428,
+      "image": "images/MAM001.jpg?v=21a68922"
     },
     {
       "code": "MAM002",
       "name": "Mắm Aroy D 700ml",
       "unit": "chai",
-      "price": 321
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 321,
+      "image": "images/MAM002.jpg?v=af2a9ef6"
     },
     {
       "code": "MAM003",
       "name": "Mắm Cá Hồng Thủy Sản Việt 1l",
       "unit": "chai",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/MAM003.jpg?v=96376aa5"
     },
     {
       "code": "MAM004",
       "name": "Mắm Chinsu Thủy Tinh 500ml",
       "unit": "chai",
-      "price": 375
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 375,
+      "image": "images/MAM004.jpg?v=b6701f54"
     },
     {
       "code": "MAM005",
       "name": "Mắm Mực Thái Lan 700ml",
       "unit": "chai",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/MAM005.jpg?v=7e044e59"
     },
     {
       "code": "MAM006",
       "name": "Mắm Nêm",
       "unit": "chai",
-      "price": 161
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 161,
+      "image": "images/MAM006.jpg?v=8b6cb168"
     },
     {
       "code": "MAM007",
       "name": "Mắm Tôm 200ml",
       "unit": "chai",
-      "price": 118
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 118,
+      "image": "images/MAM007.jpg?v=b71ac9e4"
     },
     {
       "code": "MANG01",
       "name": "Măng Tươi",
       "unit": "túi",
-      "price": 300
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 300,
+      "image": "images/MANG01.jpg?v=2d458685"
     },
     {
       "code": "MECHU1",
       "name": "Me Chua Thái 454gr",
       "unit": "chai",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/MECHU1.jpg?v=b18929ef"
     },
     {
       "code": "MIEN01",
       "name": "Miến Đùi Gà Thanh Thủy",
       "unit": "gói",
-      "price": 214
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 214,
+      "image": "images/MIEN01.jpg?v=d5282f18"
     },
     {
       "code": "MIEN02",
       "name": "Miến Khoai Lang (Ngon)",
       "unit": "gói",
-      "price": 214
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 214,
+      "image": "images/MIEN02.jpg?v=fe49c20c"
     },
     {
       "code": "MIEN03",
       "name": "Miến Mộc Thanh Lộc 500gr",
       "unit": "gói",
-      "price": 214
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 214,
+      "image": "images/MIEN03.jpg?v=f637b482"
     },
     {
       "code": "MIEN04",
       "name": "Miến Mọc Truong Quan 500g",
       "unit": "gói",
-      "price": 214
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 214,
+      "image": "images/MIEN04.jpg?v=2f3bccd7"
     },
     {
       "code": "MITSAY",
       "name": "Mít Sấy",
       "unit": "gói",
-      "price": 428
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 428,
+      "image": "images/MITSAY.jpg?v=8e9a9fb5"
     },
     {
       "code": "MONHI1",
       "name": "Mọc Nhĩ 1 Kg",
       "unit": "kg",
-      "price": 1605
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 1605,
+      "image": "images/MONHI1.jpg?v=71908ce9"
     },
     {
       "code": "MYCHI1",
       "name": "Mỳ Chính Ajinomoto 1 Kg",
       "unit": "gói",
-      "price": 321
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 321,
+      "image": "images/MYCHI1.jpg?v=5cf9c010"
     },
     {
       "code": "MYCHI2",
       "name": "Mỳ Chính Ajinomoto 454gr Malaysia",
       "unit": "gói",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/MYCHI2.jpg?v=7d8ec4de"
     },
     {
       "code": "MYF001",
       "name": "Mỳ Chũ Classic",
       "unit": "gói",
-      "price": 214
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 214,
+      "image": "images/MYF001.jpg?v=584f338f"
     },
     {
       "code": "MYF002",
       "name": "Mỳ Chũ Rau Củ Quả",
       "unit": "gói",
-      "price": 177
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 177,
+      "image": "images/MYF002.jpg?v=fa89f086"
     },
     {
       "code": "MT0001",
       "name": "Mỳ Tôm Cung Đình Vị Tôm Chua Cay",
       "unit": "gói",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 59,
+      "image": "images/MT0001.jpg?v=27f4c22d",
       "bulk_qty": 30.0,
       "bulk_price": 1735
     },
@@ -586,7 +775,9 @@
       "code": "MT0002",
       "name": "Mỳ Tôm Hảo Hảo",
       "unit": "gói",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 46,
+      "image": "images/MT0002.jpg?v=1827fd95",
       "bulk_qty": 30.0,
       "bulk_price": 1352
     },
@@ -594,7 +785,9 @@
       "code": "MT0003",
       "name": "Mỳ Tôm Lẩu Thái Gói",
       "unit": "gói",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 57,
+      "image": "images/MT0003.jpg?v=59abfeb1",
       "bulk_qty": 30.0,
       "bulk_price": 1676
     },
@@ -602,7 +795,9 @@
       "code": "MT0004",
       "name": "Mỳ Tôm Omachi Bò",
       "unit": "gói",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 59,
+      "image": "images/MT0004.jpg?v=573ade48",
       "bulk_qty": 30.0,
       "bulk_price": 1735
     },
@@ -610,7 +805,9 @@
       "code": "MT0005",
       "name": "Mỳ Tôm Omachi Heo",
       "unit": "gói",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 59,
+      "image": "images/MT0005.jpg?v=5c861b88",
       "bulk_qty": 30.0,
       "bulk_price": 1735
     },
@@ -618,7 +815,9 @@
       "code": "MT0006",
       "name": "Mỳ Tôm Omachi Tôm",
       "unit": "gói",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 59,
+      "image": "images/MT0006.jpg?v=f10ffdba",
       "bulk_qty": 30.0,
       "bulk_price": 1735
     },
@@ -626,7 +825,9 @@
       "code": "MT0007",
       "name": "Mỳ Vifon Đa Cua",
       "unit": "gói",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 59,
+      "image": "images/MT0007.jpg?v=89f5e621",
       "bulk_qty": 30.0,
       "bulk_price": 1735
     },
@@ -634,7 +835,9 @@
       "code": "MT0008",
       "name": "Mỳ Vifon phở Túi 65gr phở Bò",
       "unit": "gói",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 59,
+      "image": "images/MT0008.jpg?v=4dfdaad6",
       "bulk_qty": 30.0,
       "bulk_price": 1735
     },
@@ -642,7 +845,9 @@
       "code": "MT0009",
       "name": "Mỳ Vifon Phở Túi 65gr Phở Gà",
       "unit": "gói",
+      "category": "Gạo, bún, miến, mì, phở",
       "price": 59,
+      "image": "images/MT0009.jpg?v=20c49a45",
       "bulk_qty": 30.0,
       "bulk_price": 1735
     },
@@ -650,253 +855,337 @@
       "code": "NAMH01",
       "name": "Nấm Hương 100gr",
       "unit": "gói",
-      "price": 268
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 268,
+      "image": "images/NAMH01.jpg?v=07db0888"
     },
     {
       "code": "NAMT01",
       "name": "Nấm Trắng",
       "unit": "gói",
-      "price": 54
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 54,
+      "image": "images/NAMT01.jpg?v=719afdaf"
     },
     {
       "code": "NOICOM",
       "name": "Nồi Cơm Điện Nhỏ Vietnam",
       "unit": "cái",
-      "price": 4815
+      "category": "Đồ gia dụng & khác",
+      "price": 4815,
+      "image": "images/NOICOM.jpg?v=5af6aedd"
     },
     {
       "code": "CODUA1",
       "name": "Nước Cốt Dừa Aroy-D 400ml",
       "unit": "hộp",
-      "price": 182
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 182,
+      "image": "images/CODUA1.jpg?v=90c2df33"
     },
     {
       "code": "CODUA2",
       "name": "Nước Cốt Dừa Wonderfarm 400ml",
       "unit": "hộp",
-      "price": 182
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 182,
+      "image": "images/CODUA2.jpg?v=df59a8f2"
     },
     {
       "code": "NMAU01",
       "name": "Nước Mầu Dừa 300ml",
       "unit": "chai",
-      "price": 161
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 161,
+      "image": "images/NMAU01.jpg?v=0568295b"
     },
     {
       "code": "NTUG01",
       "name": "Nước Tương Chinsu",
       "unit": "chai",
-      "price": 161
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 161,
+      "image": "images/NTUG01.jpg?v=d66e979d"
     },
     {
       "code": "NTUG02",
       "name": "Nước Tương Chinsu Tỏi Ớt",
       "unit": "chai",
-      "price": 139
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 139,
+      "image": "images/NTUG02.jpg?v=4d6bfc38"
     },
     {
       "code": "VINUT1",
       "name": "Nước Vinut 330ml Các Vị",
       "unit": "chai",
-      "price": 86
+      "category": "Cà phê, trà, đồ uống",
+      "price": 86,
+      "image": "images/VINUT1.jpg?v=a2b27282"
     },
     {
       "code": "OT0001",
       "name": "Ớt Bột Cay 0.5",
       "unit": "gói",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/OT0001.jpg?v=c7c90147"
     },
     {
       "code": "OT0002",
       "name": "Ớt Ngâm 180ml",
       "unit": "chai",
-      "price": 107
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 107,
+      "image": "images/OT0002.jpg?v=f451cac4"
     },
     {
       "code": "OT0003",
       "name": "Ớt Ngâm 500ml",
       "unit": "chai",
-      "price": 214
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 214,
+      "image": "images/OT0003.jpg?v=af7d3762"
     },
     {
       "code": "TOMYA1",
       "name": "Pasta Tom Zam 0.4 Kg",
       "unit": "hộp",
-      "price": 375
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 375,
+      "image": "images/TOMYA1.jpg?v=f16dc8c9"
     },
     {
       "code": "PHIN01",
       "name": "Phin Café Q7",
       "unit": "cái",
-      "price": 268
+      "category": "Cà phê, trà, đồ uống",
+      "price": 268,
+      "image": "images/PHIN01.jpg?v=bba25948"
     },
     {
       "code": "PHO001",
       "name": "Phở Tươi Thanh Lộc 500gr",
       "unit": "gói",
-      "price": 134
+      "category": "Gạo, bún, miến, mì, phở",
+      "price": 134,
+      "image": "images/PHO001.jpg?v=29fe8278"
     },
     {
       "code": "PHTOM1",
       "name": "Phồng Tôm Mầu 270gr",
       "unit": "gói",
-      "price": 128
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 128,
+      "image": "images/PHTOM1.jpg?v=a592e79e"
     },
     {
       "code": "PHTOM2",
       "name": "Phồng Tôm Sa Giang 200gr",
       "unit": "gói",
-      "price": 134
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 134,
+      "image": "images/PHTOM2.jpg?v=2fccc876"
     },
     {
       "code": "QUET01",
       "name": "Quế Thanh 100gr",
       "unit": "gói",
-      "price": 161
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 161,
+      "image": "images/QUET01.jpg?v=6d6e6ed2"
     },
     {
       "code": "RIENG1",
       "name": "Riềng Tươi 200gr",
       "unit": "gói",
-      "price": 321
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 321,
+      "image": "images/RIENG1.jpg?v=f394b329"
     },
     {
       "code": "SAT001",
       "name": "Sả Tươi 200gr",
       "unit": "gói",
-      "price": 321
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 321,
+      "image": "images/SAT001.jpg?v=7c5523f4"
     },
     {
       "code": "SATE01",
       "name": "Sate",
       "unit": "chai",
-      "price": 139
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 139,
+      "image": "images/SATE01.jpg?v=f8d53c7f"
     },
     {
       "code": "SDUA01",
       "name": "Sữa Dừa Aroy-D 11",
       "unit": "hộp",
-      "price": 375
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 375,
+      "image": "images/SDUA01.jpg?v=67b88fc4"
     },
     {
       "code": "TACHU1",
       "name": "Tai Chua 200gr",
       "unit": "gói",
-      "price": 214
+      "category": "Rau, củ, nấm & thực phẩm tươi",
+      "price": 214,
+      "image": "images/TACHU1.jpg?v=4e74286d"
     },
     {
       "code": "THLH01",
       "name": "Thạch Long Hải",
       "unit": "gói",
-      "price": 161
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 161,
+      "image": "images/THLH01.jpg?v=167f8955"
     },
     {
       "code": "THNC01",
       "name": "Thạch New Choice",
       "unit": "gói",
-      "price": 161
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 161,
+      "image": "images/THNC01.jpg?v=563888cc"
     },
     {
       "code": "THSC01",
       "name": "Thạch Sữa Chua Natty",
       "unit": "gói",
-      "price": 161
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 161,
+      "image": "images/THSC01.jpg?v=8ff3eb92"
     },
     {
       "code": "THQUA1",
       "name": "Thảo Quả 100gr",
       "unit": "gói",
-      "price": 214
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 214,
+      "image": "images/THQUA1.jpg?v=c7f3e9b9"
     },
     {
       "code": "THULA1",
       "name": "Thuốc Lá Thăng Long",
       "unit": "gói",
-      "price": 134
+      "category": "Đồ gia dụng & khác",
+      "price": 134,
+      "image": "images/THULA1.jpg?v=9eaa9845"
     },
     {
       "code": "TIBOT1",
       "name": "Tiêu Bột 200gr Vietnam",
       "unit": "gói",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/TIBOT1.jpg?v=6855996b"
     },
     {
       "code": "TIHAT1",
       "name": "Tiêu Hạt 200gr Vietnam",
       "unit": "gói",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/TIHAT1.jpg?v=14773c6d"
     },
     {
       "code": "TUBAN1",
       "name": "Tương Bần 500ml",
       "unit": "chai",
-      "price": 214
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 214,
+      "image": "images/TUBAN1.jpg?v=06f70880"
     },
     {
       "code": "TUOT01",
       "name": "Tương Ớt Chinsu",
       "unit": "chai",
-      "price": 161
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 161,
+      "image": "images/TUOT01.jpg?v=767f7461"
     },
     {
       "code": "TUOT02",
       "name": "Tương Ớt phở Mai Phương 500ml",
       "unit": "chai",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/TUOT02.jpg?v=001aaa8c"
     },
     {
       "code": "TUOT03",
       "name": "Tương Ớt Tâm Đức 250ml Giống Chinsu",
       "unit": "chai",
-      "price": 96
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 96,
+      "image": "images/TUOT03.jpg?v=11c8dc09"
     },
     {
       "code": "TUOT04",
       "name": "Tương Ớt Uni-Eagle Sriracha Thái Lan 815ml",
       "unit": "chai",
-      "price": 428
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 428,
+      "image": "images/TUOT04.jpg?v=2280fe15"
     },
     {
       "code": "VIVP01",
       "name": "Viên Vị Phở 112gr",
       "unit": "gói",
-      "price": 96
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 96,
+      "image": "images/VIVP01.jpg?v=c3188011"
     },
     {
       "code": "VIVP02",
       "name": "Viên Vị phở 75gr",
       "unit": "gói",
-      "price": 80
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 80,
+      "image": "images/VIVP02.jpg?v=2eabcad6"
     },
     {
       "code": "VUDEN1",
       "name": "Vừng Đen 200gr",
       "unit": "gói",
-      "price": 128
+      "category": "Đậu, hạt, vừng, lạc",
+      "price": 128,
+      "image": "images/VUDEN1.jpg?v=d9da9118"
     },
     {
       "code": "VUTRA1",
       "name": "Vừng Trằng 200gr",
       "unit": "gói",
-      "price": 107
+      "category": "Đậu, hạt, vừng, lạc",
+      "price": 107,
+      "image": "images/VUTRA1.jpg?v=f9bdc0c6"
     },
     {
       "code": "XIDAU1",
       "name": "Xì Dầu Cua",
       "unit": "chai",
-      "price": 375
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 375,
+      "image": "images/XIDAU1.jpg?v=ec071e05"
     },
     {
       "code": "XIDAU2",
       "name": "Xì Dầu Hải Sản 0,5l",
       "unit": "chai",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/XIDAU2.jpg?v=470305fa"
     },
     {
       "code": "XIDAU3",
       "name": "Xì Dầu Tôm 0,5l",
       "unit": "chai",
-      "price": 268
+      "category": "Gia vị, nước mắm, nước chấm",
+      "price": 268,
+      "image": "images/XIDAU3.jpg?v=2ad94396"
     }
   ]
 }

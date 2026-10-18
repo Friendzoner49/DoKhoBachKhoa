@@ -12,6 +12,7 @@
     --muted: #8a7f73;
     --accent: #b5542a;
     --border: #e8e0d6;
+    --overlay: rgba(20, 16, 12, 0.55);
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -21,6 +22,7 @@
       --muted: #a69a8c;
       --accent: #e08a5c;
       --border: #3a342e;
+      --overlay: rgba(0, 0, 0, 0.65);
     }
   }
   * { box-sizing: border-box; }
@@ -30,7 +32,7 @@
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     padding: 16px;
-    padding-bottom: 48px;
+    padding-bottom: 88px;
   }
   header {
     max-width: 720px;
@@ -51,6 +53,21 @@
     background: var(--bg);
     padding: 8px 0 12px;
     z-index: 10;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  #back-btn {
+    display: none;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 1.2rem;
+    cursor: pointer;
   }
   #search {
     width: 100%;
@@ -69,11 +86,52 @@
     max-width: 720px;
     margin: 0 auto;
   }
+  .section-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 4px 0 12px;
+  }
   .count {
     color: var(--muted);
     font-size: 0.85rem;
     margin: 4px 0 12px;
   }
+  /* Category grid (home view) */
+  ul.cat-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  /* [hidden] alone loses to the more specific display rules above/below
+     (id/class + type beats a bare attribute selector), so the grid and
+     the list would both stay visible at once without this. */
+  #cat-grid[hidden], #list[hidden] {
+    display: none;
+  }
+  li.cat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  li.cat-card:hover, li.cat-card:active {
+    border-color: var(--accent);
+  }
+  .cat-card-name {
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .cat-card-count {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+  /* Product list (category detail + search results) */
   ul.list {
     list-style: none;
     margin: 0;
@@ -91,6 +149,10 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
+    cursor: pointer;
+  }
+  li.item:hover, li.item:active {
+    border-color: var(--accent);
   }
   .item-info {
     /* Without this, a flex item's default min-width is its content's
@@ -136,6 +198,118 @@
     font-size: 0.75rem;
     text-align: center;
   }
+  /* Floating contact button */
+  #contact-fab {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    z-index: 20;
+  }
+  /* Product detail modal */
+  #modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 30;
+  }
+  #modal-overlay.open {
+    display: flex;
+  }
+  #modal-card {
+    background: var(--card);
+    border-radius: 16px 16px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 18px;
+    position: relative;
+  }
+  @media (min-width: 560px) {
+    #modal-overlay { align-items: center; }
+    #modal-card { border-radius: 16px; }
+  }
+  #modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  #modal-image-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 14px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  #modal-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #modal-category {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+  #modal-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+  #modal-unit {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+  #modal-price {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1.4rem;
+  }
+  #modal-bulk {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 2px;
+  }
+  #modal-contact {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 13px;
+    border-radius: 10px;
+  }
 </style>
 </head>
 <body>
@@ -145,38 +319,102 @@
 </header>
 <main>
   <div class="search-wrap">
+    <button id="back-btn" type="button" aria-label="Quay lại">←</button>
     <input id="search" type="text" placeholder="Tìm theo tên hàng hoặc mã..." autocomplete="off">
   </div>
+  <p class="section-title" id="section-title" hidden></p>
   <p class="count" id="count"></p>
-  <ul class="list" id="list"></ul>
+  <ul class="cat-grid" id="cat-grid" hidden></ul>
+  <ul class="list" id="list" hidden></ul>
   <p class="empty" id="empty" hidden>Không tìm thấy mặt hàng phù hợp.</p>
 </main>
 <footer>Giá tính bằng RUB, có thể thay đổi theo từng đợt hàng.</footer>
 
+<a id="contact-fab" href="#" target="_blank" rel="noopener">💬 Liên hệ đặt hàng</a>
+
+<div id="modal-overlay">
+  <div id="modal-card">
+    <button id="modal-close" type="button" aria-label="Đóng">✕</button>
+    <div id="modal-image-wrap"></div>
+    <div id="modal-category"></div>
+    <div id="modal-name"></div>
+    <div id="modal-unit"></div>
+    <div id="modal-price"></div>
+    <div id="modal-bulk"></div>
+    <a id="modal-contact" href="#" target="_blank" rel="noopener">💬 Liên hệ đặt hàng qua Telegram</a>
+  </div>
+</div>
+
 <script>
+  // Swap this one constant for the bot's deep link once it exists.
+  const CONTACT_URL = "https://t.me/friendzonerisme";
+
+  const CATEGORY_ORDER = [
+    "Gạo, bún, miến, mì, phở",
+    "Bột & nguyên liệu làm bánh",
+    "Gia vị, nước mắm, nước chấm",
+    "Rau, củ, nấm & thực phẩm tươi",
+    "Đậu, hạt, vừng, lạc",
+    "Cà phê, trà, đồ uống",
+    "Bánh kẹo & đồ ăn vặt",
+    "Đồ gia dụng & khác",
+  ];
+  const FALLBACK_CATEGORY = "Khác";
+
   const numberFormat = new Intl.NumberFormat("vi-VN");
+
+  let allItems = [];
+  let categories = []; // [{name, items}], in display order
+  // view: {mode: "home"} | {mode: "category", name} | {mode: "search", query}
+  let view = { mode: "home" };
+  let preSearchView = { mode: "home" }; // where to return to once the search box is cleared
 
   function stripAccents(str) {
     return str.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase();
   }
 
-  function render(items) {
-    const list = document.getElementById("list");
-    const empty = document.getElementById("empty");
-    const count = document.getElementById("count");
-    list.innerHTML = "";
-
-    if (items.length === 0) {
-      empty.hidden = false;
-      count.textContent = "";
-      return;
+  function priceLine(item) {
+    const right = document.createElement("div");
+    right.className = "item-price";
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent = `${numberFormat.format(item.price)} ₽`;
+    right.appendChild(price);
+    if (item.bulk_qty && item.bulk_price) {
+      const bulk = document.createElement("div");
+      bulk.className = "bulk";
+      bulk.textContent = `Sỉ ${item.bulk_qty}: ${numberFormat.format(item.bulk_price)} ₽`;
+      right.appendChild(bulk);
     }
-    empty.hidden = true;
-    count.textContent = `${items.length} mặt hàng`;
+    return right;
+  }
 
+  function renderCategoryGrid() {
+    const grid = document.getElementById("cat-grid");
+    grid.innerHTML = "";
+    for (const cat of categories) {
+      const li = document.createElement("li");
+      li.className = "cat-card";
+      const name = document.createElement("div");
+      name.className = "cat-card-name";
+      name.textContent = cat.name;
+      const count = document.createElement("div");
+      count.className = "cat-card-count";
+      count.textContent = `${cat.items.length} mặt hàng`;
+      li.appendChild(name);
+      li.appendChild(count);
+      li.addEventListener("click", () => setView({ mode: "category", name: cat.name }));
+      grid.appendChild(li);
+    }
+  }
+
+  function renderList(items, { showCategoryLabel }) {
+    const list = document.getElementById("list");
+    list.innerHTML = "";
     for (const item of items) {
       const li = document.createElement("li");
       li.className = "item";
+      li.addEventListener("click", () => openModal(item));
 
       const left = document.createElement("div");
       left.className = "item-info";
@@ -185,30 +423,137 @@
       name.textContent = item.name;
       const meta = document.createElement("div");
       meta.className = "item-meta";
-      meta.textContent = [item.unit, item.code].filter(Boolean).join(" · ");
+      const metaParts = [item.unit, item.code];
+      if (showCategoryLabel) metaParts.push(item.category);
+      meta.textContent = metaParts.filter(Boolean).join(" · ");
       left.appendChild(name);
       left.appendChild(meta);
 
-      const right = document.createElement("div");
-      right.className = "item-price";
-      const price = document.createElement("div");
-      price.className = "price";
-      price.textContent = `${numberFormat.format(item.price)} ₽`;
-      right.appendChild(price);
-      if (item.bulk_qty && item.bulk_price) {
-        const bulk = document.createElement("div");
-        bulk.className = "bulk";
-        bulk.textContent = `Sỉ ${item.bulk_qty}: ${numberFormat.format(item.bulk_price)} ₽`;
-        right.appendChild(bulk);
-      }
-
       li.appendChild(left);
-      li.appendChild(right);
+      li.appendChild(priceLine(item));
       list.appendChild(li);
     }
   }
 
+  function setView(next) {
+    view = next;
+    document.getElementById("search").value = next.mode === "search" ? next.query : "";
+    render();
+  }
+
+  function render() {
+    const grid = document.getElementById("cat-grid");
+    const list = document.getElementById("list");
+    const empty = document.getElementById("empty");
+    const count = document.getElementById("count");
+    const sectionTitle = document.getElementById("section-title");
+    const backBtn = document.getElementById("back-btn");
+
+    grid.hidden = true;
+    list.hidden = true;
+    empty.hidden = true;
+    sectionTitle.hidden = true;
+    backBtn.style.display = "none";
+
+    if (view.mode === "home") {
+      sectionTitle.hidden = true;
+      count.textContent = `${categories.length} nhóm hàng · ${allItems.length} mặt hàng`;
+      grid.hidden = false;
+      renderCategoryGrid();
+      return;
+    }
+
+    backBtn.style.display = "block";
+
+    let items, showCategoryLabel;
+    if (view.mode === "category") {
+      const cat = categories.find((c) => c.name === view.name);
+      items = cat ? cat.items : [];
+      showCategoryLabel = false;
+      sectionTitle.hidden = false;
+      sectionTitle.textContent = view.name;
+    } else {
+      // search: flatten across everything, regardless of which group we were browsing
+      const query = stripAccents(view.query.trim());
+      items = allItems.filter(
+        (item) => stripAccents(item.name).includes(query) || stripAccents(item.code).includes(query)
+      );
+      showCategoryLabel = true;
+      sectionTitle.hidden = false;
+      sectionTitle.textContent = `Kết quả tìm kiếm: "${view.query.trim()}"`;
+    }
+
+    if (items.length === 0) {
+      empty.hidden = false;
+      count.textContent = "";
+      return;
+    }
+    count.textContent = `${items.length} mặt hàng`;
+    list.hidden = false;
+    renderList(items, { showCategoryLabel });
+  }
+
+  function openModal(item) {
+    const overlay = document.getElementById("modal-overlay");
+    const imageWrap = document.getElementById("modal-image-wrap");
+
+    imageWrap.innerHTML = "";
+    if (item.image) {
+      // Loaded only now (not for all 100+ items up front) to keep the
+      // catalog itself light on mobile data.
+      const img = document.createElement("img");
+      img.src = item.image;
+      img.alt = item.name;
+      img.loading = "eager";
+      imageWrap.appendChild(img);
+    } else {
+      imageWrap.textContent = "Chưa có ảnh";
+    }
+
+    document.getElementById("modal-category").textContent = item.category || FALLBACK_CATEGORY;
+    document.getElementById("modal-name").textContent = item.name;
+    document.getElementById("modal-unit").textContent = [item.unit, item.code].filter(Boolean).join(" · ");
+    document.getElementById("modal-price").textContent = `${numberFormat.format(item.price)} ₽`;
+    const bulkEl = document.getElementById("modal-bulk");
+    if (item.bulk_qty && item.bulk_price) {
+      bulkEl.hidden = false;
+      bulkEl.textContent = `Giá sỉ từ ${item.bulk_qty}: ${numberFormat.format(item.bulk_price)} ₽`;
+    } else {
+      bulkEl.hidden = true;
+      bulkEl.textContent = "";
+    }
+    document.getElementById("modal-contact").href = CONTACT_URL;
+
+    overlay.classList.add("open");
+  }
+
+  function closeModal() {
+    document.getElementById("modal-overlay").classList.remove("open");
+  }
+
+  function buildCategories(items) {
+    const byName = new Map();
+    for (const item of items) {
+      const name = item.category || FALLBACK_CATEGORY;
+      if (!byName.has(name)) byName.set(name, []);
+      byName.get(name).push(item);
+    }
+    const ordered = [];
+    for (const name of CATEGORY_ORDER) {
+      if (byName.has(name)) {
+        ordered.push({ name, items: byName.get(name) });
+        byName.delete(name);
+      }
+    }
+    for (const [name, catItems] of byName) {
+      ordered.push({ name, items: catItems });
+    }
+    return ordered;
+  }
+
   async function main() {
+    document.getElementById("contact-fab").href = CONTACT_URL;
+
     let data;
     try {
       const res = await fetch("products.json", { cache: "no-store" });
@@ -218,26 +563,35 @@
       return;
     }
 
-    const items = (data.items || []).slice().sort((a, b) => a.name.localeCompare(b.name, "vi"));
+    allItems = (data.items || []).slice().sort((a, b) => a.name.localeCompare(b.name, "vi"));
+    categories = buildCategories(allItems);
+
     const updatedEl = document.getElementById("updated");
     if (data.updated_at) {
       const d = new Date(data.updated_at);
       updatedEl.textContent = `Cập nhật lúc: ${d.toLocaleString("vi-VN")}`;
     }
 
-    render(items);
+    render();
 
     const searchEl = document.getElementById("search");
     searchEl.addEventListener("input", () => {
-      const query = stripAccents(searchEl.value.trim());
-      if (!query) {
-        render(items);
+      const q = searchEl.value;
+      if (!q.trim()) {
+        setView(preSearchView);
         return;
       }
-      const filtered = items.filter(
-        (item) => stripAccents(item.name).includes(query) || stripAccents(item.code).includes(query)
-      );
-      render(filtered);
+      if (view.mode !== "search") preSearchView = view;
+      view = { mode: "search", query: q };
+      render();
+    });
+
+    document.getElementById("back-btn").addEventListener("click", () => {
+      setView(view.mode === "search" ? preSearchView : { mode: "home" });
+    });
+    document.getElementById("modal-close").addEventListener("click", closeModal);
+    document.getElementById("modal-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "modal-overlay") closeModal();
     });
   }
 
