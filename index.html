@@ -837,6 +837,22 @@
     return str.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase();
   }
 
+  // Từ đồng nghĩa/vùng miền: tra 1 từ trong mỗi cặp phải ra đúng nhóm mặt hàng
+  // của cả 2 (mì/mỳ chỉ khác chính tả; xì dầu/nước tương là 2 tên gọi của cùng
+  // 1 loại gia vị). Canonicalize cả câu tìm VÀ tên mặt hàng về cùng 1 dạng
+  // trước khi so khớp, dùng \b để không đụng vào giữa từ khác.
+  const SEARCH_SYNONYMS = [
+    [/\bmy\b/g, "mi"], // mỳ -> mì (sau stripAccents)
+    [/\bnuoc tuong\b/g, "xi dau"], // nước tương -> xì dầu
+  ];
+  function canonicalizeSearch(str) {
+    let out = str;
+    for (const [pattern, replacement] of SEARCH_SYNONYMS) {
+      out = out.replace(pattern, replacement);
+    }
+    return out;
+  }
+
   function priceLine(item) {
     const right = document.createElement("div");
     right.className = "item-price";
@@ -1050,11 +1066,17 @@
       sectionTitle.hidden = false;
       sectionTitle.textContent = view.name;
     } else {
-      // search: flatten across everything, regardless of which group we were browsing
-      const query = stripAccents(view.query.trim());
-      items = allItems.filter(
-        (item) => stripAccents(item.name).includes(query) || stripAccents(item.code).includes(query)
-      );
+      // search: flatten across everything, regardless of which group we were browsing.
+      // Khớp theo TỪNG TỪ (phải có đủ mọi từ đã gõ, không cần đúng thứ tự/liền nhau)
+      // -- "nước mắm" sẽ yêu cầu cả "nuoc" và "mam" cùng có trong tên, nên không
+      // lẫn sang "Mắm Tôm"/"Mắm Nêm"/"Mắm Mực" (không có từ "nước").
+      const queryWords = canonicalizeSearch(stripAccents(view.query.trim()))
+        .split(/\s+/)
+        .filter(Boolean);
+      items = allItems.filter((item) => {
+        const haystack = canonicalizeSearch(stripAccents(item.name)) + " " + stripAccents(item.code);
+        return queryWords.every((word) => haystack.includes(word));
+      });
       showCategoryLabel = true;
       sectionTitle.hidden = false;
       sectionTitle.textContent = `Kết quả tìm kiếm: "${view.query.trim()}"`;
