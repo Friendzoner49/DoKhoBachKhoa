@@ -4,11 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bảng giá</title>
-<!-- Harmless to load outside Telegram: sets up a window.Telegram.WebApp
-     stub whose initData stays empty, which is exactly how the page
-     below tells "running inside Telegram" apart from "a normal
-     browser" -- see CLAUDE.md section 7 (lần 12). -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
     --bg: #faf7f2;
@@ -599,13 +594,59 @@
   const BOT_URL = "https://t.me/BachHoa705_bot";
   const CONTACT_URL = "https://t.me/friendzonerisme";
 
-  // Set only when this page was opened from the bot's "🛒 Đặt hàng"
-  // keyboard button (see bot/src/handlers.js orderKeyboard()) -- a
-  // plain browser visit (or any other launch method: inline button,
-  // menu button, direct link) leaves initData empty, because
-  // Telegram.WebApp.sendData() below only works for THIS launch method.
-  const tgWebApp = window.Telegram && window.Telegram.WebApp;
-  const inTelegramMiniApp = !!(tgWebApp && tgWebApp.initData);
+  // Set only when this page was opened from inside Telegram (any launch
+  // method; in practice the bot only ever uses the "🛒 Đặt hàng"
+  // keyboard button -- see bot/src/handlers.js orderKeyboard()).
+  // Deliberately checked WITHOUT loading the Telegram SDK: Telegram
+  // appends tgWebAppPlatform=... to the page's URL hash on every launch
+  // it controls, so this is free (no network) and safe to run for
+  // every visitor, not just ones coming from Telegram -- the SDK
+  // itself (telegram-web-app.js) is only fetched lazily, below, and
+  // only for the visitors who actually need it.
+  //
+  // NOTE: initData (the signed payload) can be EMPTY for this exact
+  // launch method (a reply-keyboard web_app button) even though the
+  // Mini App is genuinely running inside Telegram -- it's a simpler
+  // "web view" surface than a full Mini App opened via inline
+  // button/menu/direct link. So initData must NOT be used to detect
+  // this; tgWebAppPlatform is present regardless.
+  function readTelegramPlatform() {
+    try {
+      const hash = location.hash.startsWith("#") ? location.hash.slice(1) : location.hash;
+      return new URLSearchParams(hash).get("tgWebAppPlatform") || "";
+    } catch (e) {
+      return "";
+    }
+  }
+  const inTelegramMiniApp = readTelegramPlatform() !== "";
+
+  let tgSdkPromise = null;
+  function loadTelegramSdk() {
+    if (!tgSdkPromise) {
+      tgSdkPromise = new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = "https://telegram.org/js/telegram-web-app.js";
+        s.onload = () => resolve(window.Telegram && window.Telegram.WebApp);
+        s.onerror = () => reject(new Error("telegram-web-app.js failed to load"));
+        document.head.appendChild(s);
+      });
+    }
+    return tgSdkPromise;
+  }
+  // Only visitors who actually arrived via Telegram ever trigger this
+  // fetch -- an ordinary browser visit in St Petersburg never waits on
+  // telegram.org for anything. Kicked off now (not on first click) so
+  // it's very likely already loaded by the time someone taps "Xác
+  // nhận gửi đơn".
+  const tgSdkReady = inTelegramMiniApp
+    ? loadTelegramSdk()
+        .then((webApp) => {
+          webApp.ready();
+          webApp.expand();
+          return webApp;
+        })
+        .catch(() => null)
+    : Promise.resolve(null);
 
   const CATEGORY_ORDER = [
     "Gạo, bún, miến, mì, phở",
@@ -1109,10 +1150,15 @@
   // needs to override the click when running as a Mini App.
   function wireTelegramLinkFallback(id) {
     const el = document.getElementById(id);
-    el.addEventListener("click", (e) => {
+    el.addEventListener("click", async (e) => {
       if (!inTelegramMiniApp) return;
       e.preventDefault();
-      tgWebApp.openTelegramLink(el.href);
+      const webApp = await tgSdkReady;
+      if (webApp && typeof webApp.openTelegramLink === "function") {
+        webApp.openTelegramLink(el.href);
+      } else {
+        window.open(el.href, "_blank", "noopener");
+      }
     });
   }
 
@@ -1122,11 +1168,6 @@
     document.getElementById("cart-contact-fallback").href = CONTACT_URL;
     wireTelegramLinkFallback("modal-contact");
     wireTelegramLinkFallback("cart-contact-fallback");
-
-    if (inTelegramMiniApp) {
-      tgWebApp.ready();
-      tgWebApp.expand();
-    }
 
     let data;
     try {
@@ -1178,7 +1219,7 @@
     });
     document.getElementById("modal-add-to-cart").addEventListener("click", addCurrentItemToCart);
 
-    document.getElementById("cart-send").addEventListener("click", (e) => {
+    document.getElementById("cart-send").addEventListener("click", async (e) => {
       if (!inTelegramMiniApp) return; // plain <a href> to BOT_URL handles this case
       e.preventDefault();
       const lines = cartLines();
@@ -1193,7 +1234,22 @@
         );
         return;
       }
-      tgWebApp.sendData(payload);
+      const webApp = await tgSdkReady;
+      if (!webApp || typeof webApp.sendData !== "function") {
+        alert("Không kết nối được với Telegram ngay lúc này. Vui lòng thử lại, hoặc mở trang này trong trình duyệt thường.");
+        return;
+      }
+      // Clear BEFORE sendData(), not after: Telegram closes this Mini
+      // App's WebView as part of handling sendData(), which can happen
+      // before any code placed after that call gets to run. The Mini
+      // App's WebView keeps its own localStorage across visits (same
+      // as a normal browser tab), so without this, next time's cart
+      // would still be full of whatever was just ordered.
+      cart = {};
+      saveCart();
+      renderCartFab();
+      refreshAllItemCards();
+      webApp.sendData(payload);
     });
 
     document.getElementById("cart-fab").addEventListener("click", openCart);
