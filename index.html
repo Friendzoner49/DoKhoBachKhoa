@@ -562,12 +562,52 @@
     padding: 13px;
     border-radius: 10px;
   }
+  /* "Hướng dẫn đặt hàng" link in the header + its guide sheet */
+  #guide-link {
+    display: inline-block;
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0;
+    margin-bottom: 8px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  #guide-card h2 {
+    margin-top: 0;
+  }
+  #guide-card h3 {
+    font-size: 1rem;
+    margin: 18px 0 6px;
+  }
+  #guide-context {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  #guide-card ol {
+    margin: 0;
+    padding-left: 20px;
+  }
+  #guide-card li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  #guide-card li:last-child {
+    margin-bottom: 0;
+  }
 </style>
 </head>
 <body>
 <header>
   <h1>Bảng giá</h1>
   <p class="updated" id="updated"></p>
+  <button id="guide-link" type="button">📖 Xem hướng dẫn đặt hàng</button>
 </header>
 <main>
   <div class="search-wrap">
@@ -619,6 +659,37 @@
     <button id="cart-copy" type="button" hidden>📋 Sao chép nội dung đơn hàng</button>
     <button id="cart-clear" type="button" hidden>Xóa giỏ hàng</button>
     <a id="cart-contact-fallback" href="#" target="_blank" rel="noopener">💬 Có câu hỏi khác? Liên hệ qua Telegram</a>
+  </div>
+</div>
+
+<div id="guide-overlay" class="sheet-overlay">
+  <div id="guide-card" class="sheet-card">
+    <button id="guide-close" class="sheet-close" type="button" aria-label="Đóng">✕</button>
+    <h2>Hướng dẫn đặt hàng</h2>
+    <p id="guide-context"></p>
+
+    <h3>Bước chung: chọn mặt hàng</h3>
+    <ol>
+      <li>Bấm "+ Thêm" ngay dưới 1 mặt hàng để thêm vào giỏ, rồi dùng nút "−"/"+" để chỉnh số lượng. Muốn xem ảnh to và thông tin chi tiết, bấm vào mặt hàng đó trước, rồi chỉnh số lượng và bấm "Thêm vào giỏ hàng".</li>
+      <li>Bấm nút "🛒 Giỏ hàng" ở góc dưới bên phải màn hình bất cứ lúc nào để xem lại đơn, sửa số lượng hoặc xóa bớt mặt hàng.</li>
+    </ol>
+
+    <h3>Cách 1: Đặt hàng ngay trong Telegram (nhanh nhất)</h3>
+    <ol>
+      <li>Áp dụng khi bạn mở trang này từ nút "🛒 Đặt hàng" của bot Telegram (trang mở ngay bên trong Telegram, không mở trình duyệt riêng).</li>
+      <li>Chọn hàng xong, bấm "🛒 Giỏ hàng" rồi bấm nút "✅ Xác nhận gửi đơn" — xong ngay, không cần làm gì thêm, đơn tới thẳng người bán.</li>
+      <li>Lần đầu đặt hàng, bot sẽ hỏi số điện thoại để tiện liên hệ giao hàng — có thể bấm "Bỏ qua, chỉ dùng Telegram" nếu không muốn cho số. Từ lần đặt thứ 2 trở đi, bot tự nhớ câu trả lời, không hỏi lại.</li>
+    </ol>
+
+    <h3>Cách 2: Đặt hàng bằng trình duyệt thường (ngoài Telegram)</h3>
+    <ol>
+      <li>Áp dụng khi bạn mở trang này bằng trình duyệt bình thường (Chrome, Safari, Cốc Cốc...), không phải mở từ trong Telegram.</li>
+      <li>Chọn hàng xong, bấm "🛒 Giỏ hàng" rồi bấm "📨 Gửi đơn qua Telegram" — Telegram sẽ mở ra với nội dung đơn đã điền sẵn.</li>
+      <li>Bấm nút Gửi (➤) trong khung chat để hoàn tất — đây là bước Telegram luôn yêu cầu với cách này, không bỏ qua được.</li>
+      <li>Nếu Telegram không tự mở: bấm "📋 Sao chép nội dung đơn hàng" trong giỏ hàng rồi tự dán gửi cho người bán qua Telegram.</li>
+    </ol>
+
+    <p style="margin-top: 16px;">Có thắc mắc về 1 mặt hàng cụ thể? Mở mặt hàng đó rồi bấm "💬 Có câu hỏi về mặt hàng này? Liên hệ". Có thắc mắc khác? Mở giỏ hàng rồi bấm "💬 Có câu hỏi khác? Liên hệ qua Telegram" — cả 2 đều mở thẳng chat với người bán.</p>
   </div>
 </div>
 
@@ -1193,6 +1264,22 @@
     document.getElementById("cart-overlay").classList.remove("open");
   }
 
+  // The guide always shows BOTH ordering methods (customers can end up
+  // here from a link shared outside Telegram, a saved bookmark, etc.),
+  // but points out up top which one applies to how THIS page was opened
+  // -- same inTelegramMiniApp check used everywhere else on the page,
+  // no extra network call.
+  function openGuide() {
+    document.getElementById("guide-context").textContent = inTelegramMiniApp
+      ? "Bạn đang mở trang này trong Telegram — dùng Cách 1 bên dưới."
+      : "Bạn đang mở trang này bằng trình duyệt thường — dùng Cách 2 bên dưới.";
+    document.getElementById("guide-overlay").classList.add("open");
+  }
+
+  function closeGuide() {
+    document.getElementById("guide-overlay").classList.remove("open");
+  }
+
   function buildCategories(items) {
     const byName = new Map();
     for (const item of items) {
@@ -1357,6 +1444,12 @@
     document.getElementById("cart-close").addEventListener("click", closeCart);
     document.getElementById("cart-overlay").addEventListener("click", (e) => {
       if (e.target.id === "cart-overlay") closeCart();
+    });
+
+    document.getElementById("guide-link").addEventListener("click", openGuide);
+    document.getElementById("guide-close").addEventListener("click", closeGuide);
+    document.getElementById("guide-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "guide-overlay") closeGuide();
     });
     document.getElementById("cart-copy").addEventListener("click", async () => {
       const textEl = document.getElementById("cart-text");
