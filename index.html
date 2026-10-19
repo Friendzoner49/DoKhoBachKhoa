@@ -236,6 +236,12 @@
     color: var(--muted);
     font-size: 0.72rem;
   }
+  .top-pick-badge {
+    display: block;
+    color: var(--accent);
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
   /* +/- stepper directly on each card, so adding an item doesn't
      require opening the modal first. */
   .item-qty-row {
@@ -280,6 +286,28 @@
     text-align: center;
     color: var(--muted);
     padding: 40px 0;
+  }
+  /* "Đặt lại đơn trước" banner -- only shown when the bot's keyboard
+     button handed the page a `?last=` hint (see orderHistory.js).
+     Same [hidden]-vs-display trap as #cat-grid/#list above: the base
+     rule's own `display: block` would otherwise win over a bare
+     [hidden] default. */
+  #reorder-btn[hidden] {
+    display: none;
+  }
+  #reorder-btn {
+    display: block;
+    width: 100%;
+    margin: 0 0 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--accent);
+    background: var(--card);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-align: left;
+    cursor: pointer;
   }
   footer {
     max-width: 720px;
@@ -514,6 +542,15 @@
   #modal-stock-badge[hidden] {
     display: none;
   }
+  #modal-top-badge {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+  #modal-top-badge[hidden] {
+    display: none;
+  }
   #modal-contact {
     display: block;
     text-align: center;
@@ -537,6 +574,7 @@
     <button id="back-btn" type="button" aria-label="Quay lại">←</button>
     <input id="search" type="text" placeholder="Tìm theo tên hàng hoặc mã..." autocomplete="off">
   </div>
+  <button id="reorder-btn" type="button" hidden></button>
   <p class="section-title" id="section-title" hidden></p>
   <p class="count" id="count"></p>
   <ul class="cat-grid" id="cat-grid" hidden></ul>
@@ -552,6 +590,7 @@
     <button id="modal-close" class="sheet-close" type="button" aria-label="Đóng">✕</button>
     <div id="modal-image-wrap"></div>
     <div id="modal-category"></div>
+    <div id="modal-top-badge" hidden>★ Bạn hay mua mặt hàng này</div>
     <div id="modal-name"></div>
     <div id="modal-unit"></div>
     <div id="modal-stock-badge" class="stock-badge" hidden>Tạm hết hàng</div>
@@ -651,6 +690,27 @@
         })
         .catch(() => null)
     : Promise.resolve(null);
+
+  // Personalization hints the bot embeds in the "🛒 Đặt hàng" keyboard
+  // button's URL, per-chat, from that chat's own past orders (see
+  // bot/src/orderHistory.js) -- NOT a new network call, just query
+  // params on the page's own URL, so this works offline the same way
+  // the Telegram-platform detection above does. Absent entirely for a
+  // customer's first-ever order, or when the page is opened any other
+  // way (plain browser, no history yet).
+  function parseLastOrderHint(raw) {
+    if (!raw) return [];
+    const out = [];
+    for (const part of raw.split(",")) {
+      const [code, qtyStr] = part.split(":");
+      const qty = parseInt(qtyStr, 10);
+      if (code && Number.isFinite(qty) && qty > 0) out.push({ code, qty });
+    }
+    return out;
+  }
+  const urlParams = new URLSearchParams(location.search);
+  const lastOrderHint = parseLastOrderHint(urlParams.get("last"));
+  const topCodesSet = new Set((urlParams.get("top") || "").split(",").filter(Boolean));
 
   const CATEGORY_ORDER = [
     "Gạo, bún, miến, mì, phở",
@@ -858,6 +918,12 @@
       name.className = "item-name";
       name.textContent = item.name;
       body.appendChild(name);
+      if (topCodesSet.has(item.code)) {
+        const topBadge = document.createElement("div");
+        topBadge.className = "top-pick-badge";
+        topBadge.textContent = "★ Hay mua";
+        body.appendChild(topBadge);
+      }
       if (showCategoryLabel && item.category) {
         const meta = document.createElement("div");
         meta.className = "item-meta";
@@ -953,6 +1019,7 @@
     }
 
     document.getElementById("modal-category").textContent = item.category || FALLBACK_CATEGORY;
+    document.getElementById("modal-top-badge").hidden = !topCodesSet.has(item.code);
     document.getElementById("modal-name").textContent = item.name;
     document.getElementById("modal-unit").textContent = [item.unit, item.code].filter(Boolean).join(" · ");
     document.getElementById("modal-stock-badge").hidden = item.in_stock !== false;
@@ -1166,6 +1233,35 @@
     });
   }
 
+  // Adds the customer's own last order (from the `?last=` hint, see
+  // above) to the cart with a single tap -- only shown when at least
+  // one of those codes still exists AND is currently in stock (same
+  // rule the card/modal "Thêm vào giỏ hàng" already enforces; an item
+  // that went out of stock since the last order is dropped, not just
+  // discontinued ones). Sets quantities (doesn't add to whatever's
+  // already in the cart), so tapping it twice -- or once after already
+  // having picked some of the same items by hand -- lands on the last
+  // order's quantities, not a doubled-up total.
+  function setupReorderButton() {
+    const btn = document.getElementById("reorder-btn");
+    const valid = lastOrderHint.filter(({ code }) => {
+      const item = allItems.find((i) => i.code === code);
+      return item && item.in_stock !== false;
+    });
+    if (valid.length === 0) return;
+    btn.hidden = false;
+    btn.textContent = `🔁 Đặt lại đơn trước (${valid.length} mặt hàng)`;
+    btn.addEventListener("click", () => {
+      for (const { code, qty } of valid) {
+        cart[code] = qty;
+      }
+      saveCart();
+      renderCartFab();
+      refreshAllItemCards();
+      openCart();
+    });
+  }
+
   async function main() {
     loadCart();
     renderCartFab();
@@ -1184,6 +1280,7 @@
 
     allItems = (data.items || []).slice().sort((a, b) => a.name.localeCompare(b.name, "vi"));
     categories = buildCategories(allItems);
+    setupReorderButton();
 
     const updatedEl = document.getElementById("updated");
     if (data.updated_at) {
