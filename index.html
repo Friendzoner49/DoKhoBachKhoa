@@ -131,25 +131,26 @@
     font-size: 0.8rem;
     margin-top: 4px;
   }
-  /* Product list (category detail + search results) */
+  /* Product grid (category detail + search results) -- image on top,
+     name + price below, card-style like a normal storefront instead of
+     the old flat text rows. */
   ul.list {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
   }
   li.item {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
+    border-radius: 12px;
+    overflow: hidden;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.15s;
   }
   li.item:hover, li.item:active {
     border-color: var(--accent);
@@ -167,37 +168,73 @@
     padding: 1px 8px;
     margin-top: 3px;
   }
-  .item-info {
+  .item-img {
+    aspect-ratio: 1 / 1;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .item-img .no-image {
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 8px;
+  }
+  /* Overlaid on the image corner instead of the normal inline flow the
+     base .stock-badge rule above assumes -- see the modal/cart version
+     of this same class for the other usage. */
+  .item-img .stock-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    margin-top: 0;
+    background: var(--card);
+  }
+  .item-body {
+    padding: 8px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
     /* Without this, a flex item's default min-width is its content's
-       min-content size, which can keep long names from shrinking and
-       push the price off the right edge on narrow screens. */
+       min-content size, which can keep a long name from wrapping. */
     min-width: 0;
   }
   .item-name {
     font-weight: 600;
+    font-size: 0.9rem;
     line-height: 1.3;
     overflow-wrap: break-word;
+    /* Clamp to 2 lines so cards in the same row stay the same height
+       regardless of name length. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.34em;
   }
   .item-meta {
     color: var(--muted);
-    font-size: 0.8rem;
-    margin-top: 2px;
+    font-size: 0.72rem;
     overflow-wrap: break-word;
-  }
-  .item-price {
-    text-align: right;
-    white-space: nowrap;
-    flex-shrink: 0;
   }
   .price {
     font-weight: 700;
     color: var(--accent);
-    font-size: 1.05rem;
+    font-size: 1rem;
+    margin-top: 2px;
   }
   .bulk {
     color: var(--muted);
-    font-size: 0.75rem;
-    margin-top: 2px;
+    font-size: 0.72rem;
   }
   .empty {
     text-align: center;
@@ -487,7 +524,7 @@
       <button id="modal-add-to-cart" type="button">Thêm vào giỏ hàng</button>
     </div>
     <p id="modal-out-of-stock-note" hidden>Mặt hàng tạm hết hàng, không thể thêm vào giỏ lúc này — liên hệ để hỏi khi có hàng trở lại.</p>
-    <a id="modal-contact" href="#" target="_blank" rel="noopener">💬 Liên hệ đặt hàng qua Telegram</a>
+    <a id="modal-contact" href="#" target="_blank" rel="noopener">💬 Có câu hỏi về mặt hàng này? Liên hệ</a>
   </div>
 </div>
 
@@ -507,11 +544,15 @@
 </div>
 
 <script>
-  // The ordering bot, not the admin's personal account -- so a
-  // customer only ever has one thing to open (see CLAUDE.md section 7,
-  // lần 9). The bot itself still exposes the admin's personal link via
-  // its own /contact command, as a fallback.
-  const CONTACT_URL = "https://t.me/BachHoa705_bot";
+  // Two different destinations now (see CLAUDE.md section 7, lần 11):
+  // the bot is receive-and-forward ONLY (no menu of its own -- it just
+  // catches the cart text below and forwards it to the seller), so
+  // only the actual order handoff goes there. A question about an item
+  // or anything else goes straight to the seller's personal account,
+  // since sending it to the bot would just bounce back "go to the
+  // website" at the customer.
+  const BOT_URL = "https://t.me/BachHoa705_bot";
+  const CONTACT_URL = "https://t.me/friendzonerisme";
 
   const CATEGORY_ORDER = [
     "Gạo, bún, miến, mì, phở",
@@ -610,27 +651,47 @@
       li.className = item.in_stock === false ? "item out-of-stock" : "item";
       li.addEventListener("click", () => openModal(item));
 
-      const left = document.createElement("div");
-      left.className = "item-info";
-      const name = document.createElement("div");
-      name.className = "item-name";
-      name.textContent = item.name;
-      const meta = document.createElement("div");
-      meta.className = "item-meta";
-      const metaParts = [item.unit, item.code];
-      if (showCategoryLabel) metaParts.push(item.category);
-      meta.textContent = metaParts.filter(Boolean).join(" · ");
-      left.appendChild(name);
-      left.appendChild(meta);
+      const imgWrap = document.createElement("div");
+      imgWrap.className = "item-img";
+      if (item.image) {
+        // Lazy: a category can hold ~50 items, and these are the same
+        // full-size photos the modal uses -- no reason to pull them
+        // all over mobile data before they're actually on screen.
+        const img = document.createElement("img");
+        img.src = item.image;
+        img.alt = item.name;
+        img.loading = "lazy";
+        img.decoding = "async";
+        imgWrap.appendChild(img);
+      } else {
+        const placeholder = document.createElement("div");
+        placeholder.className = "no-image";
+        placeholder.textContent = "Chưa có ảnh";
+        imgWrap.appendChild(placeholder);
+      }
       if (item.in_stock === false) {
         const badge = document.createElement("div");
         badge.className = "stock-badge";
         badge.textContent = "Tạm hết hàng";
-        left.appendChild(badge);
+        imgWrap.appendChild(badge);
       }
 
-      li.appendChild(left);
-      li.appendChild(priceLine(item));
+      const body = document.createElement("div");
+      body.className = "item-body";
+      const name = document.createElement("div");
+      name.className = "item-name";
+      name.textContent = item.name;
+      body.appendChild(name);
+      if (showCategoryLabel && item.category) {
+        const meta = document.createElement("div");
+        meta.className = "item-meta";
+        meta.textContent = item.category;
+        body.appendChild(meta);
+      }
+      body.appendChild(priceLine(item));
+
+      li.appendChild(imgWrap);
+      li.appendChild(body);
       list.appendChild(li);
     }
   }
@@ -859,7 +920,7 @@
     textEl.hidden = false;
     textEl.value = text;
     sendEl.hidden = false;
-    sendEl.href = `${CONTACT_URL}?text=${encodeURIComponent(text)}`;
+    sendEl.href = `${BOT_URL}?text=${encodeURIComponent(text)}`;
     copyBtn.hidden = false;
     clearBtn.hidden = false;
   }
