@@ -236,6 +236,46 @@
     color: var(--muted);
     font-size: 0.72rem;
   }
+  /* +/- stepper directly on each card, so adding an item doesn't
+     require opening the modal first. */
+  .item-qty-row {
+    margin-top: 6px;
+  }
+  .item-add-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 0;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .item-qty-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .card-qty-btn {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .item-qty-label {
+    flex: 1;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
   .empty {
     text-align: center;
     color: var(--muted);
@@ -643,12 +683,90 @@
     }
   }
 
+  // Card-level +/- control: "+ Thêm" while the item isn't in the cart
+  // yet, a "- qty +" stepper once it is. Button clicks must not bubble
+  // up to the card's own click listener (which opens the modal).
+  function buildQtyRow(item) {
+    const code = item.code;
+    const qty = cart[code] || 0;
+    const row = document.createElement("div");
+    row.className = "item-qty-row";
+
+    if (qty === 0) {
+      const addBtn = document.createElement("button");
+      addBtn.type = "button";
+      addBtn.className = "item-add-btn";
+      addBtn.textContent = "+ Thêm";
+      addBtn.setAttribute("aria-label", `Thêm ${item.name} vào giỏ hàng`);
+      addBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        cart[code] = 1;
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+      });
+      row.appendChild(addBtn);
+    } else {
+      const stepper = document.createElement("div");
+      stepper.className = "item-qty-stepper";
+
+      const minus = document.createElement("button");
+      minus.type = "button";
+      minus.className = "card-qty-btn";
+      minus.textContent = "−";
+      minus.setAttribute("aria-label", `Giảm số lượng ${item.name}`);
+      minus.addEventListener("click", (e) => {
+        e.stopPropagation();
+        cart[code] = Math.max(0, (cart[code] || 0) - 1);
+        if (cart[code] === 0) delete cart[code];
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+      });
+
+      const qtyLabel = document.createElement("span");
+      qtyLabel.className = "item-qty-label";
+      qtyLabel.textContent = String(qty);
+
+      const plus = document.createElement("button");
+      plus.type = "button";
+      plus.className = "card-qty-btn";
+      plus.textContent = "+";
+      plus.setAttribute("aria-label", `Tăng số lượng ${item.name}`);
+      plus.addEventListener("click", (e) => {
+        e.stopPropagation();
+        cart[code] = (cart[code] || 0) + 1;
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+      });
+
+      stepper.appendChild(minus);
+      stepper.appendChild(qtyLabel);
+      stepper.appendChild(plus);
+      row.appendChild(stepper);
+    }
+    return row;
+  }
+
+  // Re-draws just the qty row of every card currently on screen, instead
+  // of the whole grid -- cheap, and avoids re-creating <img> elements
+  // (which would otherwise re-trigger their lazy-load/decode).
+  function refreshAllItemCards() {
+    document.querySelectorAll("#list li.item[data-code]").forEach((li) => {
+      const item = allItems.find((i) => i.code === li.dataset.code);
+      const old = li.querySelector(".item-qty-row");
+      if (item && old) old.replaceWith(buildQtyRow(item));
+    });
+  }
+
   function renderList(items, { showCategoryLabel }) {
     const list = document.getElementById("list");
     list.innerHTML = "";
     for (const item of items) {
       const li = document.createElement("li");
       li.className = item.in_stock === false ? "item out-of-stock" : "item";
+      li.dataset.code = item.code;
       li.addEventListener("click", () => openModal(item));
 
       const imgWrap = document.createElement("div");
@@ -689,6 +807,9 @@
         body.appendChild(meta);
       }
       body.appendChild(priceLine(item));
+      if (item.in_stock !== false) {
+        body.appendChild(buildQtyRow(item));
+      }
 
       li.appendChild(imgWrap);
       li.appendChild(body);
@@ -816,6 +937,7 @@
     cart[code] = (cart[code] || 0) + modalQty;
     saveCart();
     renderCartFab();
+    refreshAllItemCards();
     closeModal();
   }
 
@@ -878,6 +1000,7 @@
         if (cart[code] === 0) delete cart[code];
         saveCart();
         renderCartFab();
+        refreshAllItemCards();
         renderCart();
       });
       const qtyLabel = document.createElement("span");
@@ -893,6 +1016,7 @@
         cart[code] = cart[code] + 1;
         saveCart();
         renderCartFab();
+        refreshAllItemCards();
         renderCart();
       });
       const remove = document.createElement("button");
@@ -904,6 +1028,7 @@
         delete cart[code];
         saveCart();
         renderCartFab();
+        refreshAllItemCards();
         renderCart();
       });
       li.appendChild(name);
@@ -1036,6 +1161,7 @@
       cart = {};
       saveCart();
       renderCartFab();
+      refreshAllItemCards();
       renderCart();
     });
   }
