@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bảng giá</title>
+<!-- Harmless to load outside Telegram: sets up a window.Telegram.WebApp
+     stub whose initData stays empty, which is exactly how the page
+     below tells "running inside Telegram" apart from "a normal
+     browser" -- see CLAUDE.md section 7 (lần 12). -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
     --bg: #faf7f2;
@@ -594,6 +599,14 @@
   const BOT_URL = "https://t.me/BachHoa705_bot";
   const CONTACT_URL = "https://t.me/friendzonerisme";
 
+  // Set only when this page was opened from the bot's "🛒 Đặt hàng"
+  // keyboard button (see bot/src/handlers.js orderKeyboard()) -- a
+  // plain browser visit (or any other launch method: inline button,
+  // menu button, direct link) leaves initData empty, because
+  // Telegram.WebApp.sendData() below only works for THIS launch method.
+  const tgWebApp = window.Telegram && window.Telegram.WebApp;
+  const inTelegramMiniApp = !!(tgWebApp && tgWebApp.initData);
+
   const CATEGORY_ORDER = [
     "Gạo, bún, miến, mì, phở",
     "Bột & nguyên liệu làm bánh",
@@ -1045,7 +1058,16 @@
     textEl.hidden = false;
     textEl.value = text;
     sendEl.hidden = false;
-    sendEl.href = `${BOT_URL}?text=${encodeURIComponent(text)}`;
+    if (inTelegramMiniApp) {
+      // Submitted via Telegram.WebApp.sendData() in the click handler
+      // below, not by navigating -- no manual "find Send and tap it"
+      // step left (see CLAUDE.md section 7, lần 12).
+      sendEl.textContent = "✅ Xác nhận gửi đơn";
+      sendEl.href = "#";
+    } else {
+      sendEl.textContent = "📨 Gửi đơn qua Telegram";
+      sendEl.href = `${BOT_URL}?text=${encodeURIComponent(text)}`;
+    }
     copyBtn.hidden = false;
     clearBtn.hidden = false;
   }
@@ -1079,10 +1101,32 @@
     return ordered;
   }
 
+  // Plain <a> navigation to a t.me link doesn't reliably work inside
+  // Telegram's own Mini App WebView (it's a sandboxed view, not a full
+  // browser) -- Telegram's own API for "open this Telegram link" from
+  // inside a Mini App is openTelegramLink(). Outside Telegram, the
+  // normal <a target="_blank"> behavior already works, so this only
+  // needs to override the click when running as a Mini App.
+  function wireTelegramLinkFallback(id) {
+    const el = document.getElementById(id);
+    el.addEventListener("click", (e) => {
+      if (!inTelegramMiniApp) return;
+      e.preventDefault();
+      tgWebApp.openTelegramLink(el.href);
+    });
+  }
+
   async function main() {
     loadCart();
     renderCartFab();
     document.getElementById("cart-contact-fallback").href = CONTACT_URL;
+    wireTelegramLinkFallback("modal-contact");
+    wireTelegramLinkFallback("cart-contact-fallback");
+
+    if (inTelegramMiniApp) {
+      tgWebApp.ready();
+      tgWebApp.expand();
+    }
 
     let data;
     try {
@@ -1133,6 +1177,24 @@
       updateModalQtyDisplay();
     });
     document.getElementById("modal-add-to-cart").addEventListener("click", addCurrentItemToCart);
+
+    document.getElementById("cart-send").addEventListener("click", (e) => {
+      if (!inTelegramMiniApp) return; // plain <a href> to BOT_URL handles this case
+      e.preventDefault();
+      const lines = cartLines();
+      if (lines.length === 0) return;
+      const payload = JSON.stringify({ lines: lines.map(({ code, qty }) => ({ code, qty })) });
+      // Telegram caps sendData() at 4096 bytes; a household grocery
+      // order never gets close, but fail loudly instead of silently
+      // dropping items if it ever does.
+      if (payload.length > 4000) {
+        alert(
+          'Đơn hàng có quá nhiều mặt hàng để gửi trực tiếp qua Mini App. Vui lòng mở trang này trong trình duyệt thường (ngoài Telegram) và bấm "Gửi đơn qua Telegram" ở đó.',
+        );
+        return;
+      }
+      tgWebApp.sendData(payload);
+    });
 
     document.getElementById("cart-fab").addEventListener("click", openCart);
     document.getElementById("cart-close").addEventListener("click", closeCart);
