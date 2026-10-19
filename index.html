@@ -507,8 +507,11 @@
 </div>
 
 <script>
-  // Swap this one constant for the bot's deep link once it exists.
-  const CONTACT_URL = "https://t.me/friendzonerisme";
+  // The ordering bot, not the admin's personal account -- so a
+  // customer only ever has one thing to open (see CLAUDE.md section 7,
+  // lần 9). The bot itself still exposes the admin's personal link via
+  // its own /contact command, as a fallback.
+  const CONTACT_URL = "https://t.me/BachHoa705_bot";
 
   const CATEGORY_ORDER = [
     "Gạo, bún, miến, mì, phở",
