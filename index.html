@@ -604,12 +604,16 @@
   // itself (telegram-web-app.js) is only fetched lazily, below, and
   // only for the visitors who actually need it.
   //
-  // NOTE: initData (the signed payload) can be EMPTY for this exact
-  // launch method (a reply-keyboard web_app button) even though the
-  // Mini App is genuinely running inside Telegram -- it's a simpler
-  // "web view" surface than a full Mini App opened via inline
-  // button/menu/direct link. So initData must NOT be used to detect
-  // this; tgWebAppPlatform is present regardless.
+  // NOTE: deliberately NOT based on initData (the signed payload).
+  // Telegram's own SDK sets initData from a `tgWebAppData` hash param
+  // and `platform` from `tgWebAppPlatform` completely independently of
+  // each other, so there's a real risk initData stays empty for this
+  // exact launch method (a reply-keyboard web_app button, the only one
+  // sendData() works from) even though the page is genuinely running
+  // inside Telegram. Not confirmed against a real Telegram client, but
+  // the downside of being wrong (the confirm button never appears for
+  // real customers) is bad enough to design around either way --
+  // tgWebAppPlatform doesn't have that ambiguity.
   function readTelegramPlatform() {
     try {
       const hash = location.hash.startsWith("#") ? location.hash.slice(1) : location.hash;
