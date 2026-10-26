@@ -242,6 +242,17 @@
     font-size: 0.68rem;
     font-weight: 700;
   }
+  .sale-countdown-badge {
+    display: inline-block;
+    color: var(--card);
+    background: var(--accent);
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 8px;
+    margin-top: 3px;
+    width: fit-content;
+  }
   /* +/- stepper directly on each card, so adding an item doesn't
      require opening the modal first. */
   .item-qty-row {
@@ -281,6 +292,22 @@
     text-align: center;
     font-weight: 600;
     font-size: 0.85rem;
+  }
+  /* "Lấy sỉ ×N" -- 1 lần bấm đặt số lượng thẳng lên mức sỉ (bulk_qty),
+     thay vì phải bấm "+" hàng chục lần cho mặt hàng bán theo thùng/bao
+     (vd mỳ tôm sỉ 30 gói). Ghi đè số lượng hiện có, không cộng dồn --
+     cùng quy ước "chọn nhanh số lượng" đã dùng cho nút "Đặt lại đơn trước". */
+  .item-bulk-btn {
+    width: 100%;
+    margin-top: 4px;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 8px;
+    padding: 5px 0;
+    font-weight: 600;
+    font-size: 0.72rem;
+    cursor: pointer;
   }
   .empty {
     text-align: center;
@@ -533,6 +560,24 @@
     font-size: 0.85rem;
     margin-top: 2px;
   }
+  /* Same [hidden]-vs-display trap as #cat-grid/#list/#modal-stock-badge
+     above: the id rule below needs its own [hidden] override or the
+     button stays visible even while hidden. */
+  #modal-bulk-btn[hidden] {
+    display: none;
+  }
+  #modal-bulk-btn {
+    display: block;
+    margin: 6px 0 0;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
   #modal-stock-badge {
     margin-bottom: 8px;
   }
@@ -541,6 +586,13 @@
      default) would otherwise keep this visible even while hidden. */
   #modal-stock-badge[hidden] {
     display: none;
+  }
+  /* Same trap again for the seasonal countdown note. */
+  #modal-sale-note[hidden] {
+    display: none;
+  }
+  #modal-sale-note {
+    margin-bottom: 8px;
   }
   #modal-top-badge {
     color: var(--accent);
@@ -634,8 +686,10 @@
     <div id="modal-name"></div>
     <div id="modal-unit"></div>
     <div id="modal-stock-badge" class="stock-badge" hidden>Tạm hết hàng</div>
+    <div id="modal-sale-note" class="sale-countdown-badge" hidden></div>
     <div id="modal-price"></div>
     <div id="modal-bulk"></div>
+    <button id="modal-bulk-btn" type="button" hidden></button>
     <div id="modal-cart-row">
       <button class="qty-btn" id="modal-qty-minus" type="button" aria-label="Giảm số lượng">−</button>
       <span id="modal-qty">1</span>
@@ -834,6 +888,11 @@
     return Object.values(cart).reduce((sum, qty) => sum + qty, 0);
   }
 
+  function formatVnDate(iso) {
+    const [y, m, d] = iso.split("-");
+    return `${d}/${m}/${y}`;
+  }
+
   function stripAccents(str) {
     return str.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase();
   }
@@ -952,6 +1011,27 @@
       stepper.appendChild(plus);
       row.appendChild(stepper);
     }
+
+    if (item.bulk_qty && Number.isInteger(item.bulk_qty) && item.bulk_qty > 1) {
+      // Quantities must stay whole numbers all the way to the bot/invoice
+      // (parseWebAppOrderLines floors them, the web-link regex only
+      // matches \d+) -- a fractional bulk_qty (e.g. GAO001's 4.5, a bag
+      // weight) can't safely be set in one tap yet, so skip the button
+      // for it rather than silently truncating what the customer picked.
+      const bulkBtn = document.createElement("button");
+      bulkBtn.type = "button";
+      bulkBtn.className = "item-bulk-btn";
+      bulkBtn.textContent = `Lấy sỉ ×${item.bulk_qty}`;
+      bulkBtn.setAttribute("aria-label", `Đặt số lượng ${item.name} theo mức sỉ ${item.bulk_qty}`);
+      bulkBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        cart[code] = item.bulk_qty;
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+      });
+      row.appendChild(bulkBtn);
+    }
     return row;
   }
 
@@ -1011,6 +1091,12 @@
         topBadge.className = "top-pick-badge";
         topBadge.textContent = "★ Hay mua";
         body.appendChild(topBadge);
+      }
+      if (item.sale_until) {
+        const saleBadge = document.createElement("div");
+        saleBadge.className = "sale-countdown-badge";
+        saleBadge.textContent = `⏳ Còn bán đến hết ${formatVnDate(item.sale_until)}`;
+        body.appendChild(saleBadge);
       }
       if (showCategoryLabel && item.category) {
         const meta = document.createElement("div");
@@ -1117,14 +1203,31 @@
     document.getElementById("modal-name").textContent = item.name;
     document.getElementById("modal-unit").textContent = [item.unit, item.code].filter(Boolean).join(" · ");
     document.getElementById("modal-stock-badge").hidden = item.in_stock !== false;
+    const saleNote = document.getElementById("modal-sale-note");
+    if (item.sale_until) {
+      saleNote.hidden = false;
+      saleNote.textContent = `⏳ Còn bán đến hết ${formatVnDate(item.sale_until)}`;
+    } else {
+      saleNote.hidden = true;
+    }
     document.getElementById("modal-price").textContent = `${numberFormat.format(item.price)} ₽`;
     const bulkEl = document.getElementById("modal-bulk");
+    const bulkBtn = document.getElementById("modal-bulk-btn");
     if (item.bulk_qty && item.bulk_price) {
       bulkEl.hidden = false;
       bulkEl.textContent = `Giá sỉ từ ${item.bulk_qty}: ${numberFormat.format(item.bulk_price)} ₽`;
     } else {
       bulkEl.hidden = true;
       bulkEl.textContent = "";
+    }
+    // Same whole-number guard as the card button (see buildQtyRow), plus:
+    // out-of-stock items hide the whole add-to-cart row anyway, so the
+    // button would sit there doing nothing if shown.
+    if (item.bulk_qty && item.bulk_price && Number.isInteger(item.bulk_qty) && item.bulk_qty > 1 && item.in_stock !== false) {
+      bulkBtn.hidden = false;
+      bulkBtn.textContent = `Lấy sỉ ×${item.bulk_qty}`;
+    } else {
+      bulkBtn.hidden = true;
     }
     document.getElementById("modal-contact").href = CONTACT_URL;
 
@@ -1388,7 +1491,24 @@
       return;
     }
 
-    allItems = (data.items || []).slice().sort((a, b) => a.name.localeCompare(b.name, "vi"));
+    // Seasonal/limited-time products (lần 21, "tự động ẩn theo ngày giờ
+    // hạn" -- the owner explicitly chose auto-HIDE over staying visible
+    // greyed out like a plain out-of-stock item): a product past its
+    // sale_until ("YYYY-MM-DD") is dropped from the catalog entirely,
+    // compared against the VISITOR'S OWN local date (not UTC --
+    // toISOString()'s UTC date LAGS local time in St. Petersburg's
+    // UTC+3, so using it would keep an already-expired item visible for
+    // up to 3 extra hours after local midnight, not hide it early).
+    // cartLines() already drops cart
+    // entries whose code isn't in allItems ("no longer in the published
+    // catalog"), the same path a discontinued product takes -- a
+    // leftover localStorage cart entry for an expired item is silently
+    // dropped, not an error.
+    const today = new Date();
+    const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    allItems = (data.items || [])
+      .filter((item) => !item.sale_until || item.sale_until >= todayIso)
+      .sort((a, b) => a.name.localeCompare(b.name, "vi"));
     categories = buildCategories(allItems);
     setupReorderButton();
 
@@ -1427,6 +1547,12 @@
     document.getElementById("modal-qty-plus").addEventListener("click", () => {
       modalQty += 1;
       updateModalQtyDisplay();
+    });
+    document.getElementById("modal-bulk-btn").addEventListener("click", () => {
+      if (currentModalItem && currentModalItem.bulk_qty) {
+        modalQty = currentModalItem.bulk_qty;
+        updateModalQtyDisplay();
+      }
     });
     document.getElementById("modal-add-to-cart").addEventListener("click", addCurrentItemToCart);
 

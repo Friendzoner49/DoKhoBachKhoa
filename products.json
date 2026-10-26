@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-24T11:44:49+00:00",
+  "updated_at": "2026-10-26T19:47:16+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -1034,6 +1034,15 @@
       "category": "Rau, củ, nấm & thực phẩm tươi",
       "price": 214,
       "image": "images/TACHU1.jpg?v=4e74286d"
+    },
+    {
+      "code": "Test",
+      "name": "Test",
+      "unit": "Test",
+      "category": "Bánh kẹo & đồ ăn vặt",
+      "price": 0,
+      "image": "images/Test.jpg?v=f2f01d03",
+      "sale_until": "2026-10-29"
     },
     {
       "code": "THLH01",
