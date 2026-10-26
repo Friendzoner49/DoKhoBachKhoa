@@ -836,7 +836,11 @@
     const out = [];
     for (const part of raw.split(",")) {
       const [code, qtyStr] = part.split(":");
-      const qty = parseInt(qtyStr, 10);
+      // parseFloat, not parseInt -- a bulk item (e.g. GAO001's 4,5kg
+      // bao) can leave a fractional qty in the last order, and
+      // parseInt would silently truncate 4.5 down to 4 (27/10/2026,
+      // lần 29).
+      const qty = parseFloat(qtyStr);
       if (code && Number.isFinite(qty) && qty > 0) out.push({ code, qty });
     }
     return out;
@@ -881,12 +885,23 @@
   // quoted here must match what the customer actually gets billed.
   const BULK_DISCOUNT_FACTOR = 0.98;
 
+  function bulkPrice(price, bulkQty) {
+    return Math.round(price * bulkQty * BULK_DISCOUNT_FACTOR);
+  }
+
   function lineTotal(item, qty) {
-    const plain = item.price * qty;
-    if (item.bulk_qty && qty >= item.bulk_qty) {
-      return Math.round(plain * BULK_DISCOUNT_FACTOR);
+    if (!item.bulk_qty || qty < item.bulk_qty) {
+      return Math.round(item.price * qty);
     }
-    return Math.round(plain);
+    // Mirrors shop.core.pricing.bulk_discount (27/10/2026, lần 29): the
+    // sỉ rate only applies to each COMPLETE bulk_qty tier ("1
+    // thùng/bao"); the leftover is billed at the plain per-unit rate --
+    // not a blanket discount on the whole qty just because it crossed
+    // the threshold once. The small epsilon guards against float
+    // division landing a hair under a whole number of tiers.
+    const fullTiers = Math.floor(qty / item.bulk_qty + 1e-9);
+    const remainder = qty - fullTiers * item.bulk_qty;
+    return fullTiers * bulkPrice(item.price, item.bulk_qty) + Math.round(item.price * remainder);
   }
 
   function loadCart() {
@@ -1034,15 +1049,15 @@
       row.appendChild(stepper);
     }
 
-    if (item.bulk_qty && Number.isInteger(item.bulk_qty) && item.bulk_qty > 1) {
-      // Quantities must stay whole numbers all the way to the bot/invoice
-      // (parseWebAppOrderLines floors them, the web-link regex only
-      // matches \d+) -- a fractional bulk_qty (e.g. GAO001's 4.5, a bag
-      // weight) can't safely be stepped by in one tap yet, so skip the
-      // stepper for it rather than silently truncating what the customer
-      // picked.
+    if (item.bulk_qty && item.bulk_qty > 1) {
+      // 27/10/2026 (lần 29): used to require Number.isInteger(bulk_qty)
+      // here -- a fractional bulk_qty (e.g. GAO001's 4,5kg bao) wasn't
+      // safe to step by, because parseWebAppOrderLines floored qty and
+      // the web-link regex only matched \d+. Both now accept a decimal
+      // qty (see bot/src/orderParser.js), so the guard is gone and this
+      // stepper works for every bulk item, whole-kg bags included.
       //
-      // 27/10/2026: this used to be a single "Lấy sỉ ×N" button that
+      // Before that: this used to be a single "Lấy sỉ ×N" button that
       // OVERWROTE the quantity to exactly N -- fine for 1 thùng/bao, but
       // buying 2+ thùng meant it did nothing on a second tap (same value
       // set again). A +/- stepper that adds/removes N each tap (mirrors
@@ -1277,10 +1292,11 @@
       bulkEl.hidden = true;
       bulkEl.textContent = "";
     }
-    // Same whole-number guard as the card stepper (see buildQtyRow), plus:
-    // out-of-stock items hide the whole add-to-cart row anyway, so the
-    // stepper would sit there doing nothing if shown.
-    if (item.bulk_qty && item.bulk_price && Number.isInteger(item.bulk_qty) && item.bulk_qty > 1 && item.in_stock !== false) {
+    // Same as the card stepper (see buildQtyRow, lần 29 -- no more
+    // whole-number guard now that fractional qty survives end to end),
+    // plus: out-of-stock items hide the whole add-to-cart row anyway,
+    // so the stepper would sit there doing nothing if shown.
+    if (item.bulk_qty && item.bulk_price && item.bulk_qty > 1 && item.in_stock !== false) {
       bulkStepper.hidden = false;
       document.getElementById("modal-bulk-label").textContent = `×${item.bulk_qty}`;
     } else {
