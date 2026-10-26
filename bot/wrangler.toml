@@ -1,0 +1,20 @@
+name = "705bot-telegram"
+main = "src/index.js"
+compatibility_date = "2026-10-19"
+
+# Public info only (same values already hardcoded in the website) --
+# safe to commit. Secrets (BOT_TOKEN, ADMIN_CHAT_ID, WEBHOOK_SECRET,
+# SYNC_SECRET, SUPPLIER_GROUP_CHAT_ID -- lần 20, CHANNEL_CHAT_ID --
+# lần 21) are set with `wrangler secret put <NAME>` instead, never
+# written here.
+[vars]
+CATALOG_URL = "https://friendzoner49.github.io/DoKhoBachKhoa/products.json"
+SITE_BASE_URL = "https://friendzoner49.github.io/DoKhoBachKhoa/"
+CONTACT_URL = "https://t.me/friendzonerisme"
+
+# Created once with `npx wrangler kv namespace create CART_KV` (kept
+# the same underlying namespace when the binding was renamed from
+# CART_KV to ORDER_KV -- see CLAUDE.md section 7's decision log).
+[[kv_namespaces]]
+binding = "ORDER_KV"
+id = "befb2d29f3d649ccb391ccfdab337074"

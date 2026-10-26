@@ -1,0 +1,35 @@
+# Build the macOS .dmg (Apple Silicon) and a Windows portable zip on
+# GitHub's own machines -- so a Mac build doesn't need a physical Mac
+# (see CLAUDE.md mục 7). Manual only ("Run workflow" in the Actions
+# tab): this repo is private and has no release/version-number scheme
+# yet, so there's nothing to tag -- files land under the run's own
+# "Artifacts" section. Deliberately NOT on every push: macOS runners
+# are billed at a historically higher multiplier against the free
+# minutes quota than Linux/Windows, even on a manual run.
+name: build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  mac:
+    runs-on: macos-15  # Apple Silicon (arm64), same architecture as the M2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: bash packaging/build_mac.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BachHoa705-mac
+          path: packaging/dist/BachHoa705.dmg
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: powershell -ExecutionPolicy Bypass -File packaging\build_windows.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BachHoa705-windows
+          path: packaging/dist/BachHoa705-windows.zip

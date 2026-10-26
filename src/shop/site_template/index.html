@@ -1,0 +1,1561 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bảng giá</title>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --card: #ffffff;
+    --text: #2a2420;
+    --muted: #8a7f73;
+    --accent: #b5542a;
+    --border: #e8e0d6;
+    --overlay: rgba(20, 16, 12, 0.55);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1915;
+      --card: #272320;
+      --text: #f1ece5;
+      --muted: #a69a8c;
+      --accent: #e08a5c;
+      --border: #3a342e;
+      --overlay: rgba(0, 0, 0, 0.65);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 16px;
+    padding-bottom: 88px;
+  }
+  header {
+    max-width: 720px;
+    margin: 0 auto 16px;
+  }
+  h1 {
+    font-size: 1.6rem;
+    margin: 0 0 4px;
+  }
+  .updated {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0 0 16px;
+  }
+  .search-wrap {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 8px 0 12px;
+    z-index: 10;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  #back-btn {
+    display: none;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  #search {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 1rem;
+  }
+  #search:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .section-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 4px 0 12px;
+  }
+  .count {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 4px 0 12px;
+  }
+  /* Category grid (home view) */
+  ul.cat-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  /* [hidden] alone loses to the more specific display rules above/below
+     (id/class + type beats a bare attribute selector), so the grid and
+     the list would both stay visible at once without this. */
+  #cat-grid[hidden], #list[hidden] {
+    display: none;
+  }
+  li.cat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  li.cat-card:hover, li.cat-card:active {
+    border-color: var(--accent);
+  }
+  .cat-card-name {
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .cat-card-count {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+  /* Product grid (category detail + search results) -- image on top,
+     name + price below, card-style like a normal storefront instead of
+     the old flat text rows. */
+  ul.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  li.item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.15s;
+  }
+  li.item:hover, li.item:active {
+    border-color: var(--accent);
+  }
+  li.item.out-of-stock {
+    opacity: 0.6;
+  }
+  .stock-badge {
+    display: inline-block;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 1px 8px;
+    margin-top: 3px;
+  }
+  .item-img {
+    aspect-ratio: 1 / 1;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .item-img .no-image {
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 8px;
+  }
+  /* Overlaid on the image corner instead of the normal inline flow the
+     base .stock-badge rule above assumes -- see the modal/cart version
+     of this same class for the other usage. */
+  .item-img .stock-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    margin-top: 0;
+    background: var(--card);
+  }
+  .item-body {
+    padding: 8px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    /* Without this, a flex item's default min-width is its content's
+       min-content size, which can keep a long name from wrapping. */
+    min-width: 0;
+  }
+  .item-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+    /* Clamp to 2 lines so cards in the same row stay the same height
+       regardless of name length. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.34em;
+  }
+  .item-meta {
+    color: var(--muted);
+    font-size: 0.72rem;
+    overflow-wrap: break-word;
+  }
+  .price {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1rem;
+    margin-top: 2px;
+  }
+  .bulk {
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
+  .top-pick-badge {
+    display: block;
+    color: var(--accent);
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+  .sale-countdown-badge {
+    display: inline-block;
+    color: var(--card);
+    background: var(--accent);
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 8px;
+    margin-top: 3px;
+    width: fit-content;
+  }
+  /* +/- stepper directly on each card, so adding an item doesn't
+     require opening the modal first. */
+  .item-qty-row {
+    margin-top: 6px;
+  }
+  .item-add-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 0;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .item-qty-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .card-qty-btn {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .item-qty-label {
+    flex: 1;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 40px 0;
+  }
+  /* "Đặt lại đơn trước" banner -- only shown when the bot's keyboard
+     button handed the page a `?last=` hint (see orderHistory.js).
+     Same [hidden]-vs-display trap as #cat-grid/#list above: the base
+     rule's own `display: block` would otherwise win over a bare
+     [hidden] default. */
+  #reorder-btn[hidden] {
+    display: none;
+  }
+  #reorder-btn {
+    display: block;
+    width: 100%;
+    margin: 0 0 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--accent);
+    background: var(--card);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-align: left;
+    cursor: pointer;
+  }
+  footer {
+    max-width: 720px;
+    margin: 24px auto 0;
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-align: center;
+  }
+  /* Floating cart button */
+  #cart-fab {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    z-index: 20;
+  }
+  /* Shared chrome for the product-detail sheet and the cart sheet */
+  .sheet-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 30;
+  }
+  .sheet-overlay.open {
+    display: flex;
+  }
+  .sheet-card {
+    background: var(--card);
+    border-radius: 16px 16px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 18px;
+    position: relative;
+  }
+  @media (min-width: 560px) {
+    .sheet-overlay { align-items: center; }
+    .sheet-card { border-radius: 16px; }
+  }
+  .sheet-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  /* Add-to-cart row inside the product modal */
+  #modal-cart-row[hidden] {
+    display: none;
+  }
+  #modal-cart-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .qty-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  #modal-qty {
+    width: 40px;
+    text-align: center;
+    font-weight: 600;
+  }
+  #modal-add-to-cart {
+    flex: 1;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  #modal-out-of-stock-note {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 10px;
+  }
+  /* Cart sheet */
+  #cart-list {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #cart-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+  }
+  #cart-list .cart-item-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.9rem;
+  }
+  #cart-list .cart-remove {
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  #cart-total {
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: right;
+    margin-bottom: 14px;
+  }
+  #cart-text {
+    width: 100%;
+    min-height: 110px;
+    font-family: inherit;
+    font-size: 0.82rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    background: var(--bg);
+    color: var(--text);
+    resize: vertical;
+    margin-bottom: 10px;
+  }
+  #cart-send[hidden] {
+    display: none;
+  }
+  #cart-send {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 13px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+  }
+  #cart-copy, #cart-clear {
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+  #modal-image-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 14px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  #modal-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #modal-category {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+  #modal-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+  #modal-unit {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+  #modal-price {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1.4rem;
+  }
+  #modal-bulk {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 2px;
+  }
+  #modal-stock-badge {
+    margin-bottom: 8px;
+  }
+  /* Same trap as #cat-grid/#list: .stock-badge's own "display" rule
+     (equal specificity, but an author rule beats the UA [hidden]
+     default) would otherwise keep this visible even while hidden. */
+  #modal-stock-badge[hidden] {
+    display: none;
+  }
+  /* Same trap again for the seasonal countdown note. */
+  #modal-sale-note[hidden] {
+    display: none;
+  }
+  #modal-sale-note {
+    margin-bottom: 8px;
+  }
+  #modal-top-badge {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+  #modal-top-badge[hidden] {
+    display: none;
+  }
+  #modal-contact {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 13px;
+    border-radius: 10px;
+  }
+  /* "Hướng dẫn đặt hàng" link in the header + its guide sheet */
+  #guide-link {
+    display: inline-block;
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0;
+    margin-bottom: 8px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  #guide-card h2 {
+    margin-top: 0;
+  }
+  #guide-card h3 {
+    font-size: 1rem;
+    margin: 18px 0 6px;
+  }
+  #guide-context {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  #guide-card ol {
+    margin: 0;
+    padding-left: 20px;
+  }
+  #guide-card li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  #guide-card li:last-child {
+    margin-bottom: 0;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bảng giá</h1>
+  <p class="updated" id="updated"></p>
+  <button id="guide-link" type="button">📖 Xem hướng dẫn đặt hàng</button>
+</header>
+<main>
+  <div class="search-wrap">
+    <button id="back-btn" type="button" aria-label="Quay lại">←</button>
+    <input id="search" type="text" placeholder="Tìm theo tên hàng hoặc mã..." autocomplete="off">
+  </div>
+  <button id="reorder-btn" type="button" hidden></button>
+  <p class="section-title" id="section-title" hidden></p>
+  <p class="count" id="count"></p>
+  <ul class="cat-grid" id="cat-grid" hidden></ul>
+  <ul class="list" id="list" hidden></ul>
+  <p class="empty" id="empty" hidden>Không tìm thấy mặt hàng phù hợp.</p>
+</main>
+<footer>Giá tính bằng RUB, có thể thay đổi theo từng đợt hàng.</footer>
+
+<button id="cart-fab" type="button">🛒 Giỏ hàng</button>
+
+<div id="modal-overlay" class="sheet-overlay">
+  <div id="modal-card" class="sheet-card">
+    <button id="modal-close" class="sheet-close" type="button" aria-label="Đóng">✕</button>
+    <div id="modal-image-wrap"></div>
+    <div id="modal-category"></div>
+    <div id="modal-top-badge" hidden>★ Bạn hay mua mặt hàng này</div>
+    <div id="modal-name"></div>
+    <div id="modal-unit"></div>
+    <div id="modal-stock-badge" class="stock-badge" hidden>Tạm hết hàng</div>
+    <div id="modal-sale-note" class="sale-countdown-badge" hidden></div>
+    <div id="modal-price"></div>
+    <div id="modal-bulk"></div>
+    <div id="modal-cart-row">
+      <button class="qty-btn" id="modal-qty-minus" type="button" aria-label="Giảm số lượng">−</button>
+      <span id="modal-qty">1</span>
+      <button class="qty-btn" id="modal-qty-plus" type="button" aria-label="Tăng số lượng">+</button>
+      <button id="modal-add-to-cart" type="button">Thêm vào giỏ hàng</button>
+    </div>
+    <p id="modal-out-of-stock-note" hidden>Mặt hàng tạm hết hàng, không thể thêm vào giỏ lúc này — liên hệ để hỏi khi có hàng trở lại.</p>
+    <a id="modal-contact" href="#" target="_blank" rel="noopener">💬 Có câu hỏi về mặt hàng này? Liên hệ</a>
+  </div>
+</div>
+
+<div id="cart-overlay" class="sheet-overlay">
+  <div id="cart-card" class="sheet-card">
+    <button id="cart-close" class="sheet-close" type="button" aria-label="Đóng">✕</button>
+    <h2 style="margin-top:0;">Giỏ hàng</h2>
+    <p id="cart-empty-note" class="empty" hidden>Giỏ hàng đang trống. Chọn mặt hàng và bấm "Thêm vào giỏ hàng".</p>
+    <ul id="cart-list"></ul>
+    <div id="cart-total" hidden></div>
+    <textarea id="cart-text" readonly hidden></textarea>
+    <a id="cart-send" href="#" target="_blank" rel="noopener" hidden>📨 Gửi đơn qua Telegram</a>
+    <button id="cart-copy" type="button" hidden>📋 Sao chép nội dung đơn hàng</button>
+    <button id="cart-clear" type="button" hidden>Xóa giỏ hàng</button>
+    <a id="cart-contact-fallback" href="#" target="_blank" rel="noopener">💬 Có câu hỏi khác? Liên hệ qua Telegram</a>
+  </div>
+</div>
+
+<div id="guide-overlay" class="sheet-overlay">
+  <div id="guide-card" class="sheet-card">
+    <button id="guide-close" class="sheet-close" type="button" aria-label="Đóng">✕</button>
+    <h2>Hướng dẫn đặt hàng</h2>
+    <p id="guide-context"></p>
+
+    <h3>Bước chung: chọn mặt hàng</h3>
+    <ol>
+      <li>Bấm "+ Thêm" ngay dưới 1 mặt hàng để thêm vào giỏ, rồi dùng nút "−"/"+" để chỉnh số lượng. Muốn xem ảnh to và thông tin chi tiết, bấm vào mặt hàng đó trước, rồi chỉnh số lượng và bấm "Thêm vào giỏ hàng".</li>
+      <li>Bấm nút "🛒 Giỏ hàng" ở góc dưới bên phải màn hình bất cứ lúc nào để xem lại đơn, sửa số lượng hoặc xóa bớt mặt hàng.</li>
+    </ol>
+
+    <h3>Cách 1: Đặt hàng ngay trong Telegram (nhanh nhất)</h3>
+    <ol>
+      <li>Áp dụng khi bạn mở trang này từ nút "🛒 Đặt hàng" của bot Telegram (trang mở ngay bên trong Telegram, không mở trình duyệt riêng).</li>
+      <li>Chọn hàng xong, bấm "🛒 Giỏ hàng" rồi bấm nút "✅ Xác nhận gửi đơn" — xong ngay, không cần làm gì thêm, đơn tới thẳng người bán.</li>
+      <li>Lần đầu đặt hàng, bot sẽ hỏi số điện thoại để tiện liên hệ giao hàng — có thể bấm "Bỏ qua, chỉ dùng Telegram" nếu không muốn cho số. Từ lần đặt thứ 2 trở đi, bot tự nhớ câu trả lời, không hỏi lại.</li>
+    </ol>
+
+    <h3>Cách 2: Đặt hàng bằng trình duyệt thường (ngoài Telegram)</h3>
+    <ol>
+      <li>Áp dụng khi bạn mở trang này bằng trình duyệt bình thường (Chrome, Safari, Cốc Cốc...), không phải mở từ trong Telegram.</li>
+      <li>Chọn hàng xong, bấm "🛒 Giỏ hàng" rồi bấm "📨 Gửi đơn qua Telegram" — Telegram sẽ mở ra với nội dung đơn đã điền sẵn.</li>
+      <li>Bấm nút Gửi (➤) trong khung chat để hoàn tất — đây là bước Telegram luôn yêu cầu với cách này, không bỏ qua được.</li>
+      <li>Nếu Telegram không tự mở: bấm "📋 Sao chép nội dung đơn hàng" trong giỏ hàng rồi tự dán gửi cho người bán qua Telegram.</li>
+    </ol>
+
+    <p style="margin-top: 16px;">Có thắc mắc về 1 mặt hàng cụ thể? Mở mặt hàng đó rồi bấm "💬 Có câu hỏi về mặt hàng này? Liên hệ". Có thắc mắc khác? Mở giỏ hàng rồi bấm "💬 Có câu hỏi khác? Liên hệ qua Telegram" — cả 2 đều mở thẳng chat với người bán.</p>
+  </div>
+</div>
+
+<script>
+  // Two different destinations now (see CLAUDE.md section 7, lần 11):
+  // the bot is receive-and-forward ONLY (no menu of its own -- it just
+  // catches the cart text below and forwards it to the seller), so
+  // only the actual order handoff goes there. A question about an item
+  // or anything else goes straight to the seller's personal account,
+  // since sending it to the bot would just bounce back "go to the
+  // website" at the customer.
+  const BOT_URL = "https://t.me/BachHoa705_bot";
+  const CONTACT_URL = "https://t.me/friendzonerisme";
+
+  // Set only when this page was opened from inside Telegram (any launch
+  // method; in practice the bot only ever uses the "🛒 Đặt hàng"
+  // keyboard button -- see bot/src/handlers.js orderKeyboard()).
+  // Deliberately checked WITHOUT loading the Telegram SDK: Telegram
+  // appends tgWebAppPlatform=... to the page's URL hash on every launch
+  // it controls, so this is free (no network) and safe to run for
+  // every visitor, not just ones coming from Telegram -- the SDK
+  // itself (telegram-web-app.js) is only fetched lazily, below, and
+  // only for the visitors who actually need it.
+  //
+  // NOTE: deliberately NOT based on initData (the signed payload).
+  // Telegram's own SDK sets initData from a `tgWebAppData` hash param
+  // and `platform` from `tgWebAppPlatform` completely independently of
+  // each other, so there's a real risk initData stays empty for this
+  // exact launch method (a reply-keyboard web_app button, the only one
+  // sendData() works from) even though the page is genuinely running
+  // inside Telegram. Not confirmed against a real Telegram client, but
+  // the downside of being wrong (the confirm button never appears for
+  // real customers) is bad enough to design around either way --
+  // tgWebAppPlatform doesn't have that ambiguity.
+  function readTelegramPlatform() {
+    try {
+      const hash = location.hash.startsWith("#") ? location.hash.slice(1) : location.hash;
+      return new URLSearchParams(hash).get("tgWebAppPlatform") || "";
+    } catch (e) {
+      return "";
+    }
+  }
+  const inTelegramMiniApp = readTelegramPlatform() !== "";
+
+  let tgSdkPromise = null;
+  function loadTelegramSdk() {
+    if (!tgSdkPromise) {
+      tgSdkPromise = new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = "https://telegram.org/js/telegram-web-app.js";
+        s.onload = () => resolve(window.Telegram && window.Telegram.WebApp);
+        s.onerror = () => reject(new Error("telegram-web-app.js failed to load"));
+        document.head.appendChild(s);
+      });
+    }
+    return tgSdkPromise;
+  }
+  // Only visitors who actually arrived via Telegram ever trigger this
+  // fetch -- an ordinary browser visit in St Petersburg never waits on
+  // telegram.org for anything. Kicked off now (not on first click) so
+  // it's very likely already loaded by the time someone taps "Xác
+  // nhận gửi đơn".
+  const tgSdkReady = inTelegramMiniApp
+    ? loadTelegramSdk()
+        .then((webApp) => {
+          webApp.ready();
+          webApp.expand();
+          return webApp;
+        })
+        .catch(() => null)
+    : Promise.resolve(null);
+
+  // Personalization hints the bot embeds in the "🛒 Đặt hàng" keyboard
+  // button's URL, per-chat, from that chat's own past orders (see
+  // bot/src/orderHistory.js) -- NOT a new network call, just query
+  // params on the page's own URL, so this works offline the same way
+  // the Telegram-platform detection above does. Absent entirely for a
+  // customer's first-ever order, or when the page is opened any other
+  // way (plain browser, no history yet).
+  function parseLastOrderHint(raw) {
+    if (!raw) return [];
+    const out = [];
+    for (const part of raw.split(",")) {
+      const [code, qtyStr] = part.split(":");
+      const qty = parseInt(qtyStr, 10);
+      if (code && Number.isFinite(qty) && qty > 0) out.push({ code, qty });
+    }
+    return out;
+  }
+  const urlParams = new URLSearchParams(location.search);
+  const lastOrderHint = parseLastOrderHint(urlParams.get("last"));
+  const topCodesSet = new Set((urlParams.get("top") || "").split(",").filter(Boolean));
+
+  const CATEGORY_ORDER = [
+    "Gạo, bún, miến, mì, phở",
+    "Bột & nguyên liệu làm bánh",
+    "Gia vị, nước mắm, nước chấm",
+    "Rau, củ, nấm & thực phẩm tươi",
+    "Đậu, hạt, vừng, lạc",
+    "Cà phê, trà, đồ uống",
+    "Bánh kẹo & đồ ăn vặt",
+    "Rượu",
+    "Đồ gia dụng & khác",
+  ];
+  const FALLBACK_CATEGORY = "Khác";
+
+  const numberFormat = new Intl.NumberFormat("vi-VN");
+
+  let allItems = [];
+  let categories = []; // [{name, items}], in display order
+  // view: {mode: "home"} | {mode: "category", name} | {mode: "search", query}
+  let view = { mode: "home" };
+  let preSearchView = { mode: "home" }; // where to return to once the search box is cleared
+  let currentModalItem = null;
+  let modalQty = 1;
+
+  // Cart: {code: qty}, kept per-browser only (localStorage) -- there is
+  // no backend, so "checkout" means composing a Telegram message with
+  // one "CODE xQTY" line per item (shop.core.invoices can later parse
+  // that straight into a draft invoice, per CLAUDE.md's bot<->app plan).
+  const CART_STORAGE_KEY = "cart_v1";
+  let cart = {};
+
+  function loadCart() {
+    try {
+      const raw = localStorage.getItem(CART_STORAGE_KEY);
+      cart = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      cart = {};
+    }
+  }
+
+  function saveCart() {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    } catch (e) {
+      // private browsing / storage disabled: cart still works for this page view
+    }
+  }
+
+  function cartCount() {
+    return Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+  }
+
+  function formatVnDate(iso) {
+    const [y, m, d] = iso.split("-");
+    return `${d}/${m}/${y}`;
+  }
+
+  function stripAccents(str) {
+    return str.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase();
+  }
+
+  // Từ đồng nghĩa/vùng miền: tra 1 từ trong mỗi cặp phải ra đúng nhóm mặt hàng
+  // của cả 2 (mì/mỳ chỉ khác chính tả; xì dầu/nước tương là 2 tên gọi của cùng
+  // 1 loại gia vị). Canonicalize cả câu tìm VÀ tên mặt hàng về cùng 1 dạng
+  // trước khi so khớp, dùng \b để không đụng vào giữa từ khác.
+  const SEARCH_SYNONYMS = [
+    [/\bmy\b/g, "mi"], // mỳ -> mì (sau stripAccents)
+    [/\bnuoc tuong\b/g, "xi dau"], // nước tương -> xì dầu
+  ];
+  function canonicalizeSearch(str) {
+    let out = str;
+    for (const [pattern, replacement] of SEARCH_SYNONYMS) {
+      out = out.replace(pattern, replacement);
+    }
+    return out;
+  }
+
+  function priceLine(item) {
+    const right = document.createElement("div");
+    right.className = "item-price";
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent = `${numberFormat.format(item.price)} ₽`;
+    right.appendChild(price);
+    if (item.bulk_qty && item.bulk_price) {
+      const bulk = document.createElement("div");
+      bulk.className = "bulk";
+      bulk.textContent = `Sỉ ${item.bulk_qty}: ${numberFormat.format(item.bulk_price)} ₽`;
+      right.appendChild(bulk);
+    }
+    return right;
+  }
+
+  function renderCategoryGrid() {
+    const grid = document.getElementById("cat-grid");
+    grid.innerHTML = "";
+    for (const cat of categories) {
+      const li = document.createElement("li");
+      li.className = "cat-card";
+      const name = document.createElement("div");
+      name.className = "cat-card-name";
+      name.textContent = cat.name;
+      const count = document.createElement("div");
+      count.className = "cat-card-count";
+      count.textContent = `${cat.items.length} mặt hàng`;
+      li.appendChild(name);
+      li.appendChild(count);
+      li.addEventListener("click", () => setView({ mode: "category", name: cat.name }));
+      grid.appendChild(li);
+    }
+  }
+
+  // Card-level +/- control: "+ Thêm" while the item isn't in the cart
+  // yet, a "- qty +" stepper once it is. Button clicks must not bubble
+  // up to the card's own click listener (which opens the modal).
+  function buildQtyRow(item) {
+    const code = item.code;
+    const qty = cart[code] || 0;
+    const row = document.createElement("div");
+    row.className = "item-qty-row";
+
+    if (qty === 0) {
+      const addBtn = document.createElement("button");
+      addBtn.type = "button";
+      addBtn.className = "item-add-btn";
+      addBtn.textContent = "+ Thêm";
+      addBtn.setAttribute("aria-label", `Thêm ${item.name} vào giỏ hàng`);
+      addBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        cart[code] = 1;
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+      });
+      row.appendChild(addBtn);
+    } else {
+      const stepper = document.createElement("div");
+      stepper.className = "item-qty-stepper";
+
+      const minus = document.createElement("button");
+      minus.type = "button";
+      minus.className = "card-qty-btn";
+      minus.textContent = "−";
+      minus.setAttribute("aria-label", `Giảm số lượng ${item.name}`);
+      minus.addEventListener("click", (e) => {
+        e.stopPropagation();
+        cart[code] = Math.max(0, (cart[code] || 0) - 1);
+        if (cart[code] === 0) delete cart[code];
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+      });
+
+      const qtyLabel = document.createElement("span");
+      qtyLabel.className = "item-qty-label";
+      qtyLabel.textContent = String(qty);
+
+      const plus = document.createElement("button");
+      plus.type = "button";
+      plus.className = "card-qty-btn";
+      plus.textContent = "+";
+      plus.setAttribute("aria-label", `Tăng số lượng ${item.name}`);
+      plus.addEventListener("click", (e) => {
+        e.stopPropagation();
+        cart[code] = (cart[code] || 0) + 1;
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+      });
+
+      stepper.appendChild(minus);
+      stepper.appendChild(qtyLabel);
+      stepper.appendChild(plus);
+      row.appendChild(stepper);
+    }
+    return row;
+  }
+
+  // Re-draws just the qty row of every card currently on screen, instead
+  // of the whole grid -- cheap, and avoids re-creating <img> elements
+  // (which would otherwise re-trigger their lazy-load/decode).
+  function refreshAllItemCards() {
+    document.querySelectorAll("#list li.item[data-code]").forEach((li) => {
+      const item = allItems.find((i) => i.code === li.dataset.code);
+      const old = li.querySelector(".item-qty-row");
+      if (item && old) old.replaceWith(buildQtyRow(item));
+    });
+  }
+
+  function renderList(items, { showCategoryLabel }) {
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+    for (const item of items) {
+      const li = document.createElement("li");
+      li.className = item.in_stock === false ? "item out-of-stock" : "item";
+      li.dataset.code = item.code;
+      li.addEventListener("click", () => openModal(item));
+
+      const imgWrap = document.createElement("div");
+      imgWrap.className = "item-img";
+      if (item.image) {
+        // Lazy: a category can hold ~50 items, and these are the same
+        // full-size photos the modal uses -- no reason to pull them
+        // all over mobile data before they're actually on screen.
+        const img = document.createElement("img");
+        img.src = item.image;
+        img.alt = item.name;
+        img.loading = "lazy";
+        img.decoding = "async";
+        imgWrap.appendChild(img);
+      } else {
+        const placeholder = document.createElement("div");
+        placeholder.className = "no-image";
+        placeholder.textContent = "Chưa có ảnh";
+        imgWrap.appendChild(placeholder);
+      }
+      if (item.in_stock === false) {
+        const badge = document.createElement("div");
+        badge.className = "stock-badge";
+        badge.textContent = "Tạm hết hàng";
+        imgWrap.appendChild(badge);
+      }
+
+      const body = document.createElement("div");
+      body.className = "item-body";
+      const name = document.createElement("div");
+      name.className = "item-name";
+      name.textContent = item.name;
+      body.appendChild(name);
+      if (topCodesSet.has(item.code)) {
+        const topBadge = document.createElement("div");
+        topBadge.className = "top-pick-badge";
+        topBadge.textContent = "★ Hay mua";
+        body.appendChild(topBadge);
+      }
+      if (item.sale_until) {
+        const saleBadge = document.createElement("div");
+        saleBadge.className = "sale-countdown-badge";
+        saleBadge.textContent = `⏳ Còn bán đến hết ${formatVnDate(item.sale_until)}`;
+        body.appendChild(saleBadge);
+      }
+      if (showCategoryLabel && item.category) {
+        const meta = document.createElement("div");
+        meta.className = "item-meta";
+        meta.textContent = item.category;
+        body.appendChild(meta);
+      }
+      body.appendChild(priceLine(item));
+      if (item.in_stock !== false) {
+        body.appendChild(buildQtyRow(item));
+      }
+
+      li.appendChild(imgWrap);
+      li.appendChild(body);
+      list.appendChild(li);
+    }
+  }
+
+  function setView(next) {
+    view = next;
+    document.getElementById("search").value = next.mode === "search" ? next.query : "";
+    render();
+  }
+
+  function render() {
+    const grid = document.getElementById("cat-grid");
+    const list = document.getElementById("list");
+    const empty = document.getElementById("empty");
+    const count = document.getElementById("count");
+    const sectionTitle = document.getElementById("section-title");
+    const backBtn = document.getElementById("back-btn");
+
+    grid.hidden = true;
+    list.hidden = true;
+    empty.hidden = true;
+    sectionTitle.hidden = true;
+    backBtn.style.display = "none";
+
+    if (view.mode === "home") {
+      sectionTitle.hidden = true;
+      count.textContent = `${categories.length} nhóm hàng · ${allItems.length} mặt hàng`;
+      grid.hidden = false;
+      renderCategoryGrid();
+      return;
+    }
+
+    backBtn.style.display = "block";
+
+    let items, showCategoryLabel;
+    if (view.mode === "category") {
+      const cat = categories.find((c) => c.name === view.name);
+      items = cat ? cat.items : [];
+      showCategoryLabel = false;
+      sectionTitle.hidden = false;
+      sectionTitle.textContent = view.name;
+    } else {
+      // search: flatten across everything, regardless of which group we were browsing.
+      // Khớp theo TỪNG TỪ (phải có đủ mọi từ đã gõ, không cần đúng thứ tự/liền nhau)
+      // -- "nước mắm" sẽ yêu cầu cả "nuoc" và "mam" cùng có trong tên, nên không
+      // lẫn sang "Mắm Tôm"/"Mắm Nêm"/"Mắm Mực" (không có từ "nước").
+      const queryWords = canonicalizeSearch(stripAccents(view.query.trim()))
+        .split(/\s+/)
+        .filter(Boolean);
+      items = allItems.filter((item) => {
+        const haystack = canonicalizeSearch(stripAccents(item.name)) + " " + stripAccents(item.code);
+        return queryWords.every((word) => haystack.includes(word));
+      });
+      showCategoryLabel = true;
+      sectionTitle.hidden = false;
+      sectionTitle.textContent = `Kết quả tìm kiếm: "${view.query.trim()}"`;
+    }
+
+    if (items.length === 0) {
+      empty.hidden = false;
+      count.textContent = "";
+      return;
+    }
+    count.textContent = `${items.length} mặt hàng`;
+    list.hidden = false;
+    renderList(items, { showCategoryLabel });
+  }
+
+  function openModal(item) {
+    currentModalItem = item;
+    modalQty = 1;
+    const overlay = document.getElementById("modal-overlay");
+    const imageWrap = document.getElementById("modal-image-wrap");
+
+    imageWrap.innerHTML = "";
+    if (item.image) {
+      // Loaded only now (not for all 100+ items up front) to keep the
+      // catalog itself light on mobile data.
+      const img = document.createElement("img");
+      img.src = item.image;
+      img.alt = item.name;
+      img.loading = "eager";
+      imageWrap.appendChild(img);
+    } else {
+      imageWrap.textContent = "Chưa có ảnh";
+    }
+
+    document.getElementById("modal-category").textContent = item.category || FALLBACK_CATEGORY;
+    document.getElementById("modal-top-badge").hidden = !topCodesSet.has(item.code);
+    document.getElementById("modal-name").textContent = item.name;
+    document.getElementById("modal-unit").textContent = [item.unit, item.code].filter(Boolean).join(" · ");
+    document.getElementById("modal-stock-badge").hidden = item.in_stock !== false;
+    const saleNote = document.getElementById("modal-sale-note");
+    if (item.sale_until) {
+      saleNote.hidden = false;
+      saleNote.textContent = `⏳ Còn bán đến hết ${formatVnDate(item.sale_until)}`;
+    } else {
+      saleNote.hidden = true;
+    }
+    document.getElementById("modal-price").textContent = `${numberFormat.format(item.price)} ₽`;
+    const bulkEl = document.getElementById("modal-bulk");
+    if (item.bulk_qty && item.bulk_price) {
+      bulkEl.hidden = false;
+      bulkEl.textContent = `Giá sỉ từ ${item.bulk_qty}: ${numberFormat.format(item.bulk_price)} ₽`;
+    } else {
+      bulkEl.hidden = true;
+      bulkEl.textContent = "";
+    }
+    document.getElementById("modal-contact").href = CONTACT_URL;
+
+    const cartRow = document.getElementById("modal-cart-row");
+    const outOfStockNote = document.getElementById("modal-out-of-stock-note");
+    if (item.in_stock === false) {
+      cartRow.hidden = true;
+      outOfStockNote.hidden = false;
+    } else {
+      cartRow.hidden = false;
+      outOfStockNote.hidden = true;
+      updateModalQtyDisplay();
+    }
+
+    overlay.classList.add("open");
+  }
+
+  function closeModal() {
+    document.getElementById("modal-overlay").classList.remove("open");
+  }
+
+  function updateModalQtyDisplay() {
+    document.getElementById("modal-qty").textContent = String(modalQty);
+  }
+
+  function addCurrentItemToCart() {
+    if (!currentModalItem) return;
+    const code = currentModalItem.code;
+    cart[code] = (cart[code] || 0) + modalQty;
+    saveCart();
+    renderCartFab();
+    refreshAllItemCards();
+    closeModal();
+  }
+
+  function renderCartFab() {
+    const count = cartCount();
+    document.getElementById("cart-fab").textContent = count > 0 ? `🛒 Giỏ hàng (${count})` : "🛒 Giỏ hàng";
+  }
+
+  function cartLines() {
+    return Object.entries(cart)
+      .map(([code, qty]) => ({ item: allItems.find((i) => i.code === code), code, qty }))
+      .filter((line) => line.item); // drop codes no longer in the published catalog
+  }
+
+  function buildOrderText(lines) {
+    const out = ["Đơn đặt hàng từ website:"];
+    let total = 0;
+    for (const { item, qty } of lines) {
+      out.push(`${item.code} x${qty} — ${item.name}`);
+      total += item.price * qty;
+    }
+    out.push("—");
+    out.push(`Tổng ước tính: ${numberFormat.format(total)} ₽`);
+    return { text: out.join("\n"), total };
+  }
+
+  function renderCart() {
+    const lines = cartLines();
+    const listEl = document.getElementById("cart-list");
+    const emptyNote = document.getElementById("cart-empty-note");
+    const totalEl = document.getElementById("cart-total");
+    const textEl = document.getElementById("cart-text");
+    const sendEl = document.getElementById("cart-send");
+    const copyBtn = document.getElementById("cart-copy");
+    const clearBtn = document.getElementById("cart-clear");
+
+    listEl.innerHTML = "";
+    if (lines.length === 0) {
+      emptyNote.hidden = false;
+      totalEl.hidden = true;
+      textEl.hidden = true;
+      sendEl.hidden = true;
+      copyBtn.hidden = true;
+      clearBtn.hidden = true;
+      return;
+    }
+    emptyNote.hidden = true;
+
+    for (const { item, code, qty } of lines) {
+      const li = document.createElement("li");
+      const name = document.createElement("div");
+      name.className = "cart-item-name";
+      name.textContent = `${item.name} (${item.code})`;
+      const minus = document.createElement("button");
+      minus.className = "qty-btn";
+      minus.type = "button";
+      minus.textContent = "−";
+      minus.addEventListener("click", () => {
+        cart[code] = Math.max(0, cart[code] - 1);
+        if (cart[code] === 0) delete cart[code];
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+        renderCart();
+      });
+      const qtyLabel = document.createElement("span");
+      qtyLabel.textContent = String(qty);
+      qtyLabel.style.minWidth = "24px";
+      qtyLabel.style.textAlign = "center";
+      qtyLabel.style.fontWeight = "600";
+      const plus = document.createElement("button");
+      plus.className = "qty-btn";
+      plus.type = "button";
+      plus.textContent = "+";
+      plus.addEventListener("click", () => {
+        cart[code] = cart[code] + 1;
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+        renderCart();
+      });
+      const remove = document.createElement("button");
+      remove.className = "cart-remove";
+      remove.type = "button";
+      remove.textContent = "✕";
+      remove.setAttribute("aria-label", `Xóa ${item.name} khỏi giỏ`);
+      remove.addEventListener("click", () => {
+        delete cart[code];
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+        renderCart();
+      });
+      li.appendChild(name);
+      li.appendChild(minus);
+      li.appendChild(qtyLabel);
+      li.appendChild(plus);
+      li.appendChild(remove);
+      listEl.appendChild(li);
+    }
+
+    const { text, total } = buildOrderText(lines);
+    totalEl.hidden = false;
+    totalEl.textContent = `Tổng ước tính: ${numberFormat.format(total)} ₽`;
+    textEl.hidden = false;
+    textEl.value = text;
+    sendEl.hidden = false;
+    if (inTelegramMiniApp) {
+      // Submitted via Telegram.WebApp.sendData() in the click handler
+      // below, not by navigating -- no manual "find Send and tap it"
+      // step left (see CLAUDE.md section 7, lần 12).
+      sendEl.textContent = "✅ Xác nhận gửi đơn";
+      sendEl.href = "#";
+    } else {
+      sendEl.textContent = "📨 Gửi đơn qua Telegram";
+      sendEl.href = `${BOT_URL}?text=${encodeURIComponent(text)}`;
+    }
+    copyBtn.hidden = false;
+    clearBtn.hidden = false;
+  }
+
+  function openCart() {
+    renderCart();
+    document.getElementById("cart-overlay").classList.add("open");
+  }
+
+  function closeCart() {
+    document.getElementById("cart-overlay").classList.remove("open");
+  }
+
+  // The guide always shows BOTH ordering methods (customers can end up
+  // here from a link shared outside Telegram, a saved bookmark, etc.),
+  // but points out up top which one applies to how THIS page was opened
+  // -- same inTelegramMiniApp check used everywhere else on the page,
+  // no extra network call.
+  function openGuide() {
+    document.getElementById("guide-context").textContent = inTelegramMiniApp
+      ? "Bạn đang mở trang này trong Telegram — dùng Cách 1 bên dưới."
+      : "Bạn đang mở trang này bằng trình duyệt thường — dùng Cách 2 bên dưới.";
+    document.getElementById("guide-overlay").classList.add("open");
+  }
+
+  function closeGuide() {
+    document.getElementById("guide-overlay").classList.remove("open");
+  }
+
+  function buildCategories(items) {
+    const byName = new Map();
+    for (const item of items) {
+      const name = item.category || FALLBACK_CATEGORY;
+      if (!byName.has(name)) byName.set(name, []);
+      byName.get(name).push(item);
+    }
+    const ordered = [];
+    for (const name of CATEGORY_ORDER) {
+      if (byName.has(name)) {
+        ordered.push({ name, items: byName.get(name) });
+        byName.delete(name);
+      }
+    }
+    for (const [name, catItems] of byName) {
+      ordered.push({ name, items: catItems });
+    }
+    return ordered;
+  }
+
+  // Plain <a> navigation to a t.me link doesn't reliably work inside
+  // Telegram's own Mini App WebView (it's a sandboxed view, not a full
+  // browser) -- Telegram's own API for "open this Telegram link" from
+  // inside a Mini App is openTelegramLink(). Outside Telegram, the
+  // normal <a target="_blank"> behavior already works, so this only
+  // needs to override the click when running as a Mini App.
+  function wireTelegramLinkFallback(id) {
+    const el = document.getElementById(id);
+    el.addEventListener("click", async (e) => {
+      if (!inTelegramMiniApp) return;
+      e.preventDefault();
+      const webApp = await tgSdkReady;
+      if (webApp && typeof webApp.openTelegramLink === "function") {
+        webApp.openTelegramLink(el.href);
+      } else {
+        window.open(el.href, "_blank", "noopener");
+      }
+    });
+  }
+
+  // Adds the customer's own last order (from the `?last=` hint, see
+  // above) to the cart with a single tap -- only shown when at least
+  // one of those codes still exists AND is currently in stock (same
+  // rule the card/modal "Thêm vào giỏ hàng" already enforces; an item
+  // that went out of stock since the last order is dropped, not just
+  // discontinued ones). Sets quantities (doesn't add to whatever's
+  // already in the cart), so tapping it twice -- or once after already
+  // having picked some of the same items by hand -- lands on the last
+  // order's quantities, not a doubled-up total.
+  function setupReorderButton() {
+    const btn = document.getElementById("reorder-btn");
+    const valid = lastOrderHint.filter(({ code }) => {
+      const item = allItems.find((i) => i.code === code);
+      return item && item.in_stock !== false;
+    });
+    if (valid.length === 0) return;
+    btn.hidden = false;
+    btn.textContent = `🔁 Đặt lại đơn trước (${valid.length} mặt hàng)`;
+    btn.addEventListener("click", () => {
+      for (const { code, qty } of valid) {
+        cart[code] = qty;
+      }
+      saveCart();
+      renderCartFab();
+      refreshAllItemCards();
+      openCart();
+    });
+  }
+
+  async function main() {
+    loadCart();
+    renderCartFab();
+    document.getElementById("cart-contact-fallback").href = CONTACT_URL;
+    wireTelegramLinkFallback("modal-contact");
+    wireTelegramLinkFallback("cart-contact-fallback");
+
+    let data;
+    try {
+      const res = await fetch("products.json", { cache: "no-store" });
+      data = await res.json();
+    } catch (err) {
+      document.getElementById("count").textContent = "Không tải được bảng giá. Thử lại sau.";
+      return;
+    }
+
+    // Seasonal/limited-time products (lần 21, "tự động ẩn theo ngày giờ
+    // hạn" -- the owner explicitly chose auto-HIDE over staying visible
+    // greyed out like a plain out-of-stock item): a product past its
+    // sale_until ("YYYY-MM-DD") is dropped from the catalog entirely,
+    // compared against the VISITOR'S OWN local date (not UTC --
+    // toISOString()'s UTC date LAGS local time in St. Petersburg's
+    // UTC+3, so using it would keep an already-expired item visible for
+    // up to 3 extra hours after local midnight, not hide it early).
+    // cartLines() already drops cart
+    // entries whose code isn't in allItems ("no longer in the published
+    // catalog"), the same path a discontinued product takes -- a
+    // leftover localStorage cart entry for an expired item is silently
+    // dropped, not an error.
+    const today = new Date();
+    const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    allItems = (data.items || [])
+      .filter((item) => !item.sale_until || item.sale_until >= todayIso)
+      .sort((a, b) => a.name.localeCompare(b.name, "vi"));
+    categories = buildCategories(allItems);
+    setupReorderButton();
+
+    const updatedEl = document.getElementById("updated");
+    if (data.updated_at) {
+      const d = new Date(data.updated_at);
+      updatedEl.textContent = `Cập nhật lúc: ${d.toLocaleString("vi-VN")}`;
+    }
+
+    render();
+
+    const searchEl = document.getElementById("search");
+    searchEl.addEventListener("input", () => {
+      const q = searchEl.value;
+      if (!q.trim()) {
+        setView(preSearchView);
+        return;
+      }
+      if (view.mode !== "search") preSearchView = view;
+      view = { mode: "search", query: q };
+      render();
+    });
+
+    document.getElementById("back-btn").addEventListener("click", () => {
+      setView(view.mode === "search" ? preSearchView : { mode: "home" });
+    });
+    document.getElementById("modal-close").addEventListener("click", closeModal);
+    document.getElementById("modal-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "modal-overlay") closeModal();
+    });
+
+    document.getElementById("modal-qty-minus").addEventListener("click", () => {
+      modalQty = Math.max(1, modalQty - 1);
+      updateModalQtyDisplay();
+    });
+    document.getElementById("modal-qty-plus").addEventListener("click", () => {
+      modalQty += 1;
+      updateModalQtyDisplay();
+    });
+    document.getElementById("modal-add-to-cart").addEventListener("click", addCurrentItemToCart);
+
+    document.getElementById("cart-send").addEventListener("click", async (e) => {
+      if (!inTelegramMiniApp) return; // plain <a href> to BOT_URL handles this case
+      e.preventDefault();
+      const lines = cartLines();
+      if (lines.length === 0) return;
+      const payload = JSON.stringify({ lines: lines.map(({ code, qty }) => ({ code, qty })) });
+      // Telegram caps sendData() at 4096 bytes; a household grocery
+      // order never gets close, but fail loudly instead of silently
+      // dropping items if it ever does.
+      if (payload.length > 4000) {
+        alert(
+          'Đơn hàng có quá nhiều mặt hàng để gửi trực tiếp qua Mini App. Vui lòng mở trang này trong trình duyệt thường (ngoài Telegram) và bấm "Gửi đơn qua Telegram" ở đó.',
+        );
+        return;
+      }
+      const webApp = await tgSdkReady;
+      if (!webApp || typeof webApp.sendData !== "function") {
+        alert("Không kết nối được với Telegram ngay lúc này. Vui lòng thử lại, hoặc mở trang này trong trình duyệt thường.");
+        return;
+      }
+      // Clear BEFORE sendData(), not after: Telegram closes this Mini
+      // App's WebView as part of handling sendData(), which can happen
+      // before any code placed after that call gets to run. The Mini
+      // App's WebView keeps its own localStorage across visits (same
+      // as a normal browser tab), so without this, next time's cart
+      // would still be full of whatever was just ordered.
+      cart = {};
+      saveCart();
+      renderCartFab();
+      refreshAllItemCards();
+      webApp.sendData(payload);
+    });
+
+    document.getElementById("cart-fab").addEventListener("click", openCart);
+    document.getElementById("cart-close").addEventListener("click", closeCart);
+    document.getElementById("cart-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "cart-overlay") closeCart();
+    });
+
+    document.getElementById("guide-link").addEventListener("click", openGuide);
+    document.getElementById("guide-close").addEventListener("click", closeGuide);
+    document.getElementById("guide-overlay").addEventListener("click", (e) => {
+      if (e.target.id === "guide-overlay") closeGuide();
+    });
+    document.getElementById("cart-copy").addEventListener("click", async () => {
+      const textEl = document.getElementById("cart-text");
+      const copyBtn = document.getElementById("cart-copy");
+      try {
+        await navigator.clipboard.writeText(textEl.value);
+        copyBtn.textContent = "Đã sao chép!";
+      } catch (e) {
+        // Clipboard API unavailable (older browser, non-HTTPS, permissions) --
+        // the textarea above is always visible, so the user can still
+        // select-all and copy by hand.
+        textEl.focus();
+        textEl.select();
+        copyBtn.textContent = "Hãy tự bôi đen & copy ở trên";
+      }
+      setTimeout(() => {
+        copyBtn.textContent = "📋 Sao chép nội dung đơn hàng";
+      }, 2000);
+    });
+    document.getElementById("cart-clear").addEventListener("click", () => {
+      cart = {};
+      saveCart();
+      renderCartFab();
+      refreshAllItemCards();
+      renderCart();
+    });
+  }
+
+  main();
+</script>
+</body>
+</html>
