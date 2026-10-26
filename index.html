@@ -293,21 +293,22 @@
     font-weight: 600;
     font-size: 0.85rem;
   }
-  /* "Lấy sỉ ×N" -- 1 lần bấm đặt số lượng thẳng lên mức sỉ (bulk_qty),
-     thay vì phải bấm "+" hàng chục lần cho mặt hàng bán theo thùng/bao
-     (vd mỳ tôm sỉ 30 gói). Ghi đè số lượng hiện có, không cộng dồn --
-     cùng quy ước "chọn nhanh số lượng" đã dùng cho nút "Đặt lại đơn trước". */
-  .item-bulk-btn {
-    width: 100%;
+  /* "Lấy sỉ" +/- stepper -- thêm/bớt nguyên 1 thùng/bao (bulk_qty) mỗi
+     lần bấm, mượt mà y hệt cặp +/- số lượng thường ở trên (bước nhảy là
+     bulk_qty thay vì 1, vd mỳ tôm sỉ 30 gói/thùng) -- 27/10/2026 thay
+     cho nút "Lấy sỉ ×N" ghi đè cũ, vì mua sỉ thường cần cộng/trừ nhiều
+     thùng chứ không chỉ đặt 1 lần. */
+  .item-bulk-stepper {
     margin-top: 4px;
-    background: transparent;
-    border: 1px solid var(--accent);
+  }
+  .card-bulk-btn {
+    border-color: var(--accent);
     color: var(--accent);
-    border-radius: 8px;
-    padding: 5px 0;
-    font-weight: 600;
+  }
+  .item-bulk-label {
+    color: var(--accent);
     font-size: 0.72rem;
-    cursor: pointer;
+    font-weight: 600;
   }
   .empty {
     text-align: center;
@@ -562,21 +563,24 @@
   }
   /* Same [hidden]-vs-display trap as #cat-grid/#list/#modal-stock-badge
      above: the id rule below needs its own [hidden] override or the
-     button stays visible even while hidden. */
-  #modal-bulk-btn[hidden] {
+     stepper stays visible even while hidden. */
+  #modal-bulk-stepper[hidden] {
     display: none;
   }
-  #modal-bulk-btn {
-    display: block;
+  #modal-bulk-stepper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin: 6px 0 0;
-    padding: 6px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--accent);
-    background: transparent;
+  }
+  #modal-bulk-label {
     color: var(--accent);
     font-weight: 600;
-    font-size: 0.8rem;
-    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .bulk-qty-btn {
+    border-color: var(--accent);
+    color: var(--accent);
   }
   #modal-stock-badge {
     margin-bottom: 8px;
@@ -689,7 +693,11 @@
     <div id="modal-sale-note" class="sale-countdown-badge" hidden></div>
     <div id="modal-price"></div>
     <div id="modal-bulk"></div>
-    <button id="modal-bulk-btn" type="button" hidden></button>
+    <div id="modal-bulk-stepper" hidden>
+      <button class="qty-btn bulk-qty-btn" id="modal-bulk-minus" type="button" aria-label="Bớt theo mức sỉ">−</button>
+      <span id="modal-bulk-label"></span>
+      <button class="qty-btn bulk-qty-btn" id="modal-bulk-plus" type="button" aria-label="Thêm theo mức sỉ">+</button>
+    </div>
     <div id="modal-cart-row">
       <button class="qty-btn" id="modal-qty-minus" type="button" aria-label="Giảm số lượng">−</button>
       <span id="modal-qty">1</span>
@@ -1030,21 +1038,56 @@
       // Quantities must stay whole numbers all the way to the bot/invoice
       // (parseWebAppOrderLines floors them, the web-link regex only
       // matches \d+) -- a fractional bulk_qty (e.g. GAO001's 4.5, a bag
-      // weight) can't safely be set in one tap yet, so skip the button
-      // for it rather than silently truncating what the customer picked.
-      const bulkBtn = document.createElement("button");
-      bulkBtn.type = "button";
-      bulkBtn.className = "item-bulk-btn";
-      bulkBtn.textContent = `Lấy sỉ ×${item.bulk_qty}`;
-      bulkBtn.setAttribute("aria-label", `Đặt số lượng ${item.name} theo mức sỉ ${item.bulk_qty}`);
-      bulkBtn.addEventListener("click", (e) => {
+      // weight) can't safely be stepped by in one tap yet, so skip the
+      // stepper for it rather than silently truncating what the customer
+      // picked.
+      //
+      // 27/10/2026: this used to be a single "Lấy sỉ ×N" button that
+      // OVERWROTE the quantity to exactly N -- fine for 1 thùng/bao, but
+      // buying 2+ thùng meant it did nothing on a second tap (same value
+      // set again). A +/- stepper that adds/removes N each tap (mirrors
+      // the normal qty stepper above, just with a bigger step) lets a
+      // customer smoothly build up or back off several thùng/bao, same
+      // on the plain website and inside the Telegram Mini App (same
+      // code either way).
+      const bulkStepper = document.createElement("div");
+      bulkStepper.className = "item-qty-stepper item-bulk-stepper";
+
+      const bulkMinus = document.createElement("button");
+      bulkMinus.type = "button";
+      bulkMinus.className = "card-qty-btn card-bulk-btn";
+      bulkMinus.textContent = "−";
+      bulkMinus.setAttribute("aria-label", `Bớt 1 thùng/bao (${item.bulk_qty}) ${item.name}`);
+      bulkMinus.addEventListener("click", (e) => {
         e.stopPropagation();
-        cart[code] = item.bulk_qty;
+        cart[code] = Math.max(0, (cart[code] || 0) - item.bulk_qty);
+        if (cart[code] === 0) delete cart[code];
         saveCart();
         renderCartFab();
         refreshAllItemCards();
       });
-      row.appendChild(bulkBtn);
+
+      const bulkLabel = document.createElement("span");
+      bulkLabel.className = "item-qty-label item-bulk-label";
+      bulkLabel.textContent = `×${item.bulk_qty}`;
+
+      const bulkPlus = document.createElement("button");
+      bulkPlus.type = "button";
+      bulkPlus.className = "card-qty-btn card-bulk-btn";
+      bulkPlus.textContent = "+";
+      bulkPlus.setAttribute("aria-label", `Thêm 1 thùng/bao (${item.bulk_qty}) ${item.name}`);
+      bulkPlus.addEventListener("click", (e) => {
+        e.stopPropagation();
+        cart[code] = (cart[code] || 0) + item.bulk_qty;
+        saveCart();
+        renderCartFab();
+        refreshAllItemCards();
+      });
+
+      bulkStepper.appendChild(bulkMinus);
+      bulkStepper.appendChild(bulkLabel);
+      bulkStepper.appendChild(bulkPlus);
+      row.appendChild(bulkStepper);
     }
     return row;
   }
@@ -1226,7 +1269,7 @@
     }
     document.getElementById("modal-price").textContent = `${numberFormat.format(item.price)} ₽`;
     const bulkEl = document.getElementById("modal-bulk");
-    const bulkBtn = document.getElementById("modal-bulk-btn");
+    const bulkStepper = document.getElementById("modal-bulk-stepper");
     if (item.bulk_qty && item.bulk_price) {
       bulkEl.hidden = false;
       bulkEl.textContent = `Giá sỉ từ ${item.bulk_qty}: ${numberFormat.format(item.bulk_price)} ₽`;
@@ -1234,14 +1277,14 @@
       bulkEl.hidden = true;
       bulkEl.textContent = "";
     }
-    // Same whole-number guard as the card button (see buildQtyRow), plus:
+    // Same whole-number guard as the card stepper (see buildQtyRow), plus:
     // out-of-stock items hide the whole add-to-cart row anyway, so the
-    // button would sit there doing nothing if shown.
+    // stepper would sit there doing nothing if shown.
     if (item.bulk_qty && item.bulk_price && Number.isInteger(item.bulk_qty) && item.bulk_qty > 1 && item.in_stock !== false) {
-      bulkBtn.hidden = false;
-      bulkBtn.textContent = `Lấy sỉ ×${item.bulk_qty}`;
+      bulkStepper.hidden = false;
+      document.getElementById("modal-bulk-label").textContent = `×${item.bulk_qty}`;
     } else {
-      bulkBtn.hidden = true;
+      bulkStepper.hidden = true;
     }
     document.getElementById("modal-contact").href = CONTACT_URL;
 
@@ -1562,9 +1605,20 @@
       modalQty += 1;
       updateModalQtyDisplay();
     });
-    document.getElementById("modal-bulk-btn").addEventListener("click", () => {
+    // Steps modalQty (the "Thêm vào giỏ hàng" picker, not the cart
+    // itself yet) by a whole thùng/bao each tap -- mirrors the plain
+    // modal-qty-minus/plus pair above, just with bulk_qty as the step
+    // instead of 1, so adding/removing several thùng is as smooth as
+    // the regular stepper.
+    document.getElementById("modal-bulk-minus").addEventListener("click", () => {
       if (currentModalItem && currentModalItem.bulk_qty) {
-        modalQty = currentModalItem.bulk_qty;
+        modalQty = Math.max(1, modalQty - currentModalItem.bulk_qty);
+        updateModalQtyDisplay();
+      }
+    });
+    document.getElementById("modal-bulk-plus").addEventListener("click", () => {
+      if (currentModalItem && currentModalItem.bulk_qty) {
+        modalQty += currentModalItem.bulk_qty;
         updateModalQtyDisplay();
       }
     });
