@@ -867,6 +867,20 @@
   const CART_STORAGE_KEY = "cart_v1";
   let cart = {};
 
+  // Mirrors shop.core.pricing.BULK_DISCOUNT_FACTOR (26/10/2026) -- the
+  // invoice itself applies this same 2% once qty reaches an item's
+  // bulk_qty (shop.core.invoices._resync_bulk_discount), so the total
+  // quoted here must match what the customer actually gets billed.
+  const BULK_DISCOUNT_FACTOR = 0.98;
+
+  function lineTotal(item, qty) {
+    const plain = item.price * qty;
+    if (item.bulk_qty && qty >= item.bulk_qty) {
+      return Math.round(plain * BULK_DISCOUNT_FACTOR);
+    }
+    return Math.round(plain);
+  }
+
   function loadCart() {
     try {
       const raw = localStorage.getItem(CART_STORAGE_KEY);
@@ -1279,7 +1293,7 @@
     let total = 0;
     for (const { item, qty } of lines) {
       out.push(`${item.code} x${qty} — ${item.name}`);
-      total += item.price * qty;
+      total += lineTotal(item, qty);
     }
     out.push("—");
     out.push(`Tổng ước tính: ${numberFormat.format(total)} ₽`);
