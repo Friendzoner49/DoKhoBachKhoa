@@ -534,6 +534,42 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    cursor: zoom-in;
+  }
+  /* Request 02/11/2026: the 4:3 crop above (object-fit: cover) loses
+     corners on some photos -- tapping the image opens this full-screen
+     "xem ảnh gốc" view instead, object-fit: contain so nothing is ever
+     cropped, on every product with a photo (not just "Quà tặng"). */
+  #lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    cursor: zoom-out;
+  }
+  #lightbox-overlay.open {
+    display: flex;
+  }
+  #lightbox-overlay img {
+    max-width: 94vw;
+    max-height: 94vh;
+    object-fit: contain;
+  }
+  #lightbox-close {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
   }
   /* "Quà tặng" items only (lần 38) -- extra angles below the main photo,
      tap a thumbnail to swap it into the main view. Hidden entirely
@@ -737,6 +773,11 @@
     <p id="modal-out-of-stock-note" hidden>Mặt hàng tạm hết hàng, không thể thêm vào giỏ lúc này — liên hệ để hỏi khi có hàng trở lại.</p>
     <a id="modal-contact" href="#" target="_blank" rel="noopener">💬 Có câu hỏi về mặt hàng này? Liên hệ</a>
   </div>
+</div>
+
+<div id="lightbox-overlay">
+  <button id="lightbox-close" type="button" aria-label="Đóng">✕</button>
+  <img id="lightbox-img" src="" alt="">
 </div>
 
 <div id="cart-overlay" class="sheet-overlay">
@@ -1295,6 +1336,7 @@
       mainImg.src = item.image;
       mainImg.alt = item.name;
       mainImg.loading = "eager";
+      mainImg.addEventListener("click", () => openLightbox(mainImg.src, item.name));
       imageWrap.appendChild(mainImg);
     } else {
       imageWrap.textContent = "Chưa có ảnh";
@@ -1382,6 +1424,21 @@
 
   function closeModal() {
     document.getElementById("modal-overlay").classList.remove("open");
+  }
+
+  // Full-size "xem ảnh gốc" view (request 02/11/2026) -- the 4:3 cover
+  // crop in the modal loses corners on some photos; this shows the
+  // whole image uncropped (object-fit: contain), on tap of the main
+  // photo, for every product with an image, not just "Quà tặng".
+  function openLightbox(src, alt) {
+    const img = document.getElementById("lightbox-img");
+    img.src = src;
+    img.alt = alt || "";
+    document.getElementById("lightbox-overlay").classList.add("open");
+  }
+
+  function closeLightbox() {
+    document.getElementById("lightbox-overlay").classList.remove("open");
   }
 
   function updateModalQtyDisplay() {
@@ -1673,6 +1730,10 @@
     document.getElementById("modal-close").addEventListener("click", closeModal);
     document.getElementById("modal-overlay").addEventListener("click", (e) => {
       if (e.target.id === "modal-overlay") closeModal();
+    });
+    document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+    document.getElementById("lightbox-overlay").addEventListener("click", (e) => {
+      if (e.target.id !== "lightbox-close") closeLightbox(); // tap anywhere (backdrop or the photo itself) closes it
     });
 
     document.getElementById("modal-qty-minus").addEventListener("click", () => {
