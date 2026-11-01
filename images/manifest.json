@@ -1303,5 +1303,23 @@
       1048,
       1200
     ]
+  },
+  "QUA001": {
+    "source_url": "Chọn từ máy: Yellow1.JPG",
+    "source_page": null,
+    "fetched_at": "2026-11-01T21:33:48+00:00",
+    "size": [
+      960,
+      1200
+    ]
+  },
+  "QUA002": {
+    "source_url": "Chọn từ máy: Blue1.JPG",
+    "source_page": null,
+    "fetched_at": "2026-11-01T21:33:49+00:00",
+    "size": [
+      960,
+      1200
+    ]
   }
 }

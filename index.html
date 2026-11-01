@@ -535,6 +535,34 @@
     height: 100%;
     object-fit: cover;
   }
+  /* "Quà tặng" items only (lần 38) -- extra angles below the main photo,
+     tap a thumbnail to swap it into the main view. Hidden entirely
+     (parent has [hidden]) for the other 146 ordinary products. */
+  #modal-gallery-thumbs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-bottom: 14px;
+  }
+  #modal-gallery-thumbs img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  #modal-gallery-thumbs img.active {
+    border-color: var(--accent);
+  }
+  #modal-description {
+    white-space: pre-line;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
   #modal-category {
     color: var(--muted);
     font-size: 0.8rem;
@@ -685,10 +713,12 @@
   <div id="modal-card" class="sheet-card">
     <button id="modal-close" class="sheet-close" type="button" aria-label="Đóng">✕</button>
     <div id="modal-image-wrap"></div>
+    <div id="modal-gallery-thumbs" hidden></div>
     <div id="modal-category"></div>
     <div id="modal-top-badge" hidden>★ Bạn hay mua mặt hàng này</div>
     <div id="modal-name"></div>
     <div id="modal-unit"></div>
+    <div id="modal-description" hidden></div>
     <div id="modal-stock-badge" class="stock-badge" hidden>Tạm hết hàng</div>
     <div id="modal-sale-note" class="sale-countdown-badge" hidden></div>
     <div id="modal-price"></div>
@@ -850,6 +880,7 @@
   const topCodesSet = new Set((urlParams.get("top") || "").split(",").filter(Boolean));
 
   const CATEGORY_ORDER = [
+    "Quà tặng",
     "Gạo, bún, miến, mì, phở",
     "Bột & nguyên liệu làm bánh",
     "Gia vị, nước mắm, nước chấm",
@@ -857,7 +888,6 @@
     "Đậu, hạt, vừng, lạc",
     "Cà phê, trà, đồ uống",
     "Bánh kẹo & đồ ăn vặt",
-    "Rượu",
     "Đồ gia dụng & khác",
   ];
   const FALLBACK_CATEGORY = "Khác";
@@ -1258,16 +1288,48 @@
     const imageWrap = document.getElementById("modal-image-wrap");
 
     imageWrap.innerHTML = "";
+    const mainImg = document.createElement("img");
     if (item.image) {
       // Loaded only now (not for all 100+ items up front) to keep the
       // catalog itself light on mobile data.
-      const img = document.createElement("img");
-      img.src = item.image;
-      img.alt = item.name;
-      img.loading = "eager";
-      imageWrap.appendChild(img);
+      mainImg.src = item.image;
+      mainImg.alt = item.name;
+      mainImg.loading = "eager";
+      imageWrap.appendChild(mainImg);
     } else {
       imageWrap.textContent = "Chưa có ảnh";
+    }
+
+    // "Quà tặng" items only (lần 38) -- thumbnail strip to flip through
+    // every angle; tap swaps the main photo. Most products have no
+    // "images" array at all (just the single "image"), so this stays
+    // hidden for the ordinary 146.
+    const thumbsEl = document.getElementById("modal-gallery-thumbs");
+    thumbsEl.innerHTML = "";
+    if (item.images && item.images.length > 1) {
+      thumbsEl.hidden = false;
+      item.images.forEach((src, i) => {
+        const thumb = document.createElement("img");
+        thumb.src = src;
+        thumb.alt = `${item.name} -- ảnh ${i + 1}`;
+        if (src === item.image) thumb.classList.add("active");
+        thumb.addEventListener("click", () => {
+          mainImg.src = src;
+          thumbsEl.querySelectorAll("img").forEach((t) => t.classList.toggle("active", t === thumb));
+        });
+        thumbsEl.appendChild(thumb);
+      });
+    } else {
+      thumbsEl.hidden = true;
+    }
+
+    const descEl = document.getElementById("modal-description");
+    if (item.description) {
+      descEl.hidden = false;
+      descEl.textContent = item.description; // textContent, never innerHTML -- this is untrusted-ish app data
+    } else {
+      descEl.hidden = true;
+      descEl.textContent = "";
     }
 
     document.getElementById("modal-category").textContent = item.category || FALLBACK_CATEGORY;

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-26T21:19:04+00:00",
+  "updated_at": "2026-11-01T21:40:56+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -89,6 +89,40 @@
       "category": "Bánh kẹo & đồ ăn vặt",
       "price": 214,
       "image": "images/BTRA01.jpg?v=a9688c79"
+    },
+    {
+      "code": "QUA001",
+      "name": "Beluga Celebration (chai vàng, kèm ly)",
+      "unit": "chai",
+      "category": "Quà tặng",
+      "price": 1284,
+      "image": "images/QUA001.jpg?v=aa9c5456",
+      "images": [
+        "images/QUA001.jpg?v=aa9c5456",
+        "images/QUA001-g1.jpg?v=05248250",
+        "images/QUA001-g2.jpg?v=267c83d0",
+        "images/QUA001-g3.jpg?v=9c409379",
+        "images/QUA001-g4.jpg?v=3b3bc969"
+      ],
+      "description": "Beluga Celebration — bộ quà tặng vodka Nga cao cấp \"Noble Vodka\", chai mạ vàng kèm 1 ly thủy tinh pha lê, đựng trong hộp quà sang trọng theo phong cách Art Deco, in nổi hình cá tầm Beluga đặc trưng của thương hiệu.\n\n\"A toast to golden moments\" — món quà biếu sang trọng cho dịp lễ, Tết, sinh nhật hoặc tân gia."
+    },
+    {
+      "code": "QUA002",
+      "name": "Beluga Transatlantic Racing (chai xanh, Special Edition)",
+      "unit": "chai",
+      "category": "Quà tặng",
+      "price": 1819,
+      "image": "images/QUA002.jpg?v=44d473bd",
+      "images": [
+        "images/QUA002.jpg?v=44d473bd",
+        "images/QUA002-g1.jpg?v=37f22ded",
+        "images/QUA002-g2.jpg?v=f5f75334",
+        "images/QUA002-g3.jpg?v=228dd0f7",
+        "images/QUA002-g4.jpg?v=4383efd6",
+        "images/QUA002-g5.jpg?v=1abbaa64",
+        "images/QUA002-g6.jpg?v=28430d00"
+      ],
+      "description": "Beluga Transatlantic Racing — phiên bản Special Edition lấy cảm hứng từ hành trình đua thuyền buồm vượt Đại Tây Dương, thiết kế Art Deco xanh-vàng nổi bật, 40% vol, chai 0.7L, kèm hộp quà cùng tông màu.\n\n⚡ HIẾM — hiện chỉ còn 4 chai tại Saint Petersburg. Số lượng có hạn, liên hệ đặt trước nếu quan tâm."
     },
     {
       "code": "BOBC01",
