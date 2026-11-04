@@ -1,0 +1,26 @@
+[project]
+name = "shop"
+version = "0.1.0"
+description = "Catalog, invoicing, debt and profit tracking for the Telegram shop"
+requires-python = ">=3.13"
+dependencies = [
+    "pyside6-essentials>=6.8",
+    "openpyxl>=3.1",
+]
+
+[project.scripts]
+shop-app = "shop.ui.app:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pyinstaller>=6.11",
+    "pillow>=11.0",  # only for shop.tools.fetch_images (validate/resize); never imported by the shipped app
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shop"]
