@@ -1,0 +1,11 @@
+{
+  "name": "image-search",
+  "version": "1.0.0",
+  "description": "One-time/occasional tool to source product photos for the website catalog. Not part of the shipped app.",
+  "main": "bing_batch_search.js",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "puppeteer-core": "^24.0.0"
+  }
+}
