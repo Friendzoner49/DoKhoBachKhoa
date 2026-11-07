@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-01T21:45:46+00:00",
+  "updated_at": "2026-11-07T16:40:30+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -419,7 +419,7 @@
       "name": "Dầu Hào Prb 500gr",
       "unit": "chai",
       "category": "Gia vị, nước mắm, nước chấm",
-      "price": 214,
+      "price": 268,
       "image": "images/DAUHA2.jpg?v=23484880"
     },
     {
@@ -485,10 +485,10 @@
       "name": "Gạo Jasmin St25 Vietnam 5Kg",
       "unit": "KG",
       "category": "Gạo, bún, miến, mì, phở",
-      "price": 289,
+      "price": 300,
       "image": "images/GAO002.jpg?v=da20de78",
       "bulk_qty": 5.0,
-      "bulk_price": 1416
+      "bulk_price": 1470
     },
     {
       "code": "GAO003",
@@ -511,10 +511,10 @@
       "name": "Gạo Tròn Kuban Loại 1 25 Kg",
       "unit": "KG",
       "category": "Gạo, bún, miến, mì, phở",
-      "price": 118,
+      "price": 107,
       "image": "images/GAO005.jpg?v=b5a0d468",
       "bulk_qty": 25.0,
-      "bulk_price": 2891
+      "bulk_price": 2622
     },
     {
       "code": "GIAVI1",
@@ -752,7 +752,7 @@
       "name": "Mỳ Chũ Classic",
       "unit": "gói",
       "category": "Gạo, bún, miến, mì, phở",
-      "price": 214,
+      "price": 235,
       "image": "images/MYF001.jpg?v=584f338f"
     },
     {
@@ -1162,7 +1162,7 @@
       "name": "Tương Ớt Uni-Eagle Sriracha Thái Lan 815ml",
       "unit": "chai",
       "category": "Gia vị, nước mắm, nước chấm",
-      "price": 428,
+      "price": 482,
       "image": "images/TUOT04.jpg?v=2280fe15"
     },
     {
