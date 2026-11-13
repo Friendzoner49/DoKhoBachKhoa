@@ -9,7 +9,8 @@
     --bg: #faf7f2;
     --card: #ffffff;
     --text: #2a2420;
-    --muted: #8a7f73;
+    --muted: #6f655a; /* 14/11: was #8a7f73, only 3.7:1 on the beige background */
+    --on-accent: #ffffff;
     --accent: #b5542a;
     --border: #e8e0d6;
     --overlay: rgba(20, 16, 12, 0.55);
@@ -22,6 +23,7 @@
       --muted: #a69a8c;
       --accent: #e08a5c;
       --border: #3a342e;
+      --on-accent: #1c1915; /* white on the light dark-mode accent is only 2.6:1 */
       --overlay: rgba(0, 0, 0, 0.65);
     }
   }
@@ -77,6 +79,10 @@
     background: var(--card);
     color: var(--text);
     font-size: 1rem;
+  }
+  #search::placeholder {
+    color: var(--muted);
+    opacity: 1;
   }
   #search:focus {
     outline: 2px solid var(--accent);
@@ -261,7 +267,7 @@
   .item-add-btn {
     width: 100%;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     border: none;
     border-radius: 8px;
     padding: 7px 0;
@@ -350,7 +356,7 @@
     right: 16px;
     bottom: 16px;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     border: none;
     border-radius: 999px;
     padding: 12px 18px;
@@ -428,7 +434,7 @@
   #modal-add-to-cart {
     flex: 1;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     border: none;
     border-radius: 10px;
     padding: 12px;
@@ -497,7 +503,7 @@
     width: 100%;
     text-align: center;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     text-decoration: none;
     font-weight: 600;
     padding: 13px;
@@ -676,7 +682,7 @@
     text-align: center;
     margin-top: 16px;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     text-decoration: none;
     font-weight: 600;
     padding: 13px;
@@ -690,8 +696,8 @@
     color: var(--accent);
     font-size: 0.85rem;
     font-weight: 600;
-    padding: 0;
-    margin-bottom: 8px;
+    padding: 8px 0;
+    margin-bottom: 0;
     cursor: pointer;
     text-decoration: underline;
   }
@@ -721,6 +727,230 @@
   #guide-card li:last-child {
     margin-bottom: 0;
   }
+  /* "Món ăn đặt trước" (14/11/2026): every product with a sale_until is a
+     cooked dish customers pre-order (one a week, usually). Home gets two
+     tabs -- dishes as a big-photo menu, groceries as the old category
+     grid. Tabs only appear when at least one dish is on show, so a
+     catalog without dishes looks exactly like before. */
+  /* Video buttons at the bottom of home (14/11/2026) -- the owner's
+     YouTube playlists, listed in the app (Cài đặt -> Nút video). */
+  #community {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  #community-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin: 0 0 12px;
+  }
+  #community-links {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  @media (min-width: 600px) {
+    #community-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  .community-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .community-link:hover {
+    border-color: var(--accent);
+  }
+  .community-link-icon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 0.7rem;
+  }
+  .community-link-label {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+  .community-link-arrow {
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+  #tabs[hidden], #food-list[hidden], #food-note[hidden], #community[hidden] {
+    display: none;
+  }
+  #tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    padding: 4px;
+    margin: 0 0 14px;
+    border-radius: 12px;
+    background: var(--border);
+  }
+  #tabs button {
+    height: 40px;
+    padding: 0 8px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+  #tabs button {
+    color: var(--text); /* --muted on the --border track is only ~4.4:1 */
+  }
+  #tabs button[aria-selected="true"] {
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+  #food-note {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0 0 12px;
+  }
+  ul.food-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 600px) {
+    ul.food-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  li.food-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  li.food-card:hover {
+    border-color: var(--accent);
+  }
+  .food-img {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .food-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .food-img .no-image {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .deadline {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .deadline.today {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .food-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px 14px;
+    min-width: 0;
+  }
+  .food-name {
+    font-weight: 800;
+    font-size: 1.2rem;
+    line-height: 1.25;
+    overflow-wrap: break-word;
+  }
+  .food-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .food-price {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1.1rem;
+    white-space: nowrap;
+  }
+  .food-price small {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
+  .food-foot .item-qty-row {
+    margin-top: 0;
+    width: 130px;
+    flex-shrink: 0;
+  }
+  .food-foot .item-add-btn {
+    padding: 9px 0;
+    font-size: 0.88rem;
+  }
+  .food-closed-label {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+  /* Past the order deadline or sold out: stays on show (photo + name
+     still readable) but washed out and not orderable. */
+  li.food-card.closed .food-img img {
+    filter: grayscale(1);
+    opacity: 0.55;
+  }
+  li.food-card.closed .food-price {
+    color: var(--muted);
+  }
 </style>
 </head>
 <body>
@@ -734,12 +964,23 @@
     <button id="back-btn" type="button" aria-label="Quay lại">←</button>
     <input id="search" type="text" placeholder="Tìm theo tên hàng hoặc mã..." autocomplete="off">
   </div>
+  <div id="tabs" role="tablist" hidden>
+    <button type="button" role="tab" id="tab-food" aria-selected="true">🍜 Món ăn đặt trước</button>
+    <button type="button" role="tab" id="tab-grocery" aria-selected="false">🛒 Đồ khô, tạp hóa</button>
+  </div>
   <button id="reorder-btn" type="button" hidden></button>
+  <p id="food-note" hidden>Đặt trước hạn ghi trên từng món — shop nấu xong sẽ nhắn tin hẹn ngày giao.</p>
+  <ul class="food-list" id="food-list" hidden></ul>
+  <p class="empty" id="food-empty" hidden>Hiện chưa có món nào đang nhận đặt. Món mới sẽ được đăng ở đây — bạn xem đồ khô ở tab bên cạnh nhé.</p>
   <p class="section-title" id="section-title" hidden></p>
   <p class="count" id="count"></p>
   <ul class="cat-grid" id="cat-grid" hidden></ul>
   <ul class="list" id="list" hidden></ul>
   <p class="empty" id="empty" hidden>Không tìm thấy mặt hàng phù hợp.</p>
+  <section id="community" hidden>
+    <h2 id="community-title"></h2>
+    <div id="community-links"></div>
+  </section>
 </main>
 <footer>Giá tính bằng RUB, có thể thay đổi theo từng đợt hàng.</footer>
 
@@ -932,6 +1173,7 @@
     "Đồ gia dụng & khác",
   ];
   const FALLBACK_CATEGORY = "Khác";
+  const OUT_OF_STOCK_NOTE = "Mặt hàng tạm hết hàng, không thể thêm vào giỏ lúc này — liên hệ để hỏi khi có hàng trở lại.";
 
   const numberFormat = new Intl.NumberFormat("vi-VN");
 
@@ -942,6 +1184,54 @@
   let preSearchView = { mode: "home" }; // where to return to once the search box is cleared
   let currentModalItem = null;
   let modalQty = 1;
+
+  // "Món ăn đặt trước" (14/11/2026): any product carrying a sale_until is
+  // a cooked dish customers pre-order before that date (inclusive). Once
+  // the date passes it stays visible -- washed out, not orderable -- for
+  // this many days, then drops off the site on its own (so last week's
+  // dish is still there to look at, but old ones don't pile up if the
+  // owner never sets "Ngừng bán"; "Ngừng bán" still removes it at once,
+  // since inactive products aren't exported at all).
+  const FOOD_EXPIRED_VISIBLE_DAYS = 7;
+  const WEEKDAYS_VI = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+  // Compared against the VISITOR'S OWN local date, not UTC --
+  // toISOString()'s UTC date lags local time in St. Petersburg (UTC+3).
+  function localIsoDate(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  }
+  const todayIso = localIsoDate(new Date());
+  const expiredCutoffIso = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() - FOOD_EXPIRED_VISIBLE_DAYS);
+    return localIsoDate(d);
+  })();
+  let foodItems = []; // dishes on show (orderable first), subset of allItems
+  let homeTab = "grocery"; // "food" | "grocery" -- only meaningful when foodItems is non-empty
+  let reorderReady = false;
+  let showFoodTabAlways = false; // owner setting from products.json (show_food_tab)
+  let communityReady = false; // products.json carried at least one video button
+
+  function isFood(item) {
+    return Boolean(item.sale_until);
+  }
+  function isExpired(item) {
+    return Boolean(item.sale_until) && item.sale_until < todayIso;
+  }
+  function canOrder(item) {
+    return item.in_stock !== false && !isExpired(item);
+  }
+  // "T4, 18/11"
+  function shortVnDay(iso) {
+    const [y, m, d] = iso.split("-").map(Number);
+    return `${WEEKDAYS_VI[new Date(y, m - 1, d).getDay()]}, ${String(d).padStart(2, "0")}/${String(m).padStart(2, "0")}`;
+  }
+  // Label for a dish's order deadline / closed state.
+  function foodStatus(item) {
+    if (isExpired(item)) return { text: "Hết hạn đặt", today: false };
+    if (item.in_stock === false) return { text: "Hết suất", today: false };
+    if (item.sale_until === todayIso) return { text: "Hạn đặt hôm nay", today: true };
+    return { text: `Hạn đặt ${shortVnDay(item.sale_until)}`, today: false };
+  }
 
   // Cart: {code: qty}, kept per-browser only (localStorage) -- there is
   // no backend, so "checkout" means composing a Telegram message with
@@ -1003,10 +1293,6 @@
     return Object.values(cart).reduce((sum, qty) => sum + qty, 0);
   }
 
-  function formatVnDate(iso) {
-    const [y, m, d] = iso.split("-");
-    return `${d}/${m}/${y}`;
-  }
 
   function stripAccents(str) {
     return str.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase();
@@ -1189,7 +1475,7 @@
   // of the whole grid -- cheap, and avoids re-creating <img> elements
   // (which would otherwise re-trigger their lazy-load/decode).
   function refreshAllItemCards() {
-    document.querySelectorAll("#list li.item[data-code]").forEach((li) => {
+    document.querySelectorAll("#list li.item[data-code], #food-list li.food-card[data-code]").forEach((li) => {
       const item = allItems.find((i) => i.code === li.dataset.code);
       const old = li.querySelector(".item-qty-row");
       if (item && old) old.replaceWith(buildQtyRow(item));
@@ -1201,7 +1487,7 @@
     list.innerHTML = "";
     for (const item of items) {
       const li = document.createElement("li");
-      li.className = item.in_stock === false ? "item out-of-stock" : "item";
+      li.className = canOrder(item) ? "item" : "item out-of-stock";
       li.dataset.code = item.code;
       li.addEventListener("click", () => openModal(item));
 
@@ -1223,10 +1509,10 @@
         placeholder.textContent = "Chưa có ảnh";
         imgWrap.appendChild(placeholder);
       }
-      if (item.in_stock === false) {
+      if (!canOrder(item)) {
         const badge = document.createElement("div");
         badge.className = "stock-badge";
-        badge.textContent = "Tạm hết hàng";
+        badge.textContent = isFood(item) ? foodStatus(item).text : "Tạm hết hàng";
         imgWrap.appendChild(badge);
       }
 
@@ -1242,10 +1528,10 @@
         topBadge.textContent = "★ Hay mua";
         body.appendChild(topBadge);
       }
-      if (item.sale_until) {
+      if (isFood(item) && canOrder(item)) {
         const saleBadge = document.createElement("div");
         saleBadge.className = "sale-countdown-badge";
-        saleBadge.textContent = `⏳ Còn bán đến hết ${formatVnDate(item.sale_until)}`;
+        saleBadge.textContent = `⏳ ${foodStatus(item).text}`;
         body.appendChild(saleBadge);
       }
       if (showCategoryLabel && item.category) {
@@ -1255,7 +1541,7 @@
         body.appendChild(meta);
       }
       body.appendChild(priceLine(item));
-      if (item.in_stock !== false) {
+      if (canOrder(item)) {
         body.appendChild(buildQtyRow(item));
       }
 
@@ -1263,6 +1549,78 @@
       li.appendChild(body);
       list.appendChild(li);
     }
+  }
+
+  // Dishes tab: one big-photo card per dish, name up front; the
+  // description only shows once the customer taps into the modal.
+  function renderFoodList() {
+    const list = document.getElementById("food-list");
+    list.innerHTML = "";
+    for (const item of foodItems) {
+      const orderable = canOrder(item);
+      const li = document.createElement("li");
+      li.className = orderable ? "food-card" : "food-card closed";
+      li.dataset.code = item.code;
+      li.addEventListener("click", () => openModal(item));
+
+      const imgWrap = document.createElement("div");
+      imgWrap.className = "food-img";
+      if (item.image) {
+        const img = document.createElement("img");
+        img.src = item.image;
+        img.alt = item.name;
+        img.loading = "lazy";
+        img.decoding = "async";
+        imgWrap.appendChild(img);
+      } else {
+        const placeholder = document.createElement("div");
+        placeholder.className = "no-image";
+        placeholder.textContent = "Chưa có ảnh";
+        imgWrap.appendChild(placeholder);
+      }
+      const status = foodStatus(item);
+      const badge = document.createElement("div");
+      badge.className = status.today ? "deadline today" : "deadline";
+      badge.textContent = status.text;
+      imgWrap.appendChild(badge);
+
+      const body = document.createElement("div");
+      body.className = "food-body";
+      const name = document.createElement("div");
+      name.className = "food-name";
+      name.textContent = item.name;
+      body.appendChild(name);
+
+      const foot = document.createElement("div");
+      foot.className = "food-foot";
+      const price = document.createElement("div");
+      price.className = "food-price";
+      price.textContent = `${numberFormat.format(item.price)} ₽ `;
+      if (item.unit) {
+        const unit = document.createElement("small");
+        unit.textContent = `/ ${item.unit}`;
+        price.appendChild(unit);
+      }
+      foot.appendChild(price);
+      if (orderable) {
+        foot.appendChild(buildQtyRow(item));
+      } else {
+        const closed = document.createElement("span");
+        closed.className = "food-closed-label";
+        closed.textContent = status.text;
+        foot.appendChild(closed);
+      }
+      body.appendChild(foot);
+
+      li.appendChild(imgWrap);
+      li.appendChild(body);
+      list.appendChild(li);
+    }
+  }
+
+  function setHomeTab(tab) {
+    homeTab = tab;
+    setView({ mode: "home" });
   }
 
   function setView(next) {
@@ -1279,15 +1637,49 @@
     const sectionTitle = document.getElementById("section-title");
     const backBtn = document.getElementById("back-btn");
 
+    const tabs = document.getElementById("tabs");
+    const foodList = document.getElementById("food-list");
+    const foodNote = document.getElementById("food-note");
+    const reorderBtn = document.getElementById("reorder-btn");
+
     grid.hidden = true;
     list.hidden = true;
     empty.hidden = true;
     sectionTitle.hidden = true;
+    tabs.hidden = true;
+    foodList.hidden = true;
+    foodNote.hidden = true;
+    reorderBtn.hidden = true;
     backBtn.style.display = "none";
+    const foodEmpty = document.getElementById("food-empty");
+    foodEmpty.hidden = true;
+    // Video buttons sit at the bottom of the home page only (both tabs).
+    document.getElementById("community").hidden = !(view.mode === "home" && communityReady);
 
     if (view.mode === "home") {
-      sectionTitle.hidden = true;
-      count.textContent = `${categories.length} nhóm hàng · ${allItems.length} mặt hàng`;
+      // The tab shows when there is a dish, or when the owner chose to
+      // keep it on show anyway (products.json's show_food_tab).
+      const foodTabOn = foodItems.length > 0 || showFoodTabAlways;
+      const showFood = foodTabOn && homeTab === "food";
+      if (foodTabOn) {
+        tabs.hidden = false;
+        document.getElementById("tab-food").setAttribute("aria-selected", String(showFood));
+        document.getElementById("tab-grocery").setAttribute("aria-selected", String(!showFood));
+      }
+      if (showFood) {
+        count.textContent = "";
+        if (foodItems.length === 0) {
+          foodEmpty.hidden = false;
+          return;
+        }
+        foodNote.hidden = false;
+        foodList.hidden = false;
+        renderFoodList();
+        return;
+      }
+      reorderBtn.hidden = !reorderReady;
+      const groceryCount = categories.reduce((sum, cat) => sum + cat.items.length, 0);
+      count.textContent = `${categories.length} nhóm hàng · ${groceryCount} mặt hàng`;
       grid.hidden = false;
       renderCategoryGrid();
       return;
@@ -1381,15 +1773,19 @@
       descEl.textContent = "";
     }
 
-    document.getElementById("modal-category").textContent = item.category || FALLBACK_CATEGORY;
+    const food = isFood(item);
+    const orderable = canOrder(item);
+    document.getElementById("modal-category").textContent = food ? "Món ăn đặt trước" : item.category || FALLBACK_CATEGORY;
     document.getElementById("modal-top-badge").hidden = !topCodesSet.has(item.code);
     document.getElementById("modal-name").textContent = item.name;
     document.getElementById("modal-unit").textContent = [item.unit, item.code].filter(Boolean).join(" · ");
-    document.getElementById("modal-stock-badge").hidden = item.in_stock !== false;
+    const stockBadge = document.getElementById("modal-stock-badge");
+    stockBadge.hidden = orderable;
+    stockBadge.textContent = food ? foodStatus(item).text : "Tạm hết hàng";
     const saleNote = document.getElementById("modal-sale-note");
-    if (item.sale_until) {
+    if (food && orderable) {
       saleNote.hidden = false;
-      saleNote.textContent = `⏳ Còn bán đến hết ${formatVnDate(item.sale_until)}`;
+      saleNote.textContent = `⏳ Nhận đặt đến hết ${shortVnDay(item.sale_until)} · shop nấu xong sẽ nhắn tin hẹn ngày giao`;
     } else {
       saleNote.hidden = true;
     }
@@ -1407,7 +1803,7 @@
     // whole-number guard now that fractional qty survives end to end),
     // plus: out-of-stock items hide the whole add-to-cart row anyway,
     // so the stepper would sit there doing nothing if shown.
-    if (item.bulk_qty && item.bulk_price && item.bulk_qty > 1 && item.in_stock !== false) {
+    if (item.bulk_qty && item.bulk_price && item.bulk_qty > 1 && orderable) {
       bulkStepper.hidden = false;
       document.getElementById("modal-bulk-label").textContent = `×${item.bulk_qty}`;
     } else {
@@ -1417,9 +1813,16 @@
 
     const cartRow = document.getElementById("modal-cart-row");
     const outOfStockNote = document.getElementById("modal-out-of-stock-note");
-    if (item.in_stock === false) {
+    if (!orderable) {
       cartRow.hidden = true;
       outOfStockNote.hidden = false;
+      if (food && isExpired(item)) {
+        outOfStockNote.textContent = "Món này đã hết hạn đặt. Món mới sẽ được đăng ở tab \"Món ăn đặt trước\".";
+      } else if (food) {
+        outOfStockNote.textContent = "Món này đã đủ suất cho đợt này — liên hệ shop nếu muốn hỏi thêm.";
+      } else {
+        outOfStockNote.textContent = OUT_OF_STOCK_NOTE;
+      }
     } else {
       cartRow.hidden = false;
       outOfStockNote.hidden = true;
@@ -1470,7 +1873,8 @@
   function cartLines() {
     return Object.entries(cart)
       .map(([code, qty]) => ({ item: allItems.find((i) => i.code === code), code, qty }))
-      .filter((line) => line.item); // drop codes no longer in the published catalog
+      // drop codes no longer in the published catalog, and dishes past their order deadline
+      .filter((line) => line.item && !isExpired(line.item));
   }
 
   function buildOrderText(lines) {
@@ -1654,14 +2058,58 @@
   // already in the cart), so tapping it twice -- or once after already
   // having picked some of the same items by hand -- lands on the last
   // order's quantities, not a doubled-up total.
+  // Video buttons from products.json's "community" ({title, links:[{title,url}]}).
+  // Only http(s) links are ever turned into buttons. Inside the Telegram
+  // Mini App a plain target=_blank link may not open, so it goes through
+  // Telegram.WebApp.openLink() there (same idea as wireTelegramLinkFallback).
+  function setupCommunity(community) {
+    if (!community || !Array.isArray(community.links)) return;
+    const links = community.links.filter((l) => l && typeof l.url === "string" && /^https?:\/\//i.test(l.url));
+    if (links.length === 0) return;
+    document.getElementById("community-title").textContent = community.title || "🎬 Video giải trí";
+    const box = document.getElementById("community-links");
+    box.innerHTML = "";
+    for (const link of links) {
+      const a = document.createElement("a");
+      a.className = "community-link";
+      a.href = link.url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      const icon = document.createElement("span");
+      icon.className = "community-link-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = "▶";
+      const label = document.createElement("span");
+      label.className = "community-link-label";
+      label.textContent = link.title || "Xem video";
+      const arrow = document.createElement("span");
+      arrow.className = "community-link-arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "↗";
+      a.append(icon, label, arrow);
+      a.addEventListener("click", async (e) => {
+        if (!inTelegramMiniApp) return;
+        e.preventDefault();
+        const webApp = await tgSdkReady;
+        if (webApp && typeof webApp.openLink === "function") {
+          webApp.openLink(a.href);
+        } else {
+          window.open(a.href, "_blank", "noopener");
+        }
+      });
+      box.appendChild(a);
+    }
+    communityReady = true;
+  }
+
   function setupReorderButton() {
     const btn = document.getElementById("reorder-btn");
     const valid = lastOrderHint.filter(({ code }) => {
       const item = allItems.find((i) => i.code === code);
-      return item && item.in_stock !== false;
+      return item && canOrder(item);
     });
     if (valid.length === 0) return;
-    btn.hidden = false;
+    reorderReady = true; // render() shows it on the groceries side of home
     btn.textContent = `🔁 Đặt lại đơn trước (${valid.length} mặt hàng)`;
     btn.addEventListener("click", () => {
       for (const { code, qty } of valid) {
@@ -1690,26 +2138,44 @@
       return;
     }
 
-    // Seasonal/limited-time products (lần 21, "tự động ẩn theo ngày giờ
-    // hạn" -- the owner explicitly chose auto-HIDE over staying visible
-    // greyed out like a plain out-of-stock item): a product past its
-    // sale_until ("YYYY-MM-DD") is dropped from the catalog entirely,
-    // compared against the VISITOR'S OWN local date (not UTC --
-    // toISOString()'s UTC date LAGS local time in St. Petersburg's
-    // UTC+3, so using it would keep an already-expired item visible for
-    // up to 3 extra hours after local midnight, not hide it early).
-    // cartLines() already drops cart
-    // entries whose code isn't in allItems ("no longer in the published
-    // catalog"), the same path a discontinued product takes -- a
-    // leftover localStorage cart entry for an expired item is silently
-    // dropped, not an error.
-    const today = new Date();
-    const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    // Dishes with a sale_until (14/11/2026 -- replaces lần 21's "auto-hide
+    // the moment the date passes"): past the order deadline a dish stays
+    // on show washed out and not orderable (canOrder/isExpired, applied to
+    // cards, modal, cart and reorder) for FOOD_EXPIRED_VISIBLE_DAYS, then
+    // drops off. Dates compare against the visitor's local date (todayIso).
     allItems = (data.items || [])
-      .filter((item) => !item.sale_until || item.sale_until >= todayIso)
+      .filter((item) => !item.sale_until || item.sale_until >= expiredCutoffIso)
       .sort((a, b) => a.name.localeCompare(b.name, "vi"));
-    categories = buildCategories(allItems);
+    // Dishes live in their own tab, not among the grocery categories (a
+    // dish with no category would otherwise add a stray "Khác" tile).
+    // Orderable ones first, nearest deadline first; closed ones after,
+    // most recent first.
+    foodItems = allItems.filter(isFood).sort((a, b) => {
+      const oa = canOrder(a), ob = canOrder(b);
+      if (oa !== ob) return oa ? -1 : 1;
+      return oa ? a.sale_until.localeCompare(b.sale_until) : b.sale_until.localeCompare(a.sale_until);
+    });
+    categories = buildCategories(allItems.filter((item) => !isFood(item)));
+    showFoodTabAlways = data.show_food_tab === true;
+    setupCommunity(data.community);
+    homeTab = foodItems.some(canOrder) ? "food" : "grocery";
+    // A cart saved earlier may still hold a dish whose deadline has
+    // passed -- drop it so the badge count and the order agree.
+    let pruned = false;
+    for (const code of Object.keys(cart)) {
+      const item = allItems.find((i) => i.code === code);
+      if (item && isExpired(item)) {
+        delete cart[code];
+        pruned = true;
+      }
+    }
+    if (pruned) {
+      saveCart();
+      renderCartFab();
+    }
     setupReorderButton();
+    document.getElementById("tab-food").addEventListener("click", () => setHomeTab("food"));
+    document.getElementById("tab-grocery").addEventListener("click", () => setHomeTab("grocery"));
 
     const updatedEl = document.getElementById("updated");
     if (data.updated_at) {

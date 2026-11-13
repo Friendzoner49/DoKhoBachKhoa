@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-07T16:40:30+00:00",
+  "updated_at": "2026-11-13T22:37:14+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -1221,5 +1221,42 @@
       "price": 268,
       "image": "images/XIDAU3.jpg?v=2ad94396"
     }
-  ]
+  ],
+  "community": {
+    "title": "Giải trí tổng hợp (cập nhật khi có thêm sự kiện mới).",
+    "links": [
+      {
+        "title": "Giải nội chiến Bách Khoa 2023",
+        "url": "https://bit.ly/NCBK2023"
+      },
+      {
+        "title": "Giải bóng Mùa Đông 2023",
+        "url": "http://bit.ly/GBMD2023"
+      },
+      {
+        "title": "Giải nội chiến Bách Khoa 2024",
+        "url": "http://bit.ly/NCBK2024"
+      },
+      {
+        "title": "Giải bóng Mùa Đông 2024",
+        "url": "http://bit.ly/GBMD2024"
+      },
+      {
+        "title": "Giải bóng Mùa Đông 2025",
+        "url": "http://bit.ly/GBMD2025"
+      },
+      {
+        "title": "Sự kiện Bách Khoa Saint",
+        "url": "http://bit.ly/BKSaintevents"
+      },
+      {
+        "title": "Vlog vui vui",
+        "url": "https://www.youtube.com/playlist?list=PLtwQRb9vs6yf2XMI4zkqWdkJEV-AKToZp"
+      },
+      {
+        "title": "Nghe nhạc ngắm cảnh",
+        "url": "https://youtube.com/playlist?list=PLAuim315BHeI&si=HfR9J9rwq-4vxVMr"
+      }
+    ]
+  }
 }
