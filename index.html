@@ -734,63 +734,85 @@
      catalog without dishes looks exactly like before. */
   /* Video buttons at the bottom of home (14/11/2026) -- the owner's
      YouTube playlists, listed in the app (Cài đặt -> Nút video). */
+  /* Kept small on purpose (owner, 14/11): one quiet group card at the
+     very bottom, links as small YouTube-logo pills, not big buttons. */
   #community {
-    margin-top: 28px;
-    padding-top: 18px;
-    border-top: 1px solid var(--border);
+    margin-top: 24px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
   }
-  #community-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    line-height: 1.35;
-    margin: 0 0 12px;
-  }
-  #community-links {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 8px;
-  }
-  @media (min-width: 600px) {
-    #community-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
-  .community-link {
+  /* Collapsed by default: one row (YouTube logo + group name); tap to
+     show the links. */
+  .community-head {
     display: flex;
     align-items: center;
-    gap: 10px;
-    min-height: 48px;
+    gap: 8px;
+    min-height: 44px;
     padding: 8px 14px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--text);
-    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    border-radius: 12px;
+  }
+  .community-head::-webkit-details-marker {
+    display: none;
+  }
+  .community-head:hover #community-title {
+    color: var(--accent);
+  }
+  .yt-logo {
+    flex-shrink: 0;
+    display: block;
+  }
+  #community-title {
+    flex: 1;
+    min-width: 0;
     font-size: 0.9rem;
+    font-weight: 700;
     line-height: 1.3;
+  }
+  #community-count {
+    flex-shrink: 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .community-chevron {
+    flex-shrink: 0;
+    color: var(--muted);
+    transition: transform 0.15s;
+  }
+  #community[open] .community-chevron {
+    transform: rotate(180deg);
+  }
+  #community-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 14px 14px;
+  }
+  .community-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    max-width: 100%;
+    padding: 4px 12px 4px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 500;
+    font-size: 0.8rem;
+    line-height: 1.25;
     text-decoration: none;
     transition: border-color 0.15s;
   }
   .community-link:hover {
-    border-color: var(--accent);
-  }
-  .community-link-icon {
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    background: var(--accent);
-    color: var(--on-accent);
-    font-size: 0.7rem;
+    border-color: #ff0000;
   }
   .community-link-label {
-    flex: 1;
     min-width: 0;
     overflow-wrap: break-word;
-  }
-  .community-link-arrow {
-    flex-shrink: 0;
-    color: var(--muted);
   }
   #tabs[hidden], #food-list[hidden], #food-note[hidden], #community[hidden] {
     display: none;
@@ -977,10 +999,15 @@
   <ul class="cat-grid" id="cat-grid" hidden></ul>
   <ul class="list" id="list" hidden></ul>
   <p class="empty" id="empty" hidden>Không tìm thấy mặt hàng phù hợp.</p>
-  <section id="community" hidden>
-    <h2 id="community-title"></h2>
+  <details id="community" hidden>
+    <summary class="community-head">
+      <svg class="yt-logo" width="24" height="17" viewBox="0 0 24 17" aria-hidden="true"><rect width="24" height="17" rx="4.5" fill="#ff0000"/><path d="M9.6 4.8v7.4l6.4-3.7z" fill="#fff"/></svg>
+      <span id="community-title"></span>
+      <span id="community-count"></span>
+      <svg class="community-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </summary>
     <div id="community-links"></div>
-  </section>
+  </details>
 </main>
 <footer>Giá tính bằng RUB, có thể thay đổi theo từng đợt hàng.</footer>
 
@@ -2049,24 +2076,20 @@
     });
   }
 
-  // Adds the customer's own last order (from the `?last=` hint, see
-  // above) to the cart with a single tap -- only shown when at least
-  // one of those codes still exists AND is currently in stock (same
-  // rule the card/modal "Thêm vào giỏ hàng" already enforces; an item
-  // that went out of stock since the last order is dropped, not just
-  // discontinued ones). Sets quantities (doesn't add to whatever's
-  // already in the cart), so tapping it twice -- or once after already
-  // having picked some of the same items by hand -- lands on the last
-  // order's quantities, not a doubled-up total.
-  // Video buttons from products.json's "community" ({title, links:[{title,url}]}).
-  // Only http(s) links are ever turned into buttons. Inside the Telegram
-  // Mini App a plain target=_blank link may not open, so it goes through
+  // Video links from products.json's "community" ({title, links:[{title,url}]}):
+  // one collapsed group at the bottom of home (<details>, tap to open),
+  // each link a small pill with a YouTube logo. Only http(s) links are
+  // ever turned into links. Inside the Telegram Mini App a plain
+  // target=_blank link may not open, so it goes through
   // Telegram.WebApp.openLink() there (same idea as wireTelegramLinkFallback).
+  const YT_LOGO_SVG =
+    '<svg class="yt-logo" width="18" height="13" viewBox="0 0 24 17" aria-hidden="true"><rect width="24" height="17" rx="4.5" fill="#ff0000"/><path d="M9.6 4.8v7.4l6.4-3.7z" fill="#fff"/></svg>';
   function setupCommunity(community) {
     if (!community || !Array.isArray(community.links)) return;
     const links = community.links.filter((l) => l && typeof l.url === "string" && /^https?:\/\//i.test(l.url));
     if (links.length === 0) return;
-    document.getElementById("community-title").textContent = community.title || "🎬 Video giải trí";
+    document.getElementById("community-title").textContent = community.title || "Giải trí tổng hợp";
+    document.getElementById("community-count").textContent = `${links.length} danh sách`;
     const box = document.getElementById("community-links");
     box.innerHTML = "";
     for (const link of links) {
@@ -2075,18 +2098,11 @@
       a.href = link.url;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
-      const icon = document.createElement("span");
-      icon.className = "community-link-icon";
-      icon.setAttribute("aria-hidden", "true");
-      icon.textContent = "▶";
+      a.innerHTML = YT_LOGO_SVG; // fixed markup, no data in it
       const label = document.createElement("span");
       label.className = "community-link-label";
-      label.textContent = link.title || "Xem video";
-      const arrow = document.createElement("span");
-      arrow.className = "community-link-arrow";
-      arrow.setAttribute("aria-hidden", "true");
-      arrow.textContent = "↗";
-      a.append(icon, label, arrow);
+      label.textContent = link.title || "Xem video"; // textContent: owner-entered text
+      a.appendChild(label);
       a.addEventListener("click", async (e) => {
         if (!inTelegramMiniApp) return;
         e.preventDefault();
@@ -2102,6 +2118,15 @@
     communityReady = true;
   }
 
+  // Adds the customer's own last order (from the `?last=` hint, see
+  // above) to the cart with a single tap -- only shown when at least
+  // one of those codes still exists AND is currently in stock (same
+  // rule the card/modal "Thêm vào giỏ hàng" already enforces; an item
+  // that went out of stock since the last order is dropped, not just
+  // discontinued ones). Sets quantities (doesn't add to whatever's
+  // already in the cart), so tapping it twice -- or once after already
+  // having picked some of the same items by hand -- lands on the last
+  // order's quantities, not a doubled-up total.
   function setupReorderButton() {
     const btn = document.getElementById("reorder-btn");
     const valid = lastOrderHint.filter(({ code }) => {
