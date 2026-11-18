@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-18T11:40:36+00:00",
+  "updated_at": "2026-11-18T12:01:16+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -260,7 +260,8 @@
       "unit": "kg",
       "category": "Rau, củ, nấm & thực phẩm tươi",
       "price": 321,
-      "image": "images/CABS01.jpg?v=3bb4b454"
+      "image": "images/CABS01.jpg?v=3bb4b454",
+      "in_stock": false
     },
     {
       "code": "CP0001",
