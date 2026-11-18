@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-18T12:01:16+00:00",
+  "updated_at": "2026-11-18T12:04:42+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -154,9 +154,7 @@
       "unit": "gói",
       "category": "Gia vị, nước mắm, nước chấm",
       "price": 45,
-      "image": "images/BOCA01.jpg?v=e7efc4b1",
-      "bulk_qty": 5.0,
-      "bulk_price": 221
+      "image": "images/BOCA01.jpg?v=e7efc4b1"
     },
     {
       "code": "BOCG01",
@@ -484,12 +482,10 @@
     {
       "code": "GAO002",
       "name": "Gạo Jasmin St25 Vietnam 5Kg",
-      "unit": "KG",
+      "unit": "bao",
       "category": "Gạo, bún, miến, mì, phở",
-      "price": 321,
-      "image": "images/GAO002.jpg?v=da20de78",
-      "bulk_qty": 5.0,
-      "bulk_price": 1573
+      "price": 1573,
+      "image": "images/GAO002.jpg?v=da20de78"
     },
     {
       "code": "GAO003",
