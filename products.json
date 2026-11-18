@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-13T22:47:22+00:00",
+  "updated_at": "2026-11-18T11:30:24+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -725,11 +725,13 @@
     },
     {
       "code": "MONHI1",
-      "name": "Mọc Nhĩ 1 Kg",
-      "unit": "kg",
+      "name": "Mộc Nhĩ",
+      "unit": "lạng",
       "category": "Rau, củ, nấm & thực phẩm tươi",
-      "price": 1605,
-      "image": "images/MONHI1.jpg?v=71908ce9"
+      "price": 161,
+      "image": "images/MONHI1.jpg?v=71908ce9",
+      "bulk_qty": 10.0,
+      "bulk_price": 1578
     },
     {
       "code": "MYCHI1",
@@ -1191,11 +1193,13 @@
     },
     {
       "code": "VUTRA1",
-      "name": "Vừng Trằng 200gr",
-      "unit": "gói",
+      "name": "Vừng Trắng",
+      "unit": "lạng",
       "category": "Đậu, hạt, vừng, lạc",
-      "price": 107,
-      "image": "images/VUTRA1.jpg?v=f9bdc0c6"
+      "price": 54,
+      "image": "images/VUTRA1.jpg?v=f9bdc0c6",
+      "bulk_qty": 10.0,
+      "bulk_price": 529
     },
     {
       "code": "XIDAU1",
