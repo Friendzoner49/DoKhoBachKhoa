@@ -973,6 +973,34 @@
   li.food-card.closed .food-price {
     color: var(--muted);
   }
+  /* Size picker of a multi-size dish (20/11/2026). display only when not
+     [hidden] -- a plain `display:flex` would override the hidden attribute. */
+  #modal-options:not([hidden]) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0 4px;
+  }
+  .option-chip {
+    border: 1.5px solid var(--border, #ccc);
+    background: var(--card, transparent);
+    color: inherit;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .option-chip[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .option-chip:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
 </style>
 </head>
 <body>
@@ -1025,6 +1053,7 @@
     <div id="modal-description" hidden></div>
     <div id="modal-stock-badge" class="stock-badge" hidden>Tạm hết hàng</div>
     <div id="modal-sale-note" class="sale-countdown-badge" hidden></div>
+    <div id="modal-options" role="group" aria-label="Chọn cỡ" hidden></div>
     <div id="modal-price"></div>
     <div id="modal-bulk"></div>
     <div id="modal-bulk-stepper" hidden>
@@ -1258,6 +1287,73 @@
     if (item.in_stock === false) return { text: "Hết suất", today: false };
     if (item.sale_until === todayIso) return { text: "Hạn đặt hôm nay", today: true };
     return { text: `Hạn đặt ${shortVnDay(item.sale_until)}`, today: false };
+  }
+
+  // Món nhiều cỡ (20/11/2026): products sharing a "group" (e.g. "Bánh gối")
+  // show as ONE dish with a size picker. Each size keeps its own code, so
+  // the cart, bot and invoices are unchanged. Sizes sort cheapest first;
+  // the first size with a photo / description represents the dish (same
+  // rule as the app's shop.core.products.option_siblings).
+  function byPriceThenCode(a, b) {
+    return a.price - b.price || a.code.localeCompare(b.code);
+  }
+  function siblingsOf(item) {
+    if (!item.group) return [item];
+    return allItems.filter((i) => i.group === item.group).sort(byPriceThenCode);
+  }
+  function isGrouped(item) {
+    return siblingsOf(item).length > 1;
+  }
+  // One entry per group (the first one met, so a list's order is kept).
+  function mergeGroups(items) {
+    const seen = new Set();
+    return items.filter((item) => {
+      if (!item.group) return true;
+      if (seen.has(item.group)) return false;
+      seen.add(item.group);
+      return true;
+    });
+  }
+  // What a card shows for `item`: itself, or its whole dish when grouped.
+  function dishView(item) {
+    const sizes = siblingsOf(item);
+    const open = sizes.filter(canOrder);
+    const priced = open.length ? open : sizes;
+    const lo = Math.min(...priced.map((s) => s.price));
+    const hi = Math.max(...priced.map((s) => s.price));
+    const byDeadline = open.filter((s) => s.sale_until).sort((a, b) => a.sale_until.localeCompare(b.sale_until));
+    return {
+      sizes,
+      grouped: sizes.length > 1,
+      name: sizes.length > 1 ? item.group : item.name,
+      imageItem: sizes.find((s) => s.image) || sizes[0],
+      descItem: sizes.find((s) => s.description) || sizes[0],
+      orderable: open.length > 0,
+      firstOpen: open[0] || item,
+      statusItem: byDeadline[0] || open[0] || sizes[0],
+      priceText: lo === hi ? `${numberFormat.format(lo)} ₽` : `${numberFormat.format(lo)} – ${numberFormat.format(hi)} ₽`,
+    };
+  }
+  // Opens a dish on its cheapest size that can still be ordered.
+  function openDish(item) {
+    openModal(dishView(item).firstOpen);
+  }
+  // Card button of a grouped dish: sizes are picked in the modal.
+  function buildChooseRow(item) {
+    const row = document.createElement("div");
+    row.className = "item-qty-row";
+    const inCart = siblingsOf(item).reduce((sum, s) => sum + (cart[s.code] || 0), 0);
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "item-add-btn";
+    btn.textContent = inCart > 0 ? `Đã chọn ${inCart} · Thêm` : "Chọn cỡ";
+    btn.setAttribute("aria-label", `Chọn cỡ ${item.group || item.name}`);
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openDish(item);
+    });
+    row.appendChild(btn);
+    return row;
   }
 
   // Cart: {code: qty}, kept per-browser only (localStorage) -- there is
@@ -1505,28 +1601,29 @@
     document.querySelectorAll("#list li.item[data-code], #food-list li.food-card[data-code]").forEach((li) => {
       const item = allItems.find((i) => i.code === li.dataset.code);
       const old = li.querySelector(".item-qty-row");
-      if (item && old) old.replaceWith(buildQtyRow(item));
+      if (item && old) old.replaceWith(isGrouped(item) ? buildChooseRow(item) : buildQtyRow(item));
     });
   }
 
   function renderList(items, { showCategoryLabel }) {
     const list = document.getElementById("list");
     list.innerHTML = "";
-    for (const item of items) {
+    for (const item of mergeGroups(items)) {
+      const dish = dishView(item);
       const li = document.createElement("li");
-      li.className = canOrder(item) ? "item" : "item out-of-stock";
+      li.className = dish.orderable ? "item" : "item out-of-stock";
       li.dataset.code = item.code;
-      li.addEventListener("click", () => openModal(item));
+      li.addEventListener("click", () => openDish(item));
 
       const imgWrap = document.createElement("div");
       imgWrap.className = "item-img";
-      if (item.image) {
+      if (dish.imageItem.image) {
         // Lazy: a category can hold ~50 items, and these are the same
         // full-size photos the modal uses -- no reason to pull them
         // all over mobile data before they're actually on screen.
         const img = document.createElement("img");
-        img.src = item.image;
-        img.alt = item.name;
+        img.src = dish.imageItem.image;
+        img.alt = dish.name;
         img.loading = "lazy";
         img.decoding = "async";
         imgWrap.appendChild(img);
@@ -1536,10 +1633,10 @@
         placeholder.textContent = "Chưa có ảnh";
         imgWrap.appendChild(placeholder);
       }
-      if (!canOrder(item)) {
+      if (!dish.orderable) {
         const badge = document.createElement("div");
         badge.className = "stock-badge";
-        badge.textContent = isFood(item) ? foodStatus(item).text : "Tạm hết hàng";
+        badge.textContent = isFood(item) ? foodStatus(dish.statusItem).text : "Tạm hết hàng";
         imgWrap.appendChild(badge);
       }
 
@@ -1547,18 +1644,18 @@
       body.className = "item-body";
       const name = document.createElement("div");
       name.className = "item-name";
-      name.textContent = item.name;
+      name.textContent = dish.name;
       body.appendChild(name);
-      if (topCodesSet.has(item.code)) {
+      if (dish.sizes.some((s) => topCodesSet.has(s.code))) {
         const topBadge = document.createElement("div");
         topBadge.className = "top-pick-badge";
         topBadge.textContent = "★ Hay mua";
         body.appendChild(topBadge);
       }
-      if (isFood(item) && canOrder(item)) {
+      if (isFood(item) && dish.orderable) {
         const saleBadge = document.createElement("div");
         saleBadge.className = "sale-countdown-badge";
-        saleBadge.textContent = `⏳ ${foodStatus(item).text}`;
+        saleBadge.textContent = `⏳ ${foodStatus(dish.statusItem).text}`;
         body.appendChild(saleBadge);
       }
       if (showCategoryLabel && item.category) {
@@ -1567,9 +1664,20 @@
         meta.textContent = item.category;
         body.appendChild(meta);
       }
-      body.appendChild(priceLine(item));
-      if (canOrder(item)) {
-        body.appendChild(buildQtyRow(item));
+      if (dish.grouped) {
+        const right = document.createElement("div");
+        right.className = "item-price";
+        const price = document.createElement("div");
+        price.className = "price";
+        price.textContent = dish.priceText;
+        right.appendChild(price);
+        body.appendChild(right);
+        if (dish.orderable) body.appendChild(buildChooseRow(item));
+      } else {
+        body.appendChild(priceLine(item));
+        if (canOrder(item)) {
+          body.appendChild(buildQtyRow(item));
+        }
       }
 
       li.appendChild(imgWrap);
@@ -1584,18 +1692,19 @@
     const list = document.getElementById("food-list");
     list.innerHTML = "";
     for (const item of foodItems) {
-      const orderable = canOrder(item);
+      const dish = dishView(item);
+      const orderable = dish.orderable;
       const li = document.createElement("li");
       li.className = orderable ? "food-card" : "food-card closed";
       li.dataset.code = item.code;
-      li.addEventListener("click", () => openModal(item));
+      li.addEventListener("click", () => openDish(item));
 
       const imgWrap = document.createElement("div");
       imgWrap.className = "food-img";
-      if (item.image) {
+      if (dish.imageItem.image) {
         const img = document.createElement("img");
-        img.src = item.image;
-        img.alt = item.name;
+        img.src = dish.imageItem.image;
+        img.alt = dish.name;
         img.loading = "lazy";
         img.decoding = "async";
         imgWrap.appendChild(img);
@@ -1605,7 +1714,7 @@
         placeholder.textContent = "Chưa có ảnh";
         imgWrap.appendChild(placeholder);
       }
-      const status = foodStatus(item);
+      const status = foodStatus(dish.statusItem);
       const badge = document.createElement("div");
       badge.className = status.today ? "deadline today" : "deadline";
       badge.textContent = status.text;
@@ -1615,22 +1724,33 @@
       body.className = "food-body";
       const name = document.createElement("div");
       name.className = "food-name";
-      name.textContent = item.name;
+      name.textContent = dish.name;
       body.appendChild(name);
+      if (dish.grouped) {
+        // "Set 3 chiếc · Set 5 chiếc" -- the sizes on offer, at a glance.
+        const sizes = document.createElement("div");
+        sizes.className = "item-meta";
+        sizes.textContent = dish.sizes.map((s) => s.option || s.name).join(" · ");
+        body.appendChild(sizes);
+      }
 
       const foot = document.createElement("div");
       foot.className = "food-foot";
       const price = document.createElement("div");
       price.className = "food-price";
-      price.textContent = `${numberFormat.format(item.price)} ₽ `;
-      if (item.unit) {
-        const unit = document.createElement("small");
-        unit.textContent = `/ ${item.unit}`;
-        price.appendChild(unit);
+      if (dish.grouped) {
+        price.textContent = dish.priceText;
+      } else {
+        price.textContent = `${numberFormat.format(item.price)} ₽ `;
+        if (item.unit) {
+          const unit = document.createElement("small");
+          unit.textContent = `/ ${item.unit}`;
+          price.appendChild(unit);
+        }
       }
       foot.appendChild(price);
       if (orderable) {
-        foot.appendChild(buildQtyRow(item));
+        foot.appendChild(dish.grouped ? buildChooseRow(item) : buildQtyRow(item));
       } else {
         const closed = document.createElement("span");
         closed.className = "food-closed-label";
@@ -1743,7 +1863,7 @@
       count.textContent = "";
       return;
     }
-    count.textContent = `${items.length} mặt hàng`;
+    count.textContent = `${mergeGroups(items).length} mặt hàng`;
     list.hidden = false;
     renderList(items, { showCategoryLabel });
   }
@@ -1751,18 +1871,22 @@
   function openModal(item) {
     currentModalItem = item;
     modalQty = 1;
+    // A multi-size dish: photo, gallery and description come from the
+    // dish (dishView), price/stock/cart from the chosen size (`item`).
+    const dish = dishView(item);
+    const pic = dish.imageItem;
     const overlay = document.getElementById("modal-overlay");
     const imageWrap = document.getElementById("modal-image-wrap");
 
     imageWrap.innerHTML = "";
     const mainImg = document.createElement("img");
-    if (item.image) {
+    if (pic.image) {
       // Loaded only now (not for all 100+ items up front) to keep the
       // catalog itself light on mobile data.
-      mainImg.src = item.image;
-      mainImg.alt = item.name;
+      mainImg.src = pic.image;
+      mainImg.alt = dish.name;
       mainImg.loading = "eager";
-      mainImg.addEventListener("click", () => openLightbox(mainImg.src, item.name));
+      mainImg.addEventListener("click", () => openLightbox(mainImg.src, dish.name));
       imageWrap.appendChild(mainImg);
     } else {
       imageWrap.textContent = "Chưa có ảnh";
@@ -1774,13 +1898,13 @@
     // hidden for the ordinary 146.
     const thumbsEl = document.getElementById("modal-gallery-thumbs");
     thumbsEl.innerHTML = "";
-    if (item.images && item.images.length > 1) {
+    if (pic.images && pic.images.length > 1) {
       thumbsEl.hidden = false;
-      item.images.forEach((src, i) => {
+      pic.images.forEach((src, i) => {
         const thumb = document.createElement("img");
         thumb.src = src;
-        thumb.alt = `${item.name} -- ảnh ${i + 1}`;
-        if (src === item.image) thumb.classList.add("active");
+        thumb.alt = `${dish.name} -- ảnh ${i + 1}`;
+        if (src === pic.image) thumb.classList.add("active");
         thumb.addEventListener("click", () => {
           mainImg.src = src;
           thumbsEl.querySelectorAll("img").forEach((t) => t.classList.toggle("active", t === thumb));
@@ -1792,9 +1916,11 @@
     }
 
     const descEl = document.getElementById("modal-description");
-    if (item.description) {
+    // The chosen size's own description ("Set 5 chiếc kèm…"), else the dish's.
+    const descText = item.description || dish.descItem.description;
+    if (descText) {
       descEl.hidden = false;
-      descEl.textContent = item.description; // textContent, never innerHTML -- this is untrusted-ish app data
+      descEl.textContent = descText; // textContent, never innerHTML -- this is untrusted-ish app data
     } else {
       descEl.hidden = true;
       descEl.textContent = "";
@@ -1804,8 +1930,27 @@
     const orderable = canOrder(item);
     document.getElementById("modal-category").textContent = food ? "Món ăn đặt trước" : item.category || FALLBACK_CATEGORY;
     document.getElementById("modal-top-badge").hidden = !topCodesSet.has(item.code);
-    document.getElementById("modal-name").textContent = item.name;
-    document.getElementById("modal-unit").textContent = [item.unit, item.code].filter(Boolean).join(" · ");
+    document.getElementById("modal-name").textContent = dish.name;
+    document.getElementById("modal-unit").textContent = [dish.grouped ? item.option : item.unit, item.code]
+      .filter(Boolean)
+      .join(" · ");
+    const optionsEl = document.getElementById("modal-options");
+    optionsEl.innerHTML = "";
+    optionsEl.hidden = !dish.grouped;
+    if (dish.grouped) {
+      for (const size of dish.sizes) {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "option-chip";
+        chip.textContent = `${size.option || size.name} · ${numberFormat.format(size.price)} ₽`;
+        chip.setAttribute("aria-pressed", String(size.code === item.code));
+        chip.disabled = !canOrder(size) && size.code !== item.code;
+        chip.addEventListener("click", () => {
+          if (size.code !== item.code) openModal(size);
+        });
+        optionsEl.appendChild(chip);
+      }
+    }
     const stockBadge = document.getElementById("modal-stock-badge");
     stockBadge.hidden = orderable;
     stockBadge.textContent = food ? foodStatus(item).text : "Tạm hết hàng";
@@ -2175,11 +2320,15 @@
     // dish with no category would otherwise add a stray "Khác" tile).
     // Orderable ones first, nearest deadline first; closed ones after,
     // most recent first.
-    foodItems = allItems.filter(isFood).sort((a, b) => {
-      const oa = canOrder(a), ob = canOrder(b);
-      if (oa !== ob) return oa ? -1 : 1;
-      return oa ? a.sale_until.localeCompare(b.sale_until) : b.sale_until.localeCompare(a.sale_until);
-    });
+    // mergeGroups: one card per multi-size dish (its first, i.e. most
+    // orderable, size stands for it -- see dishView).
+    foodItems = mergeGroups(
+      allItems.filter(isFood).sort((a, b) => {
+        const oa = canOrder(a), ob = canOrder(b);
+        if (oa !== ob) return oa ? -1 : 1;
+        return oa ? a.sale_until.localeCompare(b.sale_until) : b.sale_until.localeCompare(a.sale_until);
+      })
+    );
     categories = buildCategories(allItems.filter((item) => !isFood(item)));
     showFoodTabAlways = data.show_food_tab === true;
     setupCommunity(data.community);

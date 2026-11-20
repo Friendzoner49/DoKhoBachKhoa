@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-20T10:04:56+00:00",
+  "updated_at": "2026-11-20T10:40:34+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -90,7 +90,9 @@
         "images/BGOI03-g5.jpg?v=eb540c15"
       ],
       "description": "Set 3 chiếc bánh gối kèm nước chấm + dưa chua.",
-      "sale_until": "2026-11-25"
+      "sale_until": "2026-11-25",
+      "group": "Bánh gối",
+      "option": "Set 3 chiếc"
     },
     {
       "code": "BGOI05",
@@ -108,7 +110,9 @@
         "images/BGOI05-g5.jpg?v=eb540c15"
       ],
       "description": "Set 5 chiếc bánh gối kèm nước chấm + dưa chua.",
-      "sale_until": "2026-11-25"
+      "sale_until": "2026-11-25",
+      "group": "Bánh gối",
+      "option": "Set 5 chiếc"
     },
     {
       "code": "BLAI01",
@@ -413,7 +417,9 @@
         "images/CGA010-g1.jpg?v=47ed3e22"
       ],
       "description": "Set 10 chân gà kèm sốt chấm chua cay.",
-      "sale_until": "2026-11-25"
+      "sale_until": "2026-11-25",
+      "group": "Chân gà",
+      "option": "Set 10 chân"
     },
     {
       "code": "CGA015",
@@ -427,7 +433,9 @@
         "images/CGA015-g1.jpg?v=47ed3e22"
       ],
       "description": "Set 15 chân gà kèm sốt chấm chua cay.",
-      "sale_until": "2026-11-25"
+      "sale_until": "2026-11-25",
+      "group": "Chân gà",
+      "option": "Set 15 chân"
     },
     {
       "code": "CHAO1",
