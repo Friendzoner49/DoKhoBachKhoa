@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-18T12:04:42+00:00",
+  "updated_at": "2026-11-20T10:04:56+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -73,6 +73,42 @@
       "category": "Bánh kẹo & đồ ăn vặt",
       "price": 182,
       "image": "images/BGAO04.jpg?v=216f86d1"
+    },
+    {
+      "code": "BGOI03",
+      "name": "Bánh gối – set 3 chiếc",
+      "unit": "set",
+      "category": "Khác",
+      "price": 350,
+      "image": "images/BGOI03.jpg?v=7ffed60a",
+      "images": [
+        "images/BGOI03.jpg?v=7ffed60a",
+        "images/BGOI03-g1.jpg?v=373901ab",
+        "images/BGOI03-g2.jpg?v=eeb0c38e",
+        "images/BGOI03-g3.jpg?v=af6d5237",
+        "images/BGOI03-g4.jpg?v=d4a1b21f",
+        "images/BGOI03-g5.jpg?v=eb540c15"
+      ],
+      "description": "Set 3 chiếc bánh gối kèm nước chấm + dưa chua.",
+      "sale_until": "2026-11-25"
+    },
+    {
+      "code": "BGOI05",
+      "name": "Bánh gối – set 5 chiếc",
+      "unit": "set",
+      "category": "Khác",
+      "price": 550,
+      "image": "images/BGOI05.jpg?v=7ffed60a",
+      "images": [
+        "images/BGOI05.jpg?v=7ffed60a",
+        "images/BGOI05-g1.jpg?v=373901ab",
+        "images/BGOI05-g2.jpg?v=eeb0c38e",
+        "images/BGOI05-g3.jpg?v=af6d5237",
+        "images/BGOI05-g4.jpg?v=d4a1b21f",
+        "images/BGOI05-g5.jpg?v=eb540c15"
+      ],
+      "description": "Set 5 chiếc bánh gối kèm nước chấm + dưa chua.",
+      "sale_until": "2026-11-25"
     },
     {
       "code": "BLAI01",
@@ -364,6 +400,34 @@
       "category": "Cà phê, trà, đồ uống",
       "price": 589,
       "image": "images/CAFE11.jpg?v=bafea1e4"
+    },
+    {
+      "code": "CGA010",
+      "name": "Chân gà – set 10 chân",
+      "unit": "set",
+      "category": "Khác",
+      "price": 300,
+      "image": "images/CGA010.jpg?v=12b6eff2",
+      "images": [
+        "images/CGA010.jpg?v=12b6eff2",
+        "images/CGA010-g1.jpg?v=47ed3e22"
+      ],
+      "description": "Set 10 chân gà kèm sốt chấm chua cay.",
+      "sale_until": "2026-11-25"
+    },
+    {
+      "code": "CGA015",
+      "name": "Chân gà – set 15 chân",
+      "unit": "set",
+      "category": "Khác",
+      "price": 420,
+      "image": "images/CGA015.jpg?v=12b6eff2",
+      "images": [
+        "images/CGA015.jpg?v=12b6eff2",
+        "images/CGA015-g1.jpg?v=47ed3e22"
+      ],
+      "description": "Set 15 chân gà kèm sốt chấm chua cay.",
+      "sale_until": "2026-11-25"
     },
     {
       "code": "CHAO1",

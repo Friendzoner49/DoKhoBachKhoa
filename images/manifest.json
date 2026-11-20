@@ -1321,5 +1321,41 @@
       960,
       1200
     ]
+  },
+  "BGOI03": {
+    "source_url": "Chọn từ máy: IMG_2722.JPG",
+    "source_page": null,
+    "fetched_at": "2026-11-20T10:03:09+00:00",
+    "size": [
+      1200,
+      903
+    ]
+  },
+  "BGOI05": {
+    "source_url": "Chọn từ máy: IMG_2722.JPG",
+    "source_page": null,
+    "fetched_at": "2026-11-20T10:03:10+00:00",
+    "size": [
+      1200,
+      903
+    ]
+  },
+  "CGA010": {
+    "source_url": "Chọn từ máy: IMG_2726.JPG",
+    "source_page": null,
+    "fetched_at": "2026-11-20T10:03:10+00:00",
+    "size": [
+      903,
+      1200
+    ]
+  },
+  "CGA015": {
+    "source_url": "Chọn từ máy: IMG_2726.JPG",
+    "source_page": null,
+    "fetched_at": "2026-11-20T10:03:10+00:00",
+    "size": [
+      903,
+      1200
+    ]
   }
 }
