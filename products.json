@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-20T11:01:48+00:00",
+  "updated_at": "2026-11-25T09:17:05+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -169,7 +169,7 @@
       "name": "Bột Bánh Cuốn 400gr",
       "unit": "gói",
       "category": "Bột & nguyên liệu làm bánh",
-      "price": 198,
+      "price": 214,
       "image": "images/BOBC01.jpg?v=d2da39aa"
     },
     {
@@ -362,7 +362,7 @@
       "name": "Café G7 3 In 1 (21 Gói)",
       "unit": "hộp",
       "category": "Cà phê, trà, đồ uống",
-      "price": 321,
+      "price": 375,
       "image": "images/CAFE06.jpg?v=725c4516"
     },
     {
