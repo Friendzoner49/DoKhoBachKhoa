@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-26T16:22:59+00:00",
+  "updated_at": "2026-11-26T17:11:31+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -512,6 +512,20 @@
       "category": "Đậu, hạt, vừng, lạc",
       "price": 96,
       "image": "images/DAUN01.jpg?v=6769c202"
+    },
+    {
+      "code": "DAFU",
+      "name": "Đậu phụ",
+      "unit": "miếng",
+      "category": "Khác",
+      "price": 120,
+      "image": "images/DAFU.jpg?v=0f6dd647",
+      "images": [
+        "images/DAFU.jpg?v=0f6dd647",
+        "images/DAFU-g1.jpg?v=ae47c90f"
+      ],
+      "sale_until": "2026-11-28",
+      "deadline": "2026-11-28T08:00:00+03:00"
     },
     {
       "code": "DAUXA1",
@@ -1127,6 +1141,20 @@
       "category": "Gia vị, nước mắm, nước chấm",
       "price": 139,
       "image": "images/SATE01.jpg?v=f8d53c7f"
+    },
+    {
+      "code": "SUDA",
+      "name": "Sữa đậu nành",
+      "unit": "Cốc 300ml",
+      "category": "Khác",
+      "price": 100,
+      "image": "images/SUDA.jpg?v=89fd1276",
+      "images": [
+        "images/SUDA.jpg?v=89fd1276",
+        "images/SUDA-g1.jpg?v=ae47c90f"
+      ],
+      "sale_until": "2026-11-28",
+      "deadline": "2026-11-28T08:00:00+03:00"
     },
     {
       "code": "SDUA01",

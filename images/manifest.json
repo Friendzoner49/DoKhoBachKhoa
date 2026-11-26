@@ -1366,5 +1366,23 @@
       1200,
       903
     ]
+  },
+  "DAFU": {
+    "source_url": "Chọn từ máy: IMG_2845.JPG",
+    "source_page": null,
+    "fetched_at": "2026-11-26T17:08:48+00:00",
+    "size": [
+      903,
+      1200
+    ]
+  },
+  "SUDA": {
+    "source_url": "Chọn từ máy: IMG_2846.JPG",
+    "source_page": null,
+    "fetched_at": "2026-11-26T17:11:19+00:00",
+    "size": [
+      900,
+      1200
+    ]
   }
 }
