@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-26T21:22:32+00:00",
+  "updated_at": "2026-11-26T21:39:35+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -123,6 +123,22 @@
       "category": "Bánh kẹo & đồ ăn vặt",
       "price": 321,
       "image": "images/BLAI01.jpg?v=12e62413"
+    },
+    {
+      "code": "BAMI01",
+      "name": "Bánh mì pate thịt nướng",
+      "unit": "cái",
+      "category": "Khác",
+      "price": 350,
+      "image": "images/BAMI01.jpg?v=5b89610b",
+      "images": [
+        "images/BAMI01.jpg?v=5b89610b",
+        "images/BAMI01-g1.jpg?v=7b2c3d13"
+      ],
+      "description": "Hiện tại đây là món mới nên hình ảnh chỉ có tính chất minh họa cho sản phẩm.\nEm này có cái duyên của phần thịt nướng rám cạnh, đậm đà với hương khói lan ngay từ miếng đầu và còn vương nơi hậu vị. Lớp pa-tê béo mượt làm dịu vị nướng, còn vỏ bánh giòn tan khiến mỗi miếng cắn thêm phần thú vị.",
+      "ingredients": "Bánh mì nhà làm, pate tự gia công, thịt ba chỉ nướng bằng lò, dưa chuột, rau thơm, tương ớt",
+      "sale_until": "2026-11-27",
+      "deadline": "2026-11-27T23:59:59+03:00"
     },
     {
       "code": "BTRA01",
