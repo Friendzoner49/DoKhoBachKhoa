@@ -1,0 +1,87 @@
+# Build the macOS .dmg (Apple Silicon) and a Windows portable zip on
+# GitHub's own machines -- so a Mac build doesn't need a physical Mac
+# (see CLAUDE.md mục 7).
+#
+# Two ways to trigger, same as DiBeKho's build.yml (K:\HeThongSonDiBe):
+# - "Run workflow" in the Actions tab (workflow_dispatch): builds only,
+#   files land under that run's own "Artifacts" section, nothing is
+#   released. Good for a one-off test build.
+# - Push a tag like v0.1.0: builds both AND publishes a GitHub Release
+#   under that tag (deleting an old release/runs with the same tag
+#   first, so re-tagging v0.1.0 replaces it rather than piling up).
+#
+# 28/10/2026: added the tag trigger + release job on request, reversing
+# the "manual only" choice from when this workflow was first written --
+# macOS runners are still billed at a historically higher multiplier
+# against the free minutes quota than Linux/Windows, so every tag push
+# (including just re-tagging the same version after a small fix, the
+# dibekho-release skill's usual flow) costs real minutes. Not an issue
+# while this stays occasional; worth remembering if tagging becomes
+# frequent. Tags are pushed by hand, never by Claude, in this project.
+name: build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+# A tag moved to a newer commit replaces a run that is still going for
+# the same tag.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mac:
+    runs-on: macos-15  # Apple Silicon (arm64), same architecture as the M2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: bash packaging/build_mac.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BachHoa705-mac
+          path: packaging/dist/BachHoa705.dmg
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: powershell -ExecutionPolicy Bypass -File packaging\build_windows.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BachHoa705-windows
+          path: packaging/dist/BachHoa705-windows.zip
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [mac, windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - run: ls -la artifacts
+      # Only once both builds succeeded: remove the old release with
+      # this tag (and its files) and every earlier run of this
+      # workflow (and its artifacts). The tag itself is kept.
+      - name: Remove old release and old runs
+        run: |
+          gh release delete "${{ github.ref_name }}" --yes || true
+          for id in $(gh run list --workflow build --limit 200 --json databaseId --jq '.[].databaseId'); do
+            if [ "$id" != "${{ github.run_id }}" ]; then gh run delete "$id" || true; fi
+          done
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: BachHoa705 ${{ github.ref_name }}
+          files: |
+            artifacts/BachHoa705.dmg
+            artifacts/BachHoa705-windows.zip

@@ -1,0 +1,4 @@
+# Shell scripts must keep LF even when committed from this Windows
+# machine (git's core.autocrlf here converts to CRLF on checkout,
+# which breaks a Mac shell's #!/bin/sh interpretation).
+*.sh text eol=lf
