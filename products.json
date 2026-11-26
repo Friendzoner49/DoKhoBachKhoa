@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-26T18:09:56+00:00",
+  "updated_at": "2026-11-26T21:22:32+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -1339,8 +1339,8 @@
       "sale_until": "2026-11-27",
       "deadline": "2026-11-27T08:00:00+03:00",
       "stock_limit": 5,
-      "remaining": 3,
-      "stock_after": 1795706047551
+      "remaining": 0,
+      "stock_after": 1795725208663
     }
   ],
   "stock_url": "https://705bot-telegram.705bot-telegram-bot.workers.dev/stock",

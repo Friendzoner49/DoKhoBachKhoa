@@ -598,12 +598,45 @@
   #modal-gallery-thumbs img.active {
     border-color: var(--accent);
   }
-  #modal-description {
+  #modal-tabs {
+    display: flex;
+    gap: 18px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+    margin-bottom: 10px;
+  }
+  /* same [hidden]-vs-display trap as #modal-bulk-stepper below */
+  #modal-tabs[hidden],
+  #modal-tabs button[hidden] {
+    display: none;
+  }
+  #modal-tabs button {
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 6px 0;
+    font: inherit;
+    font-size: 0.92rem;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  #modal-tabs button[aria-selected="true"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 700;
+  }
+  #modal-description,
+  #modal-ingredients {
     white-space: pre-line;
     font-size: 0.92rem;
     line-height: 1.5;
     color: var(--text);
     margin-bottom: 14px;
+  }
+  #modal-ingredients-note {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-style: italic;
+    margin: -6px 0 14px;
   }
   #modal-category {
     color: var(--muted);
@@ -1086,7 +1119,13 @@
     <div id="modal-top-badge" hidden>★ Bạn hay mua mặt hàng này</div>
     <div id="modal-name"></div>
     <div id="modal-unit"></div>
+    <div id="modal-tabs" role="tablist" hidden>
+      <button type="button" role="tab" id="modal-tab-description">Mô tả</button>
+      <button type="button" role="tab" id="modal-tab-ingredients">Thành phần</button>
+    </div>
     <div id="modal-description" hidden></div>
+    <div id="modal-ingredients" hidden></div>
+    <div id="modal-ingredients-note" hidden>Nếu quý khách muốn thay đổi nguyên liệu, xin vui lòng nhắn tin cho shop ạ.</div>
     <div id="modal-stock-badge" class="stock-badge" hidden>Tạm hết hàng</div>
     <div id="modal-sale-note" class="sale-countdown-badge" hidden></div>
     <div id="modal-options" role="group" aria-label="Chọn cỡ" hidden></div>
@@ -1319,6 +1358,19 @@
   function deadlineKey(item) {
     return item.deadline ? Date.parse(item.deadline) : Date.parse(`${item.sale_until}T23:59:59`);
   }
+  // Orderable ones first, nearest deadline first; closed ones after, most
+  // recent first. Run again whenever a dish sells out or closes.
+  // mergeGroups: one card per multi-size dish (its first, i.e. most
+  // orderable, size stands for it -- see dishView).
+  function sortFoodItems() {
+    foodItems = mergeGroups(
+      allItems.filter(isFood).sort((a, b) => {
+        const oa = canOrder(a), ob = canOrder(b);
+        if (oa !== ob) return oa ? -1 : 1;
+        return oa ? deadlineKey(a) - deadlineKey(b) : deadlineKey(b) - deadlineKey(a);
+      })
+    );
+  }
   // A page left open closes the dish at its deadline, without a reload.
   function scheduleDeadline() {
     const upcoming = allItems.filter((i) => isFood(i) && !isExpired(i)).map(deadlineKey);
@@ -1331,6 +1383,7 @@
       if (holding) closeCart();
       saveCart(); // drops the closed dish
       renderCartFab();
+      sortFoodItems();
       render();
       scheduleDeadline();
     }, wait);
@@ -1364,6 +1417,7 @@
       if (!changed) return;
       saveCart(); // trims quantities that are no longer available
       renderCartFab();
+      sortFoodItems(); // a dish that just sold out moves below the open ones
       render();
     } catch (e) {
       // keep the published numbers
@@ -1428,6 +1482,20 @@
       statusItem: byDeadline[0] || open[0] || sizes[0],
       priceText: lo === hi ? `${numberFormat.format(lo)} ₽` : `${numberFormat.format(lo)} – ${numberFormat.format(hi)} ₽`,
     };
+  }
+  // The dish window's "Mô tả | Thành phần" tabs; an empty pane stays hidden.
+  function showModalTab(name) {
+    for (const key of ["description", "ingredients"]) {
+      const pane = document.getElementById(`modal-${key}`);
+      pane.hidden = key !== name || !pane.textContent;
+      document.getElementById(`modal-tab-${key}`).setAttribute("aria-selected", String(key === name));
+    }
+    // Only under a dish's ingredient list: changes are agreed in chat with the shop.
+    document.getElementById("modal-ingredients-note").hidden =
+      document.getElementById("modal-ingredients").hidden || !isFood(currentModalItem);
+  }
+  for (const key of ["description", "ingredients"]) {
+    document.getElementById(`modal-tab-${key}`).addEventListener("click", () => showModalTab(key));
   }
   // Opens a dish on its cheapest size that can still be ordered.
   function openDish(item) {
@@ -2026,13 +2094,13 @@
     const descEl = document.getElementById("modal-description");
     // The chosen size's own description ("Set 5 chiếc kèm…"), else the dish's.
     const descText = item.description || dish.descItem.description;
-    if (descText) {
-      descEl.hidden = false;
-      descEl.textContent = descText; // textContent, never innerHTML -- this is untrusted-ish app data
-    } else {
-      descEl.hidden = true;
-      descEl.textContent = "";
-    }
+    descEl.textContent = descText || ""; // textContent, never innerHTML -- this is untrusted-ish app data
+    // Same fallback as the description. No ingredients = no tab bar at all.
+    const ingredients = item.ingredients || (dish.sizes.find((s) => s.ingredients) || {}).ingredients || "";
+    document.getElementById("modal-ingredients").textContent = ingredients;
+    document.getElementById("modal-tabs").hidden = !ingredients;
+    document.getElementById("modal-tab-description").hidden = !descText;
+    showModalTab(descText ? "description" : "ingredients"); // reset on every open
 
     const food = isFood(item);
     // A multi-size dish is orderable while ANY size is; its deadline/status
@@ -2044,7 +2112,7 @@
     document.getElementById("modal-name").textContent = dish.name;
     document.getElementById("modal-unit").textContent = dish.grouped
       ? "Chọn số lượng từng cỡ — đặt nhiều cỡ cùng lúc được"
-      : [item.unit, item.code].filter(Boolean).join(" · ");
+      : [item.unit, food ? "" : item.code].filter(Boolean).join(" · "); // dishes never show their code
     const optionsEl = document.getElementById("modal-options");
     optionsEl.innerHTML = "";
     optionsEl.hidden = !(dish.grouped && orderable);
@@ -2275,7 +2343,7 @@
       const li = document.createElement("li");
       const name = document.createElement("div");
       name.className = "cart-item-name";
-      name.textContent = `${item.name} (${item.code})`;
+      name.textContent = isFood(item) ? item.name : `${item.name} (${item.code})`;
       const minus = document.createElement("button");
       minus.className = "qty-btn";
       minus.type = "button";
@@ -2506,17 +2574,7 @@
       .sort((a, b) => a.name.localeCompare(b.name, "vi"));
     // Dishes live in their own tab, not among the grocery categories (a
     // dish with no category would otherwise add a stray "Khác" tile).
-    // Orderable ones first, nearest deadline first; closed ones after,
-    // most recent first.
-    // mergeGroups: one card per multi-size dish (its first, i.e. most
-    // orderable, size stands for it -- see dishView).
-    foodItems = mergeGroups(
-      allItems.filter(isFood).sort((a, b) => {
-        const oa = canOrder(a), ob = canOrder(b);
-        if (oa !== ob) return oa ? -1 : 1;
-        return oa ? deadlineKey(a) - deadlineKey(b) : deadlineKey(b) - deadlineKey(a);
-      })
-    );
+    sortFoodItems();
     categories = buildCategories(allItems.filter((item) => !isFood(item)));
     showFoodTabAlways = data.show_food_tab === true;
     setupCommunity(data.community);
