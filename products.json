@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-26T17:11:31+00:00",
+  "updated_at": "2026-11-26T17:54:47+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -524,6 +524,7 @@
         "images/DAFU.jpg?v=0f6dd647",
         "images/DAFU-g1.jpg?v=ae47c90f"
       ],
+      "description": "Đậu phụ sắc trắng ngà, mềm mịn mà vẫn đứng miếng. Điều đáng quý ở món này là vị bùi dịu và hương đậu thơm nhẹ, càng thưởng thức chậm càng thấy rõ.",
       "sale_until": "2026-11-28",
       "deadline": "2026-11-28T08:00:00+03:00"
     },
@@ -1153,6 +1154,7 @@
         "images/SUDA.jpg?v=89fd1276",
         "images/SUDA-g1.jpg?v=ae47c90f"
       ],
+      "description": "Sữa màu ngà, mịn màng, thoảng hương đậu nành. Vị béo nhẹ cùng hậu ngọt thanh khiến người ta muốn nhấp thêm một ngụm.",
       "sale_until": "2026-11-28",
       "deadline": "2026-11-28T08:00:00+03:00"
     },
