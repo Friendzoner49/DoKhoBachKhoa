@@ -1307,10 +1307,67 @@
     return Boolean(item.sale_until);
   }
   function isExpired(item) {
+    // "deadline" is the exact closing instant; older price files only have the date.
+    if (item.deadline) return Date.now() >= Date.parse(item.deadline);
     return Boolean(item.sale_until) && item.sale_until < todayIso;
   }
+  // "20:00" as the owner typed it (shop time), "" for end of day.
+  function deadlineClock(item) {
+    const clock = item.deadline ? item.deadline.slice(11, 16) : "";
+    return clock === "23:59" ? "" : clock;
+  }
+  function deadlineKey(item) {
+    return item.deadline ? Date.parse(item.deadline) : Date.parse(`${item.sale_until}T23:59:59`);
+  }
+  // A page left open closes the dish at its deadline, without a reload.
+  function scheduleDeadline() {
+    const upcoming = allItems.filter((i) => isFood(i) && !isExpired(i)).map(deadlineKey);
+    if (upcoming.length === 0) return;
+    const wait = Math.min(Math.max(0, Math.min(...upcoming) - Date.now()) + 500, 2 ** 31 - 1);
+    setTimeout(() => {
+      // Only interrupt a visitor looking at, or holding, a dish that just closed.
+      const holding = allItems.some((i) => i.code in cart && isExpired(i));
+      if (currentModalItem && isExpired(currentModalItem)) closeModal();
+      if (holding) closeCart();
+      saveCart(); // drops the closed dish
+      renderCartFab();
+      render();
+      scheduleDeadline();
+    }, wait);
+  }
   function canOrder(item) {
-    return item.in_stock !== false && !isExpired(item);
+    return item.in_stock !== false && !isExpired(item) && item.remaining !== 0;
+  }
+  // Limited portions: "remaining" is only present for a dish with a limit.
+  function maxQty(item) {
+    return Number.isFinite(item.remaining) ? item.remaining : Infinity;
+  }
+  function stockText(item) {
+    return item.remaining > 0 ? `Còn ${item.remaining} suất` : "";
+  }
+  // Live numbers from the bot (products.json only holds the count at publish
+  // time). Unreachable (e.g. blocked network) = keep the published numbers.
+  async function refreshStock(url) {
+    try {
+      const ctrl = new AbortController();
+      setTimeout(() => ctrl.abort(), 5000);
+      const res = await fetch(url, { cache: "no-store", signal: ctrl.signal });
+      if (!res.ok) return;
+      const left = (await res.json()).remaining || {};
+      let changed = false;
+      for (const item of allItems) {
+        if (item.code in left && Number.isFinite(item.remaining) && item.remaining !== left[item.code]) {
+          item.remaining = left[item.code];
+          changed = true;
+        }
+      }
+      if (!changed) return;
+      saveCart(); // trims quantities that are no longer available
+      renderCartFab();
+      render();
+    } catch (e) {
+      // keep the published numbers
+    }
   }
   // "T4, 18/11"
   function shortVnDay(iso) {
@@ -1320,9 +1377,11 @@
   // Label for a dish's order deadline / closed state.
   function foodStatus(item) {
     if (isExpired(item)) return { text: "Hết hạn đặt", today: false };
-    if (item.in_stock === false) return { text: "Hết suất", today: false };
-    if (item.sale_until === todayIso) return { text: "Hạn đặt hôm nay", today: true };
-    return { text: `Hạn đặt ${shortVnDay(item.sale_until)}`, today: false };
+    if (item.in_stock === false || item.remaining === 0) return { text: "Hết suất", today: false };
+    const clock = deadlineClock(item);
+    const at = clock ? ` ${clock}` : "";
+    if (item.sale_until === todayIso) return { text: `Hạn đặt${at} hôm nay`, today: true };
+    return { text: `Hạn đặt${at} ${shortVnDay(item.sale_until)}`, today: false };
   }
 
   // Món nhiều cỡ (20/11/2026): products sharing a "group" (e.g. "Bánh gối")
@@ -1357,7 +1416,7 @@
     const priced = open.length ? open : sizes;
     const lo = Math.min(...priced.map((s) => s.price));
     const hi = Math.max(...priced.map((s) => s.price));
-    const byDeadline = open.filter((s) => s.sale_until).sort((a, b) => a.sale_until.localeCompare(b.sale_until));
+    const byDeadline = open.filter((s) => s.sale_until).sort((a, b) => deadlineKey(a) - deadlineKey(b));
     return {
       sizes,
       grouped: sizes.length > 1,
@@ -1441,6 +1500,13 @@
   }
 
   function saveCart() {
+    // Every cart change ends here, so no button can exceed the portions left.
+    for (const item of allItems) {
+      if (item.code in cart && isExpired(item)) delete cart[item.code];
+      if (!(item.code in cart) || cart[item.code] <= maxQty(item)) continue;
+      if (maxQty(item) > 0) cart[item.code] = maxQty(item);
+      else delete cart[item.code];
+    }
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
     } catch (e) {
@@ -1762,6 +1828,12 @@
       name.className = "food-name";
       name.textContent = dish.name;
       body.appendChild(name);
+      if (!dish.grouped && orderable && stockText(item)) {
+        const left = document.createElement("div");
+        left.className = "item-meta stock-left";
+        left.textContent = stockText(item);
+        body.appendChild(left);
+      }
       if (dish.grouped) {
         // "Set 3 chiếc · Set 5 chiếc" -- the sizes on offer, at a glance.
         const sizes = document.createElement("div");
@@ -1983,7 +2055,8 @@
     const saleNote = document.getElementById("modal-sale-note");
     if (food && orderable) {
       saleNote.hidden = false;
-      saleNote.textContent = `⏳ Nhận đặt đến hết ${shortVnDay(st.sale_until)} · shop nấu xong sẽ nhắn tin hẹn ngày giao`;
+      const left = !dish.grouped && stockText(item) ? `${stockText(item)} · ` : "";
+      saleNote.textContent = `⏳ ${left}Nhận đặt đến ${deadlineClock(st) || "hết"} ${shortVnDay(st.sale_until)} · shop nấu xong sẽ nhắn tin hẹn ngày giao`;
     } else {
       saleNote.hidden = true;
     }
@@ -2071,7 +2144,9 @@
       name.className = "option-name";
       name.textContent = s.option || s.name;
       const price = document.createElement("small");
-      price.textContent = open ? `${numberFormat.format(s.price)} ₽` : foodStatus(s).text;
+      price.textContent = open
+        ? [`${numberFormat.format(s.price)} ₽`, stockText(s)].filter(Boolean).join(" · ")
+        : foodStatus(s).text;
       name.appendChild(price);
       row.appendChild(name);
       const stepper = document.createElement("div");
@@ -2094,7 +2169,7 @@
         refresh();
       });
       plus.addEventListener("click", () => {
-        qty[s.code] = Math.min(99, qty[s.code] + 1);
+        qty[s.code] = Math.min(99, maxQty(s), qty[s.code] + 1);
         refresh();
       });
       stepper.append(minus, q, plus);
@@ -2136,6 +2211,7 @@
   }
 
   function updateModalQtyDisplay() {
+    if (currentModalItem) modalQty = Math.max(1, Math.min(modalQty, maxQty(currentModalItem)));
     document.getElementById("modal-qty").textContent = String(modalQty);
   }
 
@@ -2438,7 +2514,7 @@
       allItems.filter(isFood).sort((a, b) => {
         const oa = canOrder(a), ob = canOrder(b);
         if (oa !== ob) return oa ? -1 : 1;
-        return oa ? a.sale_until.localeCompare(b.sale_until) : b.sale_until.localeCompare(a.sale_until);
+        return oa ? deadlineKey(a) - deadlineKey(b) : deadlineKey(b) - deadlineKey(a);
       })
     );
     categories = buildCategories(allItems.filter((item) => !isFood(item)));
@@ -2459,6 +2535,8 @@
       saveCart();
       renderCartFab();
     }
+    saveCart(); // an older cart may hold more than is left now
+    renderCartFab();
     setupReorderButton();
     document.getElementById("tab-food").addEventListener("click", () => setHomeTab("food"));
     document.getElementById("tab-grocery").addEventListener("click", () => setHomeTab("grocery"));
@@ -2470,6 +2548,8 @@
     }
 
     render();
+    scheduleDeadline();
+    if (data.stock_url && allItems.some((i) => Number.isFinite(i.remaining))) refreshStock(data.stock_url);
 
     const searchEl = document.getElementById("search");
     searchEl.addEventListener("input", () => {

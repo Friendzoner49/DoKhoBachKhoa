@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-26T14:43:57+00:00",
+  "updated_at": "2026-11-26T16:22:59+00:00",
   "currency": "RUB",
   "items": [
     {
@@ -91,6 +91,7 @@
       ],
       "description": "Bánh gối vàng ươm, dáng tựa vầng trăng khuyết, từng nếp viền xếp khéo như đường thêu trên gấm. Dùng cùng dưa leo, cà rốt và nước chấm tỏi ớt, lớp vỏ giòn rụm quyện với vị chua cay thanh nhẹ, xứng danh một thức ngon chốn cung đình",
       "sale_until": "2026-11-25",
+      "deadline": "2026-11-25T23:59:59+03:00",
       "group": "Bánh gối",
       "option": "Set 3 chiếc"
     },
@@ -111,6 +112,7 @@
       ],
       "description": "Set 5 chiếc bánh gối kèm nước chấm + dưa chua.",
       "sale_until": "2026-11-25",
+      "deadline": "2026-11-25T23:59:59+03:00",
       "group": "Bánh gối",
       "option": "Set 5 chiếc"
     },
@@ -418,6 +420,7 @@
       ],
       "description": "Chân gà nướng vàng óng sắc hổ phách, da giòn, gân sần sật, thơm lừng hương nướng. Nước chấm đỏ au là tuyệt vị của món này, chua ngọt vừa độ, cay nhẹ đầu lưỡi, chấm một lần đã muốn chấm thêm.",
       "sale_until": "2026-11-25",
+      "deadline": "2026-11-25T23:59:59+03:00",
       "group": "Chân gà",
       "option": "Set 10 chân"
     },
@@ -434,6 +437,7 @@
       ],
       "description": "Set 15 chân gà kèm sốt chấm chua cay.",
       "sale_until": "2026-11-25",
+      "deadline": "2026-11-25T23:59:59+03:00",
       "group": "Chân gà",
       "option": "Set 15 chân"
     },
@@ -1302,9 +1306,14 @@
       "price": 300,
       "image": "images/XOXEO.jpg?v=047c14e7",
       "description": "**Xôi xéo**  \nNếp vàng óng, dẻo quện mà vẫn rõ từng hạt, quyện cùng đậu xanh bùi mịn và hành phi thơm giòn. Điểm  nhấn nằm ở lớp ruốc tơi mềm, thơm tươi, vị mặn dịu vừa đủ để tôn lên cái ngọt nhẹ của nếp.",
-      "sale_until": "2026-11-27"
+      "sale_until": "2026-11-27",
+      "deadline": "2026-11-27T08:00:00+03:00",
+      "stock_limit": 5,
+      "remaining": 3,
+      "stock_after": 1795706047551
     }
   ],
+  "stock_url": "https://705bot-telegram.705bot-telegram-bot.workers.dev/stock",
   "community": {
     "title": "Giải trí tổng hợp",
     "links": [
